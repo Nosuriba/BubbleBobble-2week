@@ -27,7 +27,7 @@ public:
 	}
 	const ImageName GetImage();
 	const VEC_INT ImgGetID(std::string fileName);
-	const VEC_INT ImgGetID(std::string fileName, Vector2 divCnt, Vector2 divSize, Vector2 chipOffset);
+	const VEC_INT ImgGetID(std::string fileName, Vector2 divCnt, Vector2 divSize);
 private:
 	struct ImageMngDeleter
 	{

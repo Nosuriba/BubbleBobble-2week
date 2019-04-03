@@ -6,5 +6,7 @@ class Block :
 public:
 	Block();
 	~Block();
+	void Update();
+	void Draw();
 };
 
