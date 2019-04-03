@@ -38,5 +38,5 @@ void Object::Init(std::string fileName, const Vector2f & pos,
 	this->size	    = size;
 
 	/// •`‰æ‚·‚é‰æ‘œ‚ÌˆÊ’uİ’è
-	animCnt = (divCnt.x * divOffset.y) + divOffset.x;
+	chipCnt = (divCnt.x * divOffset.y) + divOffset.x;
 }

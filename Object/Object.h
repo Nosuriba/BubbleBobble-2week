@@ -26,7 +26,7 @@ protected:
 	Vector2 size;
 	std::string fileName;
 	
-	int animCnt;
+	int chipCnt;
 	int groundLine;
 };
 

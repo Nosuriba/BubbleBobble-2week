@@ -13,8 +13,13 @@ public:
 	void Update(const Input & p);
 	void Draw();
 private:
-	void Move(const Input & p);
+	void Anim();
+	void Jump(const Input & p);
+	void Fall();
 
 	bool jumpFlag, groundFlag, dieFlag;
+	int  jumpCnt;
+	int  animCnt;
+	int  invCnt;
 };
 

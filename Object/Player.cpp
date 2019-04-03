@@ -10,6 +10,9 @@ Player::Player()
 	fileName = "";
 
 	jumpFlag = groundFlag = dieFlag = false;
+	jumpCnt  = 0;
+	animCnt  = 0;
+	invCnt	 = 0;
 }
 
 Player::Player(int groundLine)
@@ -20,37 +23,72 @@ Player::Player(int groundLine)
 	this->groundLine = groundLine;
 
 	jumpFlag = groundFlag = dieFlag = false;
+	jumpCnt  = 0;
+	animCnt  = 0;
+	invCnt	 = 0;
 }
 
 Player::~Player()
 {
 }
 
-void Player::Update(const Input & p)
+void Player::Anim()
 {
-	Move(p);
-	if (pos.y + size.y < groundLine)
+	invCnt++;
+	animCnt = ((invCnt / 30) % 3);			/// アニメーションがバグっているので修正する
+	chipCnt = chipCnt + animCnt;
+}
+
+void Player::Jump(const Input & p)
+{
+	if (p.IsTrigger(PAD_INPUT_10))
 	{
-		vel.y += 0.5f;
+		if (!jumpFlag)
+		{
+			jumpCnt++;
+			groundFlag = false;
+			vel.y = 0;
+			vel.y -= 12.0f;
+		}
 	}
-	else
+
+	if (jumpCnt >= 2)
+	{
+		jumpFlag = true;
+	}
+
+}
+
+void Player::Fall()
+{
+	if (groundFlag)
 	{
 		vel.y = 0;
 		pos.y = groundLine - size.y;
 	}
+	else
+	{
+		vel.y += 0.5f;
+	}
+}
 
+
+void Player::Update(const Input & p)
+{
+	Anim();
+	Jump(p);
+	Fall();
+	if (pos.y + size.y > groundLine)
+	{
+		jumpCnt	   = 0;
+		jumpFlag   = false;
+ 		groundFlag = true;
+	}
 	pos += vel;
 }
 
 void Player::Draw()
 {
-	DxLib::DrawGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[animCnt], true);
+	DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], true);
 }
 
-void Player::Move(const Input & p)
-{
-	if (p.IsTrigger(PAD_INPUT_10))
-	{
-  		vel.y -= 15.0f;
-	}
-}
