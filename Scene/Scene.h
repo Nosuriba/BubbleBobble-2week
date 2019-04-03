@@ -1,4 +1,6 @@
 #pragma once
+
+#include <memory>
 #include "../Input.h"
 
 class Scene

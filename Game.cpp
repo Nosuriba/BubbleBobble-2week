@@ -6,7 +6,7 @@
 
 std::unique_ptr<Game, Game::GameDeleter> Game::s_Instance(new Game());
 
-Game::Game()
+Game::Game() : screenSize(640, 480)
 {
 }
 
@@ -16,7 +16,7 @@ Game::~Game()
 
 void Game::Init()
 {
-	DxLib::SetGraphMode(640, 480, 32);
+	DxLib::SetGraphMode(screenSize.x, screenSize.y, 32);
 	DxLib::ChangeWindowMode(true);
 	DxLib::SetWindowText("–¼‘O‚Í‚È‚¢‚¼");
 	if (DxLib_Init() == -1)
@@ -32,10 +32,6 @@ void Game::Run()
 	Input input;
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
-		if (CheckHitKey(KEY_INPUT_ESCAPE)) {
-			break;
-		}
-
 		ClsDrawScreen();
 
 		input.Update();
@@ -49,6 +45,11 @@ void Game::Run()
 void Game::End()
 {
 	DxLib_End();
+}
+
+const Vector2 & Game::GetScreenSize()
+{
+	return screenSize;
 }
 
 void Game::ChangeScene(Scene * scene)

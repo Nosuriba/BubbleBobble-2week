@@ -4,6 +4,11 @@
 
 Object::Object()
 {
+
+}
+
+Object::Object(int groundLine)
+{
 }
 
 
@@ -21,11 +26,17 @@ void Object::Draw()
 	/// ‰½‚à‘‚©‚È‚¢
 }
 
-void Object::Init(std::string fileName, const Vector2 & pos, const Vector2 & divCnt, const Vector2 & size)
+void Object::Init(std::string fileName, const Vector2f & pos,
+				const Vector2 & divCnt, const Vector2 & divOffset,
+			    const Vector2 & size)
 {
-	ImageMng::GetInstance().ImgGetID(fileName, divCnt, size);
-	this->fileName = fileName;
-	this->pos	   = pos;
-	this->size	   = size;
+	
+	this->fileName  = fileName;
+	this->pos	    = pos;
+	this->divCnt	= divCnt;
+	this->divOffset = divOffset;
+	this->size	    = size;
 
+	/// •`‰æ‚·‚é‰æ‘œ‚ÌˆÊ’uİ’è
+	animCnt = (divCnt.x * divOffset.y) + divOffset.x;
 }

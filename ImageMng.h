@@ -15,6 +15,7 @@ struct ImageName
 	const std::string titleImage  = "resource/Image/title.png";
 	const std::string mainImage   = "resource/Image/main.png";
 	const std::string resultImage = "resource/Image/result.png";
+	const std::string playerImage = "resource/Image/player.png";
 	
 };
 
