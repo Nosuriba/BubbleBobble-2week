@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "../ImageMng.h"
 #include "../Input.h"
 #include "Player.h"
@@ -11,7 +12,6 @@ Player::Player()
 
 	jumpFlag = groundFlag = dieFlag = false;
 	jumpCnt  = 0;
-	animCnt  = 0;
 	invCnt	 = 0;
 }
 
@@ -24,7 +24,6 @@ Player::Player(int groundLine)
 
 	jumpFlag = groundFlag = dieFlag = false;
 	jumpCnt  = 0;
-	animCnt  = 0;
 	invCnt	 = 0;
 }
 
@@ -32,11 +31,39 @@ Player::~Player()
 {
 }
 
+void Player::InitAnim(void)
+{
+	AddAnim("run",  Vector2(3, 1), 2, 10);
+	AddAnim("jump", Vector2(6, 1), 2, 10);
+
+	SetAnimName("run");
+}
+
+void Player::AddAnim(std::string animName, const Vector2 & id, int frame, int interval)
+{
+	animType[animName][static_cast<int>(ANIM::START)]    = ((id.y * divCnt.x) + id.x);
+	animType[animName][static_cast<int>(ANIM::FRAME)]	 = frame;
+	animType[animName][static_cast<int>(ANIM::INTERVAL)] = interval;
+}
+
 void Player::Anim()
 {
 	invCnt++;
-	animCnt = ((invCnt / 30) % 3);			/// アニメーションがバグっているので修正する
-	chipCnt = chipCnt + animCnt;
+	chipCnt = animType[animName][static_cast<int>(ANIM::START)] + 
+			 (invCnt / animType[animName][static_cast<int>(ANIM::INTERVAL)]) %
+					   animType[animName][static_cast<int>(ANIM::FRAME)];
+
+	if (!groundFlag)
+	{
+		/// アニメーションを止めている。
+		SetAnimName("jump");
+		chipCnt = animType[animName][static_cast<int>(ANIM::START)];
+	}
+	else
+	{
+		SetAnimName("run");
+	}
+
 }
 
 void Player::Jump(const Input & p)

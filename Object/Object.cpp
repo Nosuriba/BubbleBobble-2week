@@ -27,10 +27,9 @@ void Object::Draw()
 }
 
 void Object::Init(std::string fileName, const Vector2f & pos,
-				const Vector2 & divCnt, const Vector2 & divOffset,
-			    const Vector2 & size)
+				 const Vector2 & divCnt, const Vector2 & divOffset,
+			     const Vector2 & size)
 {
-	
 	this->fileName  = fileName;
 	this->pos	    = pos;
 	this->divCnt	= divCnt;
@@ -39,4 +38,19 @@ void Object::Init(std::string fileName, const Vector2f & pos,
 
 	/// •`‰æ‚·‚é‰æ‘œ‚ÌˆÊ’uÝ’è
 	chipCnt = (divCnt.x * divOffset.y) + divOffset.x;
+
+	InitAnim();
+}
+
+void Object::SetAnimName(std::string animName)
+{
+	if (animType.find(animName) == animType.end())
+	{
+		return;
+	}
+	if (this->animName != animName)
+	{
+		invCnt = 0;
+		this->animName = animName;
+	}
 }

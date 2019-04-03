@@ -1,7 +1,16 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include "../Geometry.h"
+
+enum class ANIM
+{
+	START,
+	FRAME,
+	INTERVAL,
+	MAX
+};
 
 class Input;
 
@@ -13,19 +22,28 @@ public:
 	~Object();
 	virtual void Update(const Input & p);
 	virtual void Draw();
+	void SetAnimName(std::string animName);
 
 	// ファイル名, 座標, 画像分割数, 画像位置, 画像の最大分割数, 画像サイズ
 	void Init(std::string fileName, const Vector2f & pos,
 			const Vector2 & divCnt, const Vector2 & divOffset,
 			const Vector2 & size);
 protected:
+
+	virtual void InitAnim(void) = 0;
+	virtual void AddAnim(std::string animName, const Vector2 & id,
+						 int frame, int interval) = 0;
 	Vector2f pos;
 	Vector2f vel;
 	Vector2 divCnt;
 	Vector2 divOffset;
 	Vector2 size;
+
 	std::string fileName;
-	
+	std::string animName;
+	std::map<std::string, int[static_cast<int>(ANIM::MAX)]> animType;
+
+	int invCnt;
 	int chipCnt;
 	int groundLine;
 };

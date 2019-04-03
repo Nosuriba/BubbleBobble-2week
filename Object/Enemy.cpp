@@ -27,3 +27,14 @@ void Enemy::Update(const Input & p)
 void Enemy::Draw()
 {
 }
+
+void Enemy::InitAnim(void)
+{
+}
+
+void Enemy::AddAnim(std::string animName, const Vector2 & id, int frame, int interval)
+{
+	animType[animName][static_cast<int>(ANIM::START)]   = ((id.y * divCnt.x) + id.x);
+	animType[animName][static_cast<int>(ANIM::FRAME)]   = frame;
+	animType[animName][static_cast<int>(ANIM::INTERVAL)] = interval;
+}
