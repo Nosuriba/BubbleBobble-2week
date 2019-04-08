@@ -10,7 +10,7 @@ Player::Player()
 	divCnt   = size = Vector2(0, 0);
 	fileName = "";
 
-	airFlag = groundFlag = dieFlag = false;
+	jumpFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -21,7 +21,7 @@ Player::Player(int groundLine)
 	fileName = "";
 	this->groundLine = groundLine;
 
-	airFlag = groundFlag = dieFlag = false;
+	jumpFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -32,9 +32,9 @@ Player::~Player()
 void Player::InitAnim(void)
 {
 	AddAnim("idle", Vector2(0, 0), 3, 30);
-	AddAnim("run",  Vector2(3,0), 5, 10);
-	AddAnim("jump", Vector2(7,0), 4, 10);
-	AddAnim("randing", Vector2(11,0), 4, 10);
+	AddAnim("run",  Vector2(3,0), 5, 30);
+	AddAnim("jump", Vector2(8,0), 4, 20);
+	AddAnim("randing", Vector2(12,0), 4, 10);
 	//AddAnim();
 }
 
@@ -45,38 +45,52 @@ void Player::AddAnim(std::string animName, const Vector2 & id, int frame, int in
 	animType[animName][static_cast<int>(ANIM::INTERVAL)] = interval;
 }
 
+void Player::ChangeAnim()
+{
+	/// アニメーションの設定(モーションが増える可能性があるので、今後修正予定)
+	if (jumpFlag)
+	{
+		SetAnim("jump");
+	}
+	else
+	{
+		if (runFlag)
+		{
+			SetAnim("run");
+		}
+		else
+		{
+			SetAnim("idle");
+		}
+	}
+}
+
 void Player::Anim()
 {
+	ChangeAnim();
 	invCnt++;
 	chipCnt = animType[animName][static_cast<int>(ANIM::START)] + 
 			 (invCnt / animType[animName][static_cast<int>(ANIM::INTERVAL)]) %
 					   animType[animName][static_cast<int>(ANIM::FRAME)];
-
-	if (!groundFlag)
-	{
-		/// アニメーションを止めている。
-		SetAnim("jump");
-		chipCnt = animType[animName][static_cast<int>(ANIM::START)];
-	}
-	else
-	{
-		SetAnim("run");
-	}
-
 }
 
 void Player::Move(const Input & p)
 {
 	if (p.IsPressing(PAD_INPUT_RIGHT))
 	{
+		runFlag = true;
+		turnFlag = true;
 		vel.x = 1.0f;
 	}
 	else if (p.IsPressing(PAD_INPUT_LEFT))
 	{
+		runFlag = true;
+		turnFlag = false;
 		vel.x = -1.0f;
 	}
 	else
 	{
+		runFlag = false;
 		vel.x = 0;
 	}
 
@@ -84,11 +98,11 @@ void Player::Move(const Input & p)
 
 void Player::Jump(const Input & p)
 {
-	if (!airFlag)
+	if (!jumpFlag)
 	{
 		if (p.IsTrigger(PAD_INPUT_10))
 		{
- 			airFlag = true;
+ 			jumpFlag = true;
 			groundFlag = false;
 			vel.y = 0;
 			vel.y -= 12.0f;
@@ -106,7 +120,27 @@ void Player::Fall()
 	}
 	else
 	{
-		vel.y += 0.5f;
+		vel.y += 0.7f;
+	}
+}
+
+void Player::DebugDraw()
+{
+	if (animName == "run")
+	{
+		DrawString(0, 0, "走っている", 0xffffff);
+	}
+	else if (animName == "jump")
+	{
+		DrawString(0, 0, "飛んでいる", 0xffffff);
+	}
+	else if (animName == "idle")
+	{
+		DrawString(0, 0, "待機中", 0xffffff);
+	}
+	else
+	{
+		DrawString(0, 0, "アニメーションしてないやんけ", 0xffffff);
 	}
 }
 
@@ -114,13 +148,13 @@ void Player::Fall()
 void Player::Update(const Input & p)
 {
 	// (this->*updater)(p);
-	Anim();
-	Jump(p);
 	Move(p);
+	Jump(p);
 	Fall();
+	Anim();
 	if (pos.y + size.y > groundLine)
 	{
-		airFlag = false;
+		jumpFlag = false;
  		groundFlag = true;
 	}
 	pos += vel;
@@ -128,6 +162,7 @@ void Player::Update(const Input & p)
 
 void Player::Draw()
 {
-	DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], true);
+	DebugDraw();
+	DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
 }
 

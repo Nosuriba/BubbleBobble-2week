@@ -16,6 +16,7 @@ public:
 	void Update(const Input & p);
 	void Draw();
 private:
+	void ChangeAnim();
 	void Anim();
 	void Move(const Input & p);
 	void Jump(const Input & p);
@@ -23,6 +24,12 @@ private:
 
 	void (Player::*updater)(const Input & p);
 
-	bool airFlag, groundFlag, dieFlag;
+	void DebugDraw();
+
+	bool runFlag;		// true:‘–‚Á‚Ä‚¢‚é, false:‘–‚Á‚Ä‚¢‚È‚¢
+	bool jumpFlag;		// true:”ò‚ñ‚Å‚¢‚é, false:”ò‚ñ‚Å‚¢‚È‚¢
+	bool groundFlag;	// true:’nã, false:‹ó’†
+	bool dieFlag;		// true:¶‚«‚Ä‚¢‚é, false:€‚ñ‚Å‚¢‚é
+    bool turnFlag;		// true:‰EŒü‚«, false:¶Œü‚«
 };
 
