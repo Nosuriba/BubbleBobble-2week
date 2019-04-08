@@ -16,7 +16,7 @@ const bool Input::IsPressing(int p) const
 
 const bool Input::IsTrigger(int p) const
 {
-	return (inputKey & p) && !(lastInputKey);
+	return (inputKey & p) && !(lastInputKey & p);
 }
 
 const bool Input::IsMousePressing(int p) const
@@ -26,7 +26,7 @@ const bool Input::IsMousePressing(int p) const
 
 const bool Input::IsMouseTrigger(int p) const
 {
-	return (mouseInput & p) && !(lastMouseInput);
+	return (mouseInput & p) && !(lastMouseInput & p);
 }
 
 void Input::Update()

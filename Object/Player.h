@@ -18,9 +18,9 @@ public:
 private:
 	void ChangeAnim();
 	void Anim();
-	void Move(const Input & p);
+	void Idle(const Input & p);
+	void Run(const Input & p);
 	void Jump(const Input & p);
-	void Fall();
 
 	void (Player::*updater)(const Input & p);
 

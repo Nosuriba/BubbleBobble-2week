@@ -10,7 +10,7 @@ Player::Player()
 	divCnt   = size = Vector2(0, 0);
 	fileName = "";
 
-	jumpFlag = groundFlag = dieFlag = false;
+	jumpFlag = groundFlag = dieFlag = turnFlag = runFlag = false;
 	invCnt	 = 0;
 }
 
@@ -19,10 +19,13 @@ Player::Player(int groundLine)
 	pos		 = vel  = Vector2f(0, 0);
 	divCnt	 = size = Vector2(0, 0);
 	fileName = "";
-	this->groundLine = groundLine;
-
-	jumpFlag = groundFlag = dieFlag = false;
+	turnFlag = true;
+	jumpFlag = groundFlag = dieFlag = runFlag = false;
 	invCnt	 = 0;
+
+	this->groundLine = groundLine;
+	SetAnim("idle");
+	updater = &Player::Idle;
 }
 
 Player::~Player()
@@ -31,7 +34,7 @@ Player::~Player()
 
 void Player::InitAnim(void)
 {
-	AddAnim("idle", Vector2(0, 0), 3, 30);
+	AddAnim("idle", Vector2(0, 0), 6, 30);
 	AddAnim("run",  Vector2(3,0), 5, 30);
 	AddAnim("jump", Vector2(8,0), 4, 20);
 	AddAnim("randing", Vector2(12,0), 4, 10);
@@ -74,53 +77,109 @@ void Player::Anim()
 					   animType[animName][static_cast<int>(ANIM::FRAME)];
 }
 
-void Player::Move(const Input & p)
+void Player::Idle(const Input & p)
+{
+	if (p.IsPressing(PAD_INPUT_RIGHT) ||
+		p.IsPressing(PAD_INPUT_LEFT))
+	{
+		updater = &Player::Run;
+		SetAnim("run");
+		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = true 
+												 : turnFlag = false);
+		runFlag = true;
+		return;
+	}
+
+	if (groundFlag)
+	{
+		vel = Vector2f(0,0);
+		pos.y = groundLine - size.y;
+		if (p.IsTrigger(PAD_INPUT_10))
+		{
+			updater = &Player::Jump;
+			SetAnim("jump");
+			jumpFlag   = true;
+			groundFlag = false;
+			vel.y	   -= 12.0f;
+			return;
+		}
+	}
+	else
+	{
+		vel.y += 0.7f;
+	}
+}
+
+void Player::Run(const Input & p)
 {
 	if (p.IsPressing(PAD_INPUT_RIGHT))
 	{
-		runFlag = true;
+		SetAnim("run");
 		turnFlag = true;
 		vel.x = 1.0f;
 	}
 	else if (p.IsPressing(PAD_INPUT_LEFT))
 	{
-		runFlag = true;
+		SetAnim("run");
 		turnFlag = false;
 		vel.x = -1.0f;
 	}
 	else
 	{
+		SetAnim("idle");
 		runFlag = false;
 		vel.x = 0;
+		updater = &Player::Idle;
+	}
+
+	if (groundFlag)
+	{
+		vel.y = 0;
+		pos.y = groundLine - size.y;
+		if (p.IsTrigger(PAD_INPUT_10))
+		{
+			SetAnim("jump");
+			jumpFlag   = true;
+			groundFlag = false;
+			vel.y	  -= 12.0f;
+			updater    = &Player::Jump;
+		}
+	}
+	else
+	{
+		vel.y += 0.7f;
 	}
 
 }
 
 void Player::Jump(const Input & p)
 {
-	if (!jumpFlag)
-	{
-		if (p.IsTrigger(PAD_INPUT_10))
-		{
- 			jumpFlag = true;
-			groundFlag = false;
-			vel.y = 0;
-			vel.y -= 12.0f;
-		}
-	}
-	
-}
-
-void Player::Fall()
-{
 	if (groundFlag)
 	{
+		SetAnim("idle");
+		updater = &Player::Idle;
 		vel.y = 0;
 		pos.y = groundLine - size.y;
 	}
 	else
 	{
 		vel.y += 0.7f;
+	}
+
+	if (p.IsPressing(PAD_INPUT_RIGHT))
+	{
+		turnFlag = true;
+		vel.x = 1.0f;
+	}
+	else if (p.IsPressing(PAD_INPUT_LEFT))
+	{
+		turnFlag = false;
+		vel.x = -1.0f;
+	}
+	else
+	{
+		SetAnim("jump");
+		vel.x = 0;
 	}
 }
 
@@ -147,10 +206,7 @@ void Player::DebugDraw()
 
 void Player::Update(const Input & p)
 {
-	// (this->*updater)(p);
-	Move(p);
-	Jump(p);
-	Fall();
+	(this->*updater)(p);
 	Anim();
 	if (pos.y + size.y > groundLine)
 	{
@@ -163,6 +219,14 @@ void Player::Update(const Input & p)
 void Player::Draw()
 {
 	DebugDraw();
-	DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
+	if (turnFlag)
+	{
+		DxLib::DrawGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
+	}
+	else
+	{
+		DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
+	}
+	
 }
 
