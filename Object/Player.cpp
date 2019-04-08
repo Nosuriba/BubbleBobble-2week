@@ -113,6 +113,7 @@ void Player::Fall()
 
 void Player::Update(const Input & p)
 {
+	// (this->*updater)(p);
 	Anim();
 	Jump(p);
 	Move(p);

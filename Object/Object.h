@@ -32,6 +32,8 @@ protected:
 	virtual void InitAnim(void) = 0;
 	virtual void AddAnim(std::string animName, const Vector2 & id,
 						 int frame, int interval) = 0;
+
+	void (Object::*updater)(const Input & p); 
 	Vector2f pos;
 	Vector2f vel;
 	Vector2 divCnt;

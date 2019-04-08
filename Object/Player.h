@@ -21,6 +21,8 @@ private:
 	void Jump(const Input & p);
 	void Fall();
 
+	void (Player::*updater)(const Input & p);
+
 	bool airFlag, groundFlag, dieFlag;
 };
 
