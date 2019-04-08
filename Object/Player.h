@@ -17,9 +17,10 @@ public:
 	void Draw();
 private:
 	void Anim();
+	void Move(const Input & p);
 	void Jump(const Input & p);
 	void Fall();
 
-	bool airealFlag, groundFlag, dieFlag;
+	bool airFlag, groundFlag, dieFlag;
 };
 

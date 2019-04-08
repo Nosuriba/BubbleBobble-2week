@@ -10,7 +10,7 @@ Player::Player()
 	divCnt   = size = Vector2(0, 0);
 	fileName = "";
 
-	airealFlag = groundFlag = dieFlag = false;
+	airFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -21,7 +21,7 @@ Player::Player(int groundLine)
 	fileName = "";
 	this->groundLine = groundLine;
 
-	airealFlag = groundFlag = dieFlag = false;
+	airFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -65,13 +65,30 @@ void Player::Anim()
 
 }
 
+void Player::Move(const Input & p)
+{
+	if (p.IsPressing(PAD_INPUT_RIGHT))
+	{
+		vel.x = 1.0f;
+	}
+	else if (p.IsPressing(PAD_INPUT_LEFT))
+	{
+		vel.x = -1.0f;
+	}
+	else
+	{
+		vel.x = 0;
+	}
+
+}
+
 void Player::Jump(const Input & p)
 {
-	if (!airealFlag)
+	if (!airFlag)
 	{
 		if (p.IsTrigger(PAD_INPUT_10))
 		{
-			airealFlag = true;
+ 			airFlag = true;
 			groundFlag = false;
 			vel.y = 0;
 			vel.y -= 12.0f;
@@ -98,10 +115,11 @@ void Player::Update(const Input & p)
 {
 	Anim();
 	Jump(p);
+	Move(p);
 	Fall();
 	if (pos.y + size.y > groundLine)
 	{
-		airealFlag = false;
+		airFlag = false;
  		groundFlag = true;
 	}
 	pos += vel;
