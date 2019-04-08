@@ -10,8 +10,7 @@ Player::Player()
 	divCnt   = size = Vector2(0, 0);
 	fileName = "";
 
-	jumpFlag = groundFlag = dieFlag = false;
-	jumpCnt  = 0;
+	airealFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -22,8 +21,7 @@ Player::Player(int groundLine)
 	fileName = "";
 	this->groundLine = groundLine;
 
-	jumpFlag = groundFlag = dieFlag = false;
-	jumpCnt  = 0;
+	airealFlag = groundFlag = dieFlag = false;
 	invCnt	 = 0;
 }
 
@@ -33,10 +31,11 @@ Player::~Player()
 
 void Player::InitAnim(void)
 {
-	AddAnim("run",  Vector2(3, 1), 2, 10);
-	AddAnim("jump", Vector2(6, 1), 2, 10);
-
-	SetAnimName("run");
+	AddAnim("idle", Vector2(0, 0), 3, 30);
+	AddAnim("run",  Vector2(3,0), 5, 10);
+	AddAnim("jump", Vector2(7,0), 4, 10);
+	AddAnim("randing", Vector2(11,0), 4, 10);
+	//AddAnim();
 }
 
 void Player::AddAnim(std::string animName, const Vector2 & id, int frame, int interval)
@@ -56,34 +55,29 @@ void Player::Anim()
 	if (!groundFlag)
 	{
 		/// アニメーションを止めている。
-		SetAnimName("jump");
+		SetAnim("jump");
 		chipCnt = animType[animName][static_cast<int>(ANIM::START)];
 	}
 	else
 	{
-		SetAnimName("run");
+		SetAnim("run");
 	}
 
 }
 
 void Player::Jump(const Input & p)
 {
-	if (p.IsTrigger(PAD_INPUT_10))
+	if (!airealFlag)
 	{
-		if (!jumpFlag)
+		if (p.IsTrigger(PAD_INPUT_10))
 		{
-			jumpCnt++;
+			airealFlag = true;
 			groundFlag = false;
 			vel.y = 0;
 			vel.y -= 12.0f;
 		}
 	}
-
-	if (jumpCnt >= 2)
-	{
-		jumpFlag = true;
-	}
-
+	
 }
 
 void Player::Fall()
@@ -107,8 +101,7 @@ void Player::Update(const Input & p)
 	Fall();
 	if (pos.y + size.y > groundLine)
 	{
-		jumpCnt	   = 0;
-		jumpFlag   = false;
+		airealFlag = false;
  		groundFlag = true;
 	}
 	pos += vel;

@@ -19,9 +19,8 @@ MainScene::~MainScene()
 void MainScene::Init()
 {
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - 64);
-	player->Init(LpImageMng.GetImage().playerImage,
-				 Vector2f(0, 0), Vector2(9, 6), Vector2(0,0),
-				 Vector2(64, 64));
+	player->Init(LpImageMng.GetImage().playerImage, "idle",
+				 Vector2f(50,0), Vector2(50, 4), Vector2(20, 20));
 
 
 }

@@ -26,23 +26,25 @@ void Object::Draw()
 	/// 何も書かない
 }
 
-void Object::Init(std::string fileName, const Vector2f & pos,
-				 const Vector2 & divCnt, const Vector2 & divOffset,
-			     const Vector2 & size)
+void Object::Init(std::string fileName, std::string animName,
+				  const Vector2f & pos, const Vector2 & divCnt, const Vector2 & size)
 {
+	/// アニメーションの設定
+	InitAnim();
+	SetAnim(animName);
+
 	this->fileName  = fileName;
 	this->pos	    = pos;
 	this->divCnt	= divCnt;
-	this->divOffset = divOffset;
 	this->size	    = size;
 
 	/// 描画する画像の位置設定
-	chipCnt = (divCnt.x * divOffset.y) + divOffset.x;
+	chipCnt = animType[animName][static_cast<int>(ANIM::START)];
 
-	InitAnim();
+	
 }
 
-void Object::SetAnimName(std::string animName)
+void Object::SetAnim(std::string animName)
 {
 	if (animType.find(animName) == animType.end())
 	{

@@ -20,7 +20,6 @@ private:
 	void Jump(const Input & p);
 	void Fall();
 
-	bool jumpFlag, groundFlag, dieFlag;
-	int  jumpCnt;
+	bool airealFlag, groundFlag, dieFlag;
 };
 
