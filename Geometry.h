@@ -221,6 +221,31 @@ typedef Vector3 Position3;
 typedef Vector3D<float> Vector3f;
 typedef Vector3f Position3f;
 
+struct Size
+{
+	Size();
+	Size(int inx, int iny);
+
+	int width;
+	int height;
+};
+
+struct Rect
+{
+	Vector2 center;
+	Size size;
+	Rect();
+	Rect(int x, int y, int w, int h);
+	Rect(Vector2 & p, Size & s);
+
+	const int Left() const;
+	const int Right() const;
+	const int Top() const;
+	const int Bottom() const;
+	const int Width() const;
+	const int Height() const;
+};
+
 
 class Geometry
 {
@@ -228,3 +253,4 @@ public:
 	Geometry();
 	~Geometry();
 };
+

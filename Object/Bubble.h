@@ -1,11 +1,11 @@
 #pragma once
 #include "Object.h"
 
-class Babble :
+class Bubble :
 	public Object
 {
-	Babble();
-	~Babble();
+	Bubble();
+	~Bubble();
 
 	void Update();
 	void Draw();
