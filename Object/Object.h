@@ -22,7 +22,14 @@ public:
 	~Object();
 	virtual void Update(const Input & p);
 	virtual void Draw();
+	virtual void CheckHit(bool hitFlag);
+	virtual Rect GetRect();
 	void SetAnim(std::string animName);
+
+
+	// ファイル名, 座標, 画像の最大分割数, 画像の描画位置, 画像サイズ
+	void Init(std::string fileName, const Vector2f & pos,
+			const Vector2 & divCnt, const Vector2 & divOffset, const Vector2 & size);
 
 	// ファイル名, アニメーション名, 座標, 画像の最大分割数, 画像サイズ
 	void Init(std::string fileName, std::string animName,
@@ -46,5 +53,7 @@ protected:
 	int invCnt;
 	int chipCnt;
 	int groundLine;
+
+	bool hitFlag;
 };
 

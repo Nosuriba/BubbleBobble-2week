@@ -20,7 +20,8 @@ Player::Player(int groundLine)
 	divCnt	 = size = Vector2(0, 0);
 	fileName = "";
 	turnFlag = true;
-	jumpFlag = groundFlag = dieFlag = runFlag = false;
+	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
+	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
 	invCnt	 = 0;
 
 	this->groundLine = groundLine;
@@ -30,6 +31,11 @@ Player::Player(int groundLine)
 
 Player::~Player()
 {
+}
+
+void Player::CheckHit(bool hitFlag)
+{
+	this->hitFlag = hitFlag;
 }
 
 void Player::InitAnim(void)
@@ -48,29 +54,8 @@ void Player::AddAnim(std::string animName, const Vector2 & id, int frame, int in
 	animType[animName][static_cast<int>(ANIM::INTERVAL)] = interval;
 }
 
-void Player::ChangeAnim()
-{
-	/// アニメーションの設定(モーションが増える可能性があるので、今後修正予定)
-	if (jumpFlag)
-	{
-		SetAnim("jump");
-	}
-	else
-	{
-		if (runFlag)
-		{
-			SetAnim("run");
-		}
-		else
-		{
-			SetAnim("idle");
-		}
-	}
-}
-
 void Player::Anim()
 {
-	ChangeAnim();
 	invCnt++;
 	chipCnt = animType[animName][static_cast<int>(ANIM::START)] + 
 			 (invCnt / animType[animName][static_cast<int>(ANIM::INTERVAL)]) %
@@ -112,17 +97,39 @@ void Player::Idle(const Input & p)
 
 void Player::Run(const Input & p)
 {
-	if (p.IsPressing(PAD_INPUT_RIGHT))
+	if (!hitFlag)
+	{
+		if (p.IsPressing(PAD_INPUT_RIGHT))
+		{
+			SetAnim("run");
+			turnFlag = true;
+			vel.x = 5.0f;
+		}
+		else if (p.IsPressing(PAD_INPUT_LEFT))
+		{
+			SetAnim("run");
+			turnFlag = false;
+			vel.x = -5.0f;
+		}
+		else
+		{
+			SetAnim("idle");
+			runFlag = false;
+			vel.x = 0;
+			updater = &Player::Idle;
+		}
+	}
+	/*if (p.IsPressing(PAD_INPUT_RIGHT))
 	{
 		SetAnim("run");
 		turnFlag = true;
-		vel.x = 1.0f;
+		vel.x = 5.0f;
 	}
 	else if (p.IsPressing(PAD_INPUT_LEFT))
 	{
 		SetAnim("run");
 		turnFlag = false;
-		vel.x = -1.0f;
+		vel.x = -5.0f;
 	}
 	else
 	{
@@ -131,7 +138,7 @@ void Player::Run(const Input & p)
 		vel.x = 0;
 		updater = &Player::Idle;
 	}
-
+*/
 	if (groundFlag)
 	{
 		vel.y = 0;
@@ -169,12 +176,12 @@ void Player::Jump(const Input & p)
 	if (p.IsPressing(PAD_INPUT_RIGHT))
 	{
 		turnFlag = true;
-		vel.x = 1.0f;
+		vel.x = 5.0f;
 	}
 	else if (p.IsPressing(PAD_INPUT_LEFT))
 	{
 		turnFlag = false;
-		vel.x = -1.0f;
+		vel.x = -5.0f;
 	}
 	else
 	{
@@ -201,6 +208,13 @@ void Player::DebugDraw()
 	{
 		DrawString(0, 0, "アニメーションしてないやんけ", 0xffffff);
 	}
+
+	if (hitFlag)
+	{
+		DrawString(100, 0, "当たったよ", 0xffff00);
+	}
+	
+	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
 }
 
 
@@ -228,5 +242,13 @@ void Player::Draw()
 		DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
 	}
 	
+}
+
+Rect Player::GetRect()
+{
+	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
+	auto rectSize = Size(size.x, size.y);
+
+	return Rect(center, rectSize);
 }
 

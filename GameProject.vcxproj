@@ -135,6 +135,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="HitCheck.cpp" />
     <ClCompile Include="ImageMng.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,12 +149,14 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioMng.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="HitCheck.h" />
     <ClInclude Include="ImageMng.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Object\Bubble.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="ScoreManager.h" />
+    <ClInclude Include="Stage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

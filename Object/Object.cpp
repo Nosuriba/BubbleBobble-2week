@@ -26,6 +26,30 @@ void Object::Draw()
 	/// ‰½‚à‘‚©‚È‚¢
 }
 
+void Object::CheckHit(bool hitFlag)
+{
+}
+
+Rect Object::GetRect()
+{
+	auto size = Size();
+	auto vec = Vector2();
+	auto debug = Rect(vec, size);
+
+	return debug;
+}
+
+void Object::Init(std::string fileName, const Vector2f & pos, 
+				const Vector2 & divCnt, const Vector2 & divOffset, const Vector2 & size)
+{
+	this->fileName = fileName;
+	this->pos	   = pos;
+	this->divCnt   = divCnt;
+	this->size	   = size;
+
+	chipCnt = (divOffset.y * divCnt.x) + divOffset.x;
+}
+
 void Object::Init(std::string fileName, std::string animName,
 				  const Vector2f & pos, const Vector2 & divCnt, const Vector2 & size)
 {
@@ -40,7 +64,6 @@ void Object::Init(std::string fileName, std::string animName,
 
 	/// •`‰æ‚·‚é‰æ‘œ‚ÌˆÊ’uİ’è
 	chipCnt = animType[animName][static_cast<int>(ANIM::START)];
-
 	
 }
 
