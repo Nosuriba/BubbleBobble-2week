@@ -211,7 +211,7 @@ void Player::DebugDraw()
 
 	if (hitFlag)
 	{
-		DrawString(100, 0, "“–‚½‚Á‚½‚æ", 0xffff00);
+                                                                                                                                                                                      		DrawString(100, 0, "“–‚½‚Á‚½‚æ", 0xffff00);
 	}
 	
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
