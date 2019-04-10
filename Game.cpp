@@ -6,7 +6,7 @@
 
 std::unique_ptr<Game, Game::GameDeleter> Game::s_Instance(new Game());
 
-Game::Game() : screenSize(1280, 960)
+Game::Game() : screenSize(800, 600)
 {
 }
 
@@ -18,7 +18,7 @@ void Game::Init()
 {
 	DxLib::SetGraphMode(screenSize.x, screenSize.y, 32);
 	DxLib::ChangeWindowMode(true);
-	DxLib::SetWindowText("Bubble Bubble");
+	DxLib::SetWindowText("Bubble Bobble");
 	if (DxLib_Init() == -1)
 	{
 		return;

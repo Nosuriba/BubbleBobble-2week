@@ -19,7 +19,7 @@ Player::Player(int groundLine)
 
 	pos		 = vel  = Vector2f(0, 0);
 	divCnt	 = size = Vector2(0, 0);
-	turnFlag = true;
+	turnFlag = false;
 	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
 
 	this->groundLine = groundLine;
@@ -43,8 +43,8 @@ void Player::Idle(const Input & p)
 		updater = &Player::Run;
 		actionName = "run";
 		ChangeAction(actionName.c_str());
-		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = true 
-												 : turnFlag = false);
+		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = false 
+												 : turnFlag = true);
 		runFlag = true;
 		return;
 	}
@@ -79,17 +79,12 @@ void Player::Run(const Input & p)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
-			ProceedAnimFile();
-			actionName = "run";
-			ChangeAction(actionName.c_str());
-			turnFlag = true;
+			turnFlag = false;
 			vel.x = 5.0f;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
-			actionName = "run";
-			ChangeAction(actionName.c_str());
-			turnFlag = false;
+			turnFlag = true;
 			vel.x = -5.0f;
 		}
 		else
@@ -101,26 +96,6 @@ void Player::Run(const Input & p)
 			updater = &Player::Idle;
 		}
 	}
-	/*if (p.IsPressing(PAD_INPUT_RIGHT))
-	{
-		SetAnim("run");
-		turnFlag = true;
-		vel.x = 5.0f;
-	}
-	else if (p.IsPressing(PAD_INPUT_LEFT))
-	{
-		SetAnim("run");
-		turnFlag = false;
-		vel.x = -5.0f;
-	}
-	else
-	{
-		SetAnim("idle");
-		runFlag = false;
-		vel.x = 0;
-		updater = &Player::Idle;
-	}
-*/
 	if (groundFlag)
 	{
 		vel.y = 0;
@@ -140,6 +115,7 @@ void Player::Run(const Input & p)
 		vel.y += 0.7f;
 	}
 	
+	ProceedAnimFile();
 }
 
 void Player::Jump(const Input & p)
@@ -151,6 +127,7 @@ void Player::Jump(const Input & p)
 		updater = &Player::Idle;
 		vel.y = 0;
 		pos.y = groundLine - size.y;
+		return;
 	}
 	else
 	{
@@ -159,18 +136,16 @@ void Player::Jump(const Input & p)
 
 	if (p.IsPressing(PAD_INPUT_RIGHT))
 	{
-		turnFlag = true;
+		turnFlag = false;
 		vel.x = 5.0f;
 	}
 	else if (p.IsPressing(PAD_INPUT_LEFT))
 	{
-		turnFlag = false;
+		turnFlag = true;
 		vel.x = -5.0f;
 	}
 	else
 	{
-		actionName = "jump";
-		ChangeAction(actionName.c_str());
 		vel.x = 0;
 	}
 
@@ -200,15 +175,6 @@ void Player::Draw()
 {
 	DebugDraw();
 	CharactorObject::Draw(playerImg);
-	/*if (turnFlag)
-	{
-		DxLib::DrawGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
-	}
-	else
-	{
-		DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
-	}*/
-	
 }
 
 Rect Player::GetRect()

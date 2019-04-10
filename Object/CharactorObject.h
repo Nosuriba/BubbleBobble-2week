@@ -52,5 +52,5 @@ protected:
 	unsigned int frame;
 
 	bool hitFlag;
-	bool turnFlag;		// true:‰EŒü‚«, false:¶Œü‚«
+	bool turnFlag;		// true:¶Œü‚«, false:‰EŒü‚«
 };

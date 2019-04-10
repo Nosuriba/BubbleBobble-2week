@@ -36,6 +36,7 @@ void MainScene::Update(const Input & p)
 	player->Update(p);
 	player->Draw();
 	block->Update(p);
+	block->Draw();
 	DxLib::DrawString(0, 0, "ÉÅÉCÉì", 0x000000);
 	DxLib::DrawLine(0, LpGame.GetScreenSize().y - 64,
 					   LpGame.GetScreenSize().x, LpGame.GetScreenSize().y - 64,

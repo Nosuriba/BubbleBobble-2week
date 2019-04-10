@@ -22,7 +22,7 @@ Block::~Block()
 
 void Block::Update(const Input & p)
 {
-	Draw();
+	
 }
 
 void Block::Draw()

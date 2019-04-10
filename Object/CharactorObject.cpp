@@ -142,7 +142,7 @@ void CharactorObject::Draw(int img)
 
 	/// pos.y‚Ì•”•ª‚ÍC³Œã‚Ål‚¦‚é
 	DxLib::DrawRectRotaGraph2(pos.x, pos.y, rc.Left(), rc.Top(),
-							  rc.Width(), rc.Height(), centerX, cut.center.y,
+							  rc.Width(), rc.Height(), centerX - (size.x / 2), cut.center.y - (size.y / 2),
 							  1.0f, 0.0, img, true, turnFlag);
 }
 
