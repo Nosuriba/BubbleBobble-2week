@@ -1,7 +1,7 @@
 #pragma once
 #include "../Object/CharactorObject.h"
 
-class HitCheck;
+class CollisionDetector;
 class Input;
 
 class Player :
@@ -19,6 +19,9 @@ private:
 	void Idle(const Input & p);
 	void Run(const Input & p);
 	void Jump(const Input & p);
+	void Eat(const Input & p);
+	void Shot(const Input & p);
+	void OnGround();
 
 	void (Player::*updater)(const Input & p);
 

@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{4AFD7F63-EFA9-4EDE-B9C2-AC604FD93C51}</ProjectGuid>
     <RootNamespace>GameProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -137,7 +137,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="HitCheck.cpp" />
+    <ClCompile Include="CollisionDetector.cpp" />
     <ClCompile Include="ImageMng.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="HitCheck.h" />
+    <ClInclude Include="CollisionDetector.h" />
     <ClInclude Include="ImageMng.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Object\Bubble.h" />
