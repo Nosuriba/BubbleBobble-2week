@@ -1,7 +1,8 @@
 #pragma once
 #include "Scene.h"
 
-class Object;
+class Player;
+class Block;
 
 class MainScene :
 	public Scene
@@ -13,8 +14,8 @@ public:
 	void Init();
 	void Update(const Input & p);
 
-	std::shared_ptr<Object> player;
-	std::shared_ptr<Object> block;		/// vector‚É•Ï‚í‚é—\’è
+	std::shared_ptr<Player> player;
+	std::shared_ptr<Block> block;		/// vector‚É•Ï‚í‚é—\’è
 
 };
 

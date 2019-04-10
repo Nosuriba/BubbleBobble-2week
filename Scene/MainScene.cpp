@@ -22,8 +22,7 @@ void MainScene::Init()
 {
 	block = std::make_shared<Block>();
 	player = std::make_shared<Player>(LpGame.GetScreenSize().y - 64);
-	player->Init(LpImageMng.GetImage().playerImage, "idle",
-				 Vector2f(50,0), Vector2(42, 3), Vector2(48,48));
+	player->Init("idle",Vector2f(50,0), Vector2(48,48));
 	block->Init("‚Ü‚¾‰æ‘œ‚Í‚È‚¢", Vector2f(600, 800), Vector2(0,0), Vector2(0, 0), Vector2(60, 60));
 
 
@@ -35,6 +34,7 @@ void MainScene::Update(const Input & p)
 
 	player->CheckHit(hitCheck->HitPlayer(player->GetRect(), block->GetRect()));
 	player->Update(p);
+	player->Draw();
 	block->Update(p);
 	DxLib::DrawString(0, 0, "ƒƒCƒ“", 0x000000);
 	DxLib::DrawLine(0, LpGame.GetScreenSize().y - 64,

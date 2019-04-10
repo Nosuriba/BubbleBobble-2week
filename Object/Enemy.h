@@ -1,10 +1,10 @@
 #pragma once
-#include "Object.h"
+#include "CharactorObject.h"
 
 class Input;
 
 class Enemy :
-	public Object
+	public CharactorObject
 {
 public:
 	Enemy();

@@ -1,0 +1,190 @@
+#include <DxLib.h>
+#include <cassert>
+#include "CharactorObject.h"
+
+CharactorObject::CharactorObject()
+{
+
+}
+
+CharactorObject::CharactorObject(int groundLine)
+{
+}
+
+CharactorObject::~CharactorObject()
+{
+}
+
+void CharactorObject::ChangeAction(const char * name)
+{
+	frame = 0;
+	nowCutIdx = 0;
+	nowActionName = name;
+}
+
+bool CharactorObject::ProceedAnimFile()
+{
+	if ((signed)frame < actionData.actionInfo[nowActionName].cuts[nowCutIdx].duration)
+	{
+		frame++;
+	}
+	else
+	{
+		frame = 0;
+		/// ｱﾆﾒｰｼｮﾝのｺﾏを進める処理
+		if (nowCutIdx < (signed)actionData.actionInfo[nowActionName].cuts.size() - 1)
+		{
+			nowCutIdx++;
+		}
+		else
+		{
+			nowCutIdx = 0;
+
+			/// ｱﾆﾒｰｼｮﾝがループしなかったので、コメントアウトをしている
+			/*/// ｱﾆﾒｰｼｮﾝのｺﾏを最初のｺﾏに戻すかの処理
+			if (actionData.actionInfo[nowActionName].isLoop)
+			{
+				nowCutIdx = 0;
+			}
+			else
+			{
+				return true;
+			}*/
+		}
+	}
+
+	return false;
+}
+
+void CharactorObject::ReadActionFile(const char * actionPath)
+{
+	int h = DxLib::FileRead_open(actionPath, false);
+	int hData;			// ﾌｧｲﾙ内容を格納するための変数
+
+	float version = 0.0f;
+	DxLib::FileRead_read(&version, sizeof(version), h);
+	// assert(version == 1.01f);
+
+	DxLib::FileRead_read(&hData, sizeof(hData), h);
+
+	std::string filePath = "";
+
+	/// ﾌｧｲﾙﾊﾟｽの読み込み
+	filePath.resize(hData);
+	DxLib::FileRead_read(&filePath[0], hData, h);
+
+	std::string actPath = actionPath;
+	int ipos = actPath.find_last_of('/') + 1;
+
+	actionData.imgFilePath = actPath.substr(0, ipos) + filePath;
+
+	int actionCnt = 0;
+	DxLib::FileRead_read(&actionCnt, sizeof(actionCnt), h);
+
+	for (int i = 0; i < actionCnt; i++)
+	{
+		int actionNameSize;
+		DxLib::FileRead_read(&actionNameSize, sizeof(actionNameSize), h);
+
+		/// ｱｸｼｮﾝ名を取得
+		std::string actionName;
+		actionName.resize(actionNameSize);
+		DxLib::FileRead_read(&actionName[0], actionName.size(), h);
+
+		/// ｱｸｼｮﾝのﾙｰﾌﾟだけ1ﾊﾞｲﾄ(ここはよくわからん)
+		ObjectInfo actInfo;
+		DxLib::FileRead_read(&actInfo.isLoop, sizeof(actInfo.isLoop), h);
+
+		/// 切り取ったﾃﾞｰﾀの取得
+		int cutCount = 0;
+		DxLib::FileRead_read(&cutCount, sizeof(cutCount), h);
+		actInfo.cuts.resize(cutCount);
+
+		for (int a = 0; a < cutCount; a++)
+		{
+
+			DxLib::FileRead_read(&actInfo.cuts[a], (sizeof(actInfo.cuts[a]) - sizeof(actInfo.cuts[a].actRects)), h);
+
+			// 矩形のデータを取得している
+			int actRcCnt = 0;
+			DxLib::FileRead_read(&actRcCnt, sizeof(actRcCnt), h);
+
+			// 矩形のデータがない場合、最初に戻る
+			if (actRcCnt == 0)
+			{
+				continue;
+			}
+			actInfo.cuts[a].actRects.resize(actRcCnt);
+			DxLib::FileRead_read(&actInfo.cuts[a].actRects[0], sizeof(ActRect) * actRcCnt, h);
+		}
+
+		// ｱｸｼｮﾝﾃﾞｰﾀを連想配列(map)に登録している
+		actionData.actionInfo[actionName] = actInfo;
+	}
+
+	DxLib::FileRead_close(h);
+}
+
+Vector2f CharactorObject::GetPos() const
+{
+	return pos;
+}
+
+
+void CharactorObject::Draw(int img)
+{
+	auto& actInfo = actionData.actionInfo[nowActionName];
+	auto& cut = actInfo.cuts[nowCutIdx];
+	auto& rc = cut.rect;
+
+	/// 中心点を変えないようにするためのもの
+	int centerX = (turnFlag ? rc.Width() - cut.center.x : cut.center.x);
+
+	/// pos.yの部分は修正後で考える
+	DxLib::DrawRectRotaGraph2(pos.x, pos.y, rc.Left(), rc.Top(),
+							  rc.Width(), rc.Height(), centerX, cut.center.y,
+							  1.0f, 0.0, img, true, turnFlag);
+}
+
+Rect CharactorObject::GetRect()
+{
+	return Rect();
+}
+
+void CharactorObject::Init(std::string actionName, const Vector2f & pos, const Vector2 & size)
+{
+	this->nowActionName = actionName;
+	this->nowCutIdx = 0;
+	this->pos = pos;
+	this->size = size;
+
+}
+
+void CharactorObject::Init(std::string fileName, const Vector2f & pos, const Vector2 & divCnt, const Vector2 & divOffset, const Vector2 & size)
+{
+	this->fileName = fileName;
+	this->pos = pos;
+	this->divCnt = divCnt;
+	this->size = size;
+
+	chipCnt = (divOffset.y * divCnt.x) + divOffset.x;
+}
+
+
+//void CharactorObject::DebugDraw()
+//{
+//	auto& actrcInfo = actionData.actionInfo[nowActionName];
+//	auto& rcCut = actrcInfo.cuts[nowCutIdx];
+//
+//	// 右側のものを左側の形に入れて最初から最後まで見る
+//	for (auto& i : rcCut.actRects)
+//	{
+//		auto& actRc = i;
+//
+//		Rect rc = actRc.rc;
+//		rc.center.x = turnFlag ? -rc.center.x : rc.center.x;
+//
+//		DxLib::DrawBox(rc.Left() + pos.x, rc.Top() + pos.y, rc.Right() + pos.x, rc.Bottom() + pos.y, 0xff0000, false);
+//	}
+//}
+

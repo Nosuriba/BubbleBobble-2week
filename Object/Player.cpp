@@ -2,30 +2,27 @@
 #include <cmath>
 #include "../ImageMng.h"
 #include "../Input.h"
+#include "CharactorObject.h"
 #include "Player.h"
 
 Player::Player()
 {
-	pos	     = vel  = Vector2f(0, 0);
-	divCnt   = size = Vector2(0, 0);
-	fileName = "";
-
-	jumpFlag = groundFlag = dieFlag = turnFlag = runFlag = false;
-	invCnt	 = 0;
 }
 
 Player::Player(int groundLine)
 {
+	actionName	  = "idle";
+	nowActionName = actionName.c_str();
+	nowCutIdx	  = 0;
+	ReadActionFile("Action/player.act");
+	playerImg	 = DxLib::LoadGraph(actionData.imgFilePath.c_str());
+
 	pos		 = vel  = Vector2f(0, 0);
 	divCnt	 = size = Vector2(0, 0);
-	fileName = "";
 	turnFlag = true;
 	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
-	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
-	invCnt	 = 0;
 
 	this->groundLine = groundLine;
-	SetAnim("idle");
 	updater = &Player::Idle;
 }
 
@@ -38,37 +35,14 @@ void Player::CheckHit(bool hitFlag)
 	this->hitFlag = hitFlag;
 }
 
-void Player::InitAnim(void)
-{
-	AddAnim("idle", Vector2(0, 0), 6, 30);
-	AddAnim("run",  Vector2(3,0), 5, 30);
-	AddAnim("jump", Vector2(8,0), 4, 20);
-	AddAnim("randing", Vector2(12,0), 4, 10);
-	//AddAnim();
-}
-
-void Player::AddAnim(std::string animName, const Vector2 & id, int frame, int interval)
-{
-	animType[animName][static_cast<int>(ANIM::START)]    = ((id.y * divCnt.x) + id.x);
-	animType[animName][static_cast<int>(ANIM::FRAME)]	 = frame;
-	animType[animName][static_cast<int>(ANIM::INTERVAL)] = interval;
-}
-
-void Player::Anim()
-{
-	invCnt++;
-	chipCnt = animType[animName][static_cast<int>(ANIM::START)] + 
-			 (invCnt / animType[animName][static_cast<int>(ANIM::INTERVAL)]) %
-					   animType[animName][static_cast<int>(ANIM::FRAME)];
-}
-
 void Player::Idle(const Input & p)
 {
 	if (p.IsPressing(PAD_INPUT_RIGHT) ||
 		p.IsPressing(PAD_INPUT_LEFT))
 	{
 		updater = &Player::Run;
-		SetAnim("run");
+		actionName = "run";
+		ChangeAction(actionName.c_str());
 		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = true 
 												 : turnFlag = false);
 		runFlag = true;
@@ -82,7 +56,8 @@ void Player::Idle(const Input & p)
 		if (p.IsTrigger(PAD_INPUT_10))
 		{
 			updater = &Player::Jump;
-			SetAnim("jump");
+			actionName = "jump";
+			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
 			groundFlag = false;
 			vel.y	   -= 12.0f;
@@ -93,27 +68,34 @@ void Player::Idle(const Input & p)
 	{
 		vel.y += 0.7f;
 	}
+
+	ProceedAnimFile();
 }
 
 void Player::Run(const Input & p)
 {
+	
 	if (!hitFlag)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
-			SetAnim("run");
+			ProceedAnimFile();
+			actionName = "run";
+			ChangeAction(actionName.c_str());
 			turnFlag = true;
 			vel.x = 5.0f;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
-			SetAnim("run");
+			actionName = "run";
+			ChangeAction(actionName.c_str());
 			turnFlag = false;
 			vel.x = -5.0f;
 		}
 		else
 		{
-			SetAnim("idle");
+			actionName = "idle";
+			ChangeAction(actionName.c_str());
 			runFlag = false;
 			vel.x = 0;
 			updater = &Player::Idle;
@@ -145,7 +127,8 @@ void Player::Run(const Input & p)
 		pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_10))
 		{
-			SetAnim("jump");
+			actionName = "jump";
+			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
 			groundFlag = false;
 			vel.y	  -= 12.0f;
@@ -156,14 +139,15 @@ void Player::Run(const Input & p)
 	{
 		vel.y += 0.7f;
 	}
-
+	
 }
 
 void Player::Jump(const Input & p)
 {
 	if (groundFlag)
 	{
-		SetAnim("idle");
+		actionName = "idle";
+		ChangeAction(actionName.c_str());
 		updater = &Player::Idle;
 		vel.y = 0;
 		pos.y = groundLine - size.y;
@@ -185,34 +169,17 @@ void Player::Jump(const Input & p)
 	}
 	else
 	{
-		SetAnim("jump");
+		actionName = "jump";
+		ChangeAction(actionName.c_str());
 		vel.x = 0;
 	}
+
+	ProceedAnimFile();
 }
 
 void Player::DebugDraw()
 {
-	if (animName == "run")
-	{
-		DrawString(0, 0, "走っている", 0xffffff);
-	}
-	else if (animName == "jump")
-	{
-		DrawString(0, 0, "飛んでいる", 0xffffff);
-	}
-	else if (animName == "idle")
-	{
-		DrawString(0, 0, "待機中", 0xffffff);
-	}
-	else
-	{
-		DrawString(0, 0, "アニメーションしてないやんけ", 0xffffff);
-	}
-
-	if (hitFlag)
-	{
-                                                                                                                                                                                      		DrawString(100, 0, "当たったよ", 0xffff00);
-	}
+	DrawString(0, 0, actionName.c_str(), 0xffffff);
 	
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
 }
@@ -221,7 +188,6 @@ void Player::DebugDraw()
 void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
-	Anim();
 	if (pos.y + size.y > groundLine)
 	{
 		jumpFlag = false;
@@ -233,14 +199,15 @@ void Player::Update(const Input & p)
 void Player::Draw()
 {
 	DebugDraw();
-	if (turnFlag)
+	CharactorObject::Draw(playerImg);
+	/*if (turnFlag)
 	{
 		DxLib::DrawGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
 	}
 	else
 	{
 		DxLib::DrawTurnGraph(pos.x, pos.y, LpImageMng.ImgGetID(fileName, divCnt, size)[chipCnt], turnFlag);
-	}
+	}*/
 	
 }
 

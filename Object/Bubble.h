@@ -1,8 +1,8 @@
 #pragma once
-#include "Object.h"
+#include "CharactorObject.h"
 
 class Bubble :
-	public Object
+	public CharactorObject
 {
 	Bubble();
 	~Bubble();

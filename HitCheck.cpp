@@ -12,7 +12,7 @@ HitCheck::~HitCheck()
 
 bool HitCheck::HitPlayer(Rect player, Rect block)
 {
-	if (abs(player.center.x - block.center.x) < ((player.size.width / 2) + (block.size.width)) &&
+	if (abs(player.center.x - block.center.x) < ((player.size.width / 2) + (block.size.width / 2)) &&
 		abs(player.center.y - block.center.y) < ((player.size.height / 2) + (block.size.height / 2)))
 	{
 		return true;

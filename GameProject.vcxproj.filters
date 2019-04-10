@@ -78,6 +78,9 @@
     <ClCompile Include="HitCheck.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Object\CharactorObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="HitCheck.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\CharactorObject.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

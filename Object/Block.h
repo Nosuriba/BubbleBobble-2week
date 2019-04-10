@@ -1,10 +1,10 @@
 #pragma once
-#include "Object.h"
+#include "CharactorObject.h"
 
 class Input;
 
 class Block :
-	public Object
+	public CharactorObject
 {
 public:
 	Block();
