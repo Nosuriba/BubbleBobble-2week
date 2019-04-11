@@ -25,14 +25,14 @@ void MainScene::Init()
 	/// マジックナンバーは後で修正するようにする
 	for (auto i = 0; i < wallCnt; i++)
 	{
-		auto pos = Vector2f((Game::GetInstance().GetScreenSize().x - 48) * (i / (wallCnt / 2)), 48 + (48 * (i % (wallCnt / 2))));
+		auto pos = Vector2f((Game::GetInstance().GetScreenSize().x - 48) * (i / (wallCnt / 2)), 96 + (48 * (i % (wallCnt / 2))));
 		wall.push_back(std::make_shared<Wall>());
 		wall[i]->Init(ImageMng::GetInstance().GetImage().wallImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(48, 48));
 	}
 	block = std::make_shared<Block>();
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - 48);
 	player->Init("idle",Vector2f(50, Game::GetInstance().GetScreenSize().y + 48), Vector2(48,48));
-	block->Init(ImageMng::GetInstance().GetImage().chipImage, Vector2f(500,570), Vector2(2,24), Vector2(0, 0), Vector2(24, 24));
+	block->Init(ImageMng::GetInstance().GetImage().chipImage, Vector2f(500, 640), Vector2(2,24), Vector2(0, 0), Vector2(24, 24));
 }
 
 void MainScene::Update(const Input & p)
