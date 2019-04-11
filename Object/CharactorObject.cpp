@@ -169,22 +169,3 @@ void CharactorObject::Init(std::string fileName, const Vector2f & pos, const Vec
 
 	chipCnt = (divOffset.y * divCnt.x) + divOffset.x;
 }
-
-
-//void CharactorObject::DebugDraw()
-//{
-//	auto& actrcInfo = actionData.actionInfo[nowActionName];
-//	auto& rcCut = actrcInfo.cuts[nowCutIdx];
-//
-//	// âEë§ÇÃÇ‡ÇÃÇç∂ë§ÇÃå`Ç…ì¸ÇÍÇƒç≈èâÇ©ÇÁç≈å„Ç‹Ç≈å©ÇÈ
-//	for (auto& i : rcCut.actRects)
-//	{
-//		auto& actRc = i;
-//
-//		Rect rc = actRc.rc;
-//		rc.center.x = turnFlag ? -rc.center.x : rc.center.x;
-//
-//		DxLib::DrawBox(rc.Left() + pos.x, rc.Top() + pos.y, rc.Right() + pos.x, rc.Bottom() + pos.y, 0xff0000, false);
-//	}
-//}
-

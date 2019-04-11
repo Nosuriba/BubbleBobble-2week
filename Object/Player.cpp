@@ -22,7 +22,7 @@ Player::Player(int groundLine)
 	turnFlag = false;
 	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
 
-	this->groundLine = groundLine;
+	this->groundLine = debugLine = groundLine;
 	updater = &Player::Idle;
 }
 
@@ -30,9 +30,39 @@ Player::~Player()
 {
 }
 
-void Player::CheckHit(bool hitFlag)
+Rect Player::GetRect()
+{
+	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
+	auto rectSize = Size(size.x, size.y);
+
+	return Rect(center, rectSize);
+}
+
+
+
+void Player::HitWall(bool hitFlag)
 {
 	this->hitFlag = hitFlag;
+
+	if (hitFlag)
+	{
+		pos.x = (turnFlag ? pos.x += 1 : pos.x -= 1);			/// 次はここの修正に入る。
+	}
+}
+
+void Player::HitGround(bool groundFlag, Rect rcB)
+{
+	/// 落下中にブロックの上に乗った時の処理
+	if (groundFlag && vel.y >= 0.0f)
+	{
+		this->groundFlag = groundFlag;
+ 		this->vel.y		 = 0;
+		this->groundLine = rcB.Top() + 1;		// 床に少しめり込むようにしている。
+	}
+	else
+	{
+		this->groundLine = debugLine;			// いずれ、画面の一番下を指定することになる(画面外指定)
+	}
 }
 
 void Player::Idle(const Input & p)
@@ -44,7 +74,7 @@ void Player::Idle(const Input & p)
 		actionName = "run";
 		ChangeAction(actionName.c_str());
 		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = false
-			: turnFlag = true);
+												 : turnFlag = true);
 		runFlag = true;
 		return;
 	}
@@ -60,6 +90,8 @@ void Player::Idle(const Input & p)
 		ChangeAction("eat");
 		updater = &Player::Shot;
 	}
+
+	OnGround();
 
 	if (groundFlag)
 	{
@@ -116,10 +148,12 @@ void Player::Run(const Input & p)
 		return;
 	}
 
+	OnGround();
+
 	if (groundFlag)
 	{
 		vel.y = 0;
-		pos.y = groundLine - size.y;
+		// pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_10))
 		{
 			actionName = "jump";
@@ -140,6 +174,7 @@ void Player::Run(const Input & p)
 
 void Player::Jump(const Input & p)
 {
+	OnGround();
 	if (groundFlag)
 	{
 		actionName = "idle";
@@ -205,25 +240,22 @@ void Player::Shot(const Input & p)
 
 void Player::OnGround()
 {
-	
-}
-
-void Player::DebugDraw()
-{
-	DrawString(0, 0, actionName.c_str(), 0xffffff);
-	
-	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
+	if (pos.y + size.y > groundLine)
+	{
+		jumpFlag = false;
+		groundFlag = true;
+	}
+	else
+	{
+		groundFlag = false;
+	}
 }
 
 
 void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
-	if (pos.y + size.y > groundLine)
-	{
-		jumpFlag = false;
- 		groundFlag = true;
-	}
+	
 	pos += vel;
 }
 
@@ -233,11 +265,9 @@ void Player::Draw()
 	CharactorObject::Draw(playerImg);
 }
 
-Rect Player::GetRect()
+void Player::DebugDraw()
 {
-	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
-	auto rectSize = Size(size.x, size.y);
+	DrawString(0, 0, actionName.c_str(), 0xffffff);
 
-	return Rect(center, rectSize);
+	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
 }
-

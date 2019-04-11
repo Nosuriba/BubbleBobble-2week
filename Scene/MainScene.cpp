@@ -30,7 +30,8 @@ void MainScene::Init()
 
 void MainScene::Update(const Input & p)
 {
-	player->CheckHit(CollisionDetector::CollisionCheck(player->GetRect(), block->GetRect()));
+	// player->HitWall(CollisionDetector::WallCollCheck(player->GetRect(), block->GetRect()));
+	player->HitGround(CollisionDetector::GroundCollCheck(player->GetRect(), block->GetRect()), block->GetRect());
 	player->Update(p);
 	player->Draw();
 	block->Update(p);

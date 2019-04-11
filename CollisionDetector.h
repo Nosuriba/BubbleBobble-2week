@@ -8,6 +8,8 @@ public:
 	CollisionDetector();
 	~CollisionDetector();
 
-	const static bool CollisionCheck(Rect rcA, Rect rcB);
+	const static bool GroundCollCheck(Rect rcA, Rect rcB);		// °‚Ì“–‚½‚è”»’è
+	const static bool WallCollCheck(Rect rcA, Rect rcB);		// •Ç‚Ì“–‚½‚è”»’è
+	const static bool CollCheck(Rect rcA, Rect rcB);			// ‹éŒ`‚Ì“–‚½‚è”»’è
 };
 

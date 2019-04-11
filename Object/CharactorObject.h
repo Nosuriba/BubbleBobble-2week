@@ -32,7 +32,6 @@ protected:
 	void ChangeAction(const char * name);		// アクション切り替え
 	bool ProceedAnimFile();						// ｱﾆﾒｰｼｮﾝﾌﾚｰﾑを1進める
 	void ReadActionFile(const char* actionPath);// ﾌｧｲﾙの読み込み
-
 	Vector2f GetPos() const;
 
 	ObjectData actionData;
@@ -51,6 +50,5 @@ protected:
 	int nowCutIdx;
 	unsigned int frame;
 
-	bool hitFlag;
 	bool turnFlag;		// true:左向き, false:右向き
 };

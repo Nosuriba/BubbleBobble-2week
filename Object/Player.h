@@ -11,10 +11,11 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	void CheckHit(bool hitFlag);
+	void HitWall(bool hitFlag);						// 壁と当たったかの判定
+	void HitGround(bool groundFlag, Rect rcB);		// ジャンプ中、ブロックに乗ったかの判定
 	void Update(const Input & p);
 	void Draw();
-	Rect GetRect();
+	Rect GetRect();									// 矩形取得用
 private:
 	void Idle(const Input & p);
 	void Run(const Input & p);
@@ -31,10 +32,13 @@ private:
 
 	int playerImg;
 
+	bool hitFlag;
 	bool runFlag;		// true:走っている, false:走っていない
 	bool jumpFlag;		// true:飛んでいる, false:飛んでいない
 	bool groundFlag;	// true:地上, false:空中
 	bool dieFlag;		// true:生きている, false:死んでいる
+
+	int debugLine;	   // 最初に設定した床の位置を保存している(debug用)
 
 };
 
