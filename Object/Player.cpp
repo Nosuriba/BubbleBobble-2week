@@ -87,11 +87,12 @@ void Player::Idle(const Input & p)
 
 	OnGround();
 
+	/// 地面についているかの判定
 	if (groundFlag)
 	{
 		vel = Vector2f(0,0);
 		pos.y = groundLine - size.y;
-		if (p.IsTrigger(PAD_INPUT_10))
+		if (p.IsTrigger(PAD_INPUT_5))
 		{
 			updater = &Player::Jump;
 			actionName = "jump";
@@ -141,11 +142,12 @@ void Player::Run(const Input & p)
 
 	OnGround();
 
+	/// 地面についているかの判定
 	if (groundFlag)
 	{
 		vel.y = 0;
 		// pos.y = groundLine - size.y;
-		if (p.IsTrigger(PAD_INPUT_10))
+		if (p.IsTrigger(PAD_INPUT_5))
 		{
 			actionName = "jump";
 			ChangeAction(actionName.c_str());
@@ -166,6 +168,8 @@ void Player::Run(const Input & p)
 void Player::Jump(const Input & p)
 {
 	OnGround();
+
+	/// 地面についているかの判定
 	if (groundFlag)
 	{
 		actionName = "idle";
@@ -222,10 +226,11 @@ void Player::Shot(const Input & p)
 
 	OnGround();
 
+	/// 地面についているかの判定
 	if (groundFlag)
 	{
 		vel.y = 0;
-		if (p.IsTrigger(PAD_INPUT_10))
+		if (p.IsTrigger(PAD_INPUT_5))
 		{
 			actionName = "jump";
 			ChangeAction(actionName.c_str());
