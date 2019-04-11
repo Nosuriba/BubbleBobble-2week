@@ -75,16 +75,8 @@ void Player::Idle(const Input & p)
 		updater = &Player::Run;
 		actionName = "run";
 		ChangeAction(actionName.c_str());
-		/*turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = false
-												 : turnFlag = true);*/
 		runFlag = true;
 		return;
-	}
-
-	if (p.IsPressing(PAD_INPUT_5))
-	{
-		ChangeAction("eat");
-		updater = &Player::Eat;
 	}
 	
 	if (p.IsPressing(PAD_INPUT_6))
@@ -216,21 +208,6 @@ void Player::Jump(const Input & p)
 	ProceedAnimFile();
 }
 
-void Player::Eat(const Input & p)
-{
-	if (p.IsPressing(PAD_INPUT_5))
-	{
-
-	}
-	else
-	{
-		ChangeAction("idle");
-		updater = &Player::Idle;
-	}
-
-	ProceedAnimFile();
-}
-
 void Player::Shot(const Input & p)
 {
 	if (p.IsPressing(PAD_INPUT_6))
@@ -241,6 +218,26 @@ void Player::Shot(const Input & p)
 	{
 		ChangeAction("idle");
 		updater = &Player::Idle;
+	}
+
+	OnGround();
+
+	if (groundFlag)
+	{
+		vel.y = 0;
+		if (p.IsTrigger(PAD_INPUT_10))
+		{
+			actionName = "jump";
+			ChangeAction(actionName.c_str());
+			jumpFlag = true;
+			groundFlag = false;
+			vel.y -= 12.0f;
+			updater = &Player::Jump;
+		}
+	}
+	else
+	{
+		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
 	ProceedAnimFile();

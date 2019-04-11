@@ -20,7 +20,6 @@ private:
 	void Idle(const Input & p);
 	void Run(const Input & p);
 	void Jump(const Input & p);
-	void Eat(const Input & p);
 	void Shot(const Input & p);
 	void OnGround();
 
