@@ -19,6 +19,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{336d5bfc-ce70-43c9-8e6d-a04ed2daa889}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StageObject">
+      <UniqueIdentifier>{edff8629-1f47-4e29-b706-38a6d9091fa1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,6 +84,12 @@
     <ClCompile Include="CollisionDetector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="StageObject.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -139,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="CollisionDetector.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>StageObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

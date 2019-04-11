@@ -153,6 +153,8 @@
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="StageObject.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioMng.h" />
@@ -174,6 +176,8 @@
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="StageObject.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

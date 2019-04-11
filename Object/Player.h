@@ -11,7 +11,7 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	void HitWall(bool hitFlag);						// 壁と当たったかの判定
+	void HitWall(bool hitFlag, Rect rcB);						// 壁と当たったかの判定
 	void HitGround(bool groundFlag, Rect rcB);		// ジャンプ中、ブロックに乗ったかの判定
 	void Update(const Input & p);
 	void Draw();

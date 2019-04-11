@@ -40,14 +40,15 @@ Rect Player::GetRect()
 
 
 
-void Player::HitWall(bool hitFlag)
+void Player::HitWall(bool hitFlag, Rect rcB)
 {
 	this->hitFlag = hitFlag;
-
 	if (hitFlag)
 	{
-		pos.x = (turnFlag ? pos.x += 1 : pos.x -= 1);			/// 次はここの修正に入る。
+		/// 壁の当たった場所によって、位置補正を行っている
+		pos.x = (pos.x < rcB.center.x ? pos.x = rcB.Left() - size.x : pos.x = rcB.Right());
 	}
+	
 }
 
 void Player::HitGround(bool groundFlag, Rect rcB)
@@ -73,8 +74,8 @@ void Player::Idle(const Input & p)
 		updater = &Player::Run;
 		actionName = "run";
 		ChangeAction(actionName.c_str());
-		turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = false
-												 : turnFlag = true);
+		/*turnFlag = (p.IsTrigger(PAD_INPUT_RIGHT) ? turnFlag = false
+												 : turnFlag = true);*/
 		runFlag = true;
 		return;
 	}
@@ -143,9 +144,6 @@ void Player::Run(const Input & p)
 	else
 	{
 		vel.x = 0;
-		ChangeAction("idle");
-		updater = &Player::Idle;
-		return;
 	}
 
 	OnGround();
@@ -190,21 +188,30 @@ void Player::Jump(const Input & p)
 		vel.y  = (vel.y < 0.5f ? vel.y+= 0.7f : vel.y = 5.0);
 	}
 
-	if (p.IsPressing(PAD_INPUT_RIGHT))
+	if (!hitFlag)
 	{
-		turnFlag = false;
-		vel.x = 7.0f;
-	}
-	else if (p.IsPressing(PAD_INPUT_LEFT))
-	{
-		turnFlag = true;
-		vel.x = -7.0f;
+		if (p.IsPressing(PAD_INPUT_RIGHT))
+		{
+			turnFlag = false;
+			vel.x = 7.0f;
+		}
+		else if (p.IsPressing(PAD_INPUT_LEFT))
+		{
+			turnFlag = true;
+			vel.x = -7.0f;
+		}
+		else
+		{
+			vel.x = 0;
+		}
 	}
 	else
 	{
 		vel.x = 0;
+		ChangeAction("idle");
+		updater = &Player::Idle;
+		return;
 	}
-
 	ProceedAnimFile();
 }
 
