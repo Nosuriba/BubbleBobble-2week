@@ -4,15 +4,11 @@
 Enemy::Enemy()
 {
 	pos = vel = Vector2f(0, 0);
-	divCnt = size = Vector2(0, 0);
-	fileName = "";
 }
 
 Enemy::Enemy(int groundLine)
 {
 	pos = vel = Vector2f(0, 0);
-	divCnt = size = Vector2(0, 0);
-	fileName = "";
 	this->groundLine = groundLine;
 }
 

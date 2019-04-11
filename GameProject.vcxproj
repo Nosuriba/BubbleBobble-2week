@@ -142,7 +142,6 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Bubble.cpp" />
-    <ClCompile Include="Object\Block.cpp" />
     <ClCompile Include="Object\CharactorObject.cpp" />
     <ClCompile Include="Object\Enemy.cpp" />
     <ClCompile Include="Object\Object.cpp" />
@@ -153,8 +152,9 @@
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="StageObject.cpp" />
-    <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="StageObject\Block.cpp" />
+    <ClCompile Include="StageObject\StageObject.cpp" />
+    <ClCompile Include="StageObject\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioMng.h" />
@@ -165,7 +165,6 @@
     <ClInclude Include="ImageMng.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Object\Bubble.h" />
-    <ClInclude Include="Object\Block.h" />
     <ClInclude Include="Object\CharactorObject.h" />
     <ClInclude Include="Object\Enemy.h" />
     <ClInclude Include="Object\Object.h" />
@@ -176,8 +175,9 @@
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="StageObject.h" />
-    <ClInclude Include="Wall.h" />
+    <ClInclude Include="StageObject\Block.h" />
+    <ClInclude Include="StageObject\StageObject.h" />
+    <ClInclude Include="StageObject\Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,6 +22,16 @@ void CharactorObject::ChangeAction(const char * name)
 	nowActionName = name;
 }
 
+void CharactorObject::Init(std::string actionName, const Vector2f & pos, const Vector2 & size)
+{
+	this->nowActionName = actionName;
+	this->nowCutIdx = 0;
+	this->pos = pos;
+	this->size = size;
+
+}
+
+
 bool CharactorObject::ProceedAnimFile()
 {
 	if ((signed)frame < actionData.actionInfo[nowActionName].cuts[nowCutIdx].duration)
@@ -149,23 +159,4 @@ void CharactorObject::Draw(int img)
 Rect CharactorObject::GetRect()
 {
 	return Rect();
-}
-
-void CharactorObject::Init(std::string actionName, const Vector2f & pos, const Vector2 & size)
-{
-	this->nowActionName = actionName;
-	this->nowCutIdx = 0;
-	this->pos = pos;
-	this->size = size;
-
-}
-
-void CharactorObject::Init(std::string fileName, const Vector2f & pos, const Vector2 & divCnt, const Vector2 & divOffset, const Vector2 & size)
-{
-	this->fileName = fileName;
-	this->pos = pos;
-	this->divCnt = divCnt;
-	this->size = size;
-
-	chipCnt = (divOffset.y * divCnt.x) + divOffset.x;
 }

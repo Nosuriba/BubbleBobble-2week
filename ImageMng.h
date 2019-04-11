@@ -5,7 +5,7 @@
 #include <mutex>
 #include "Geometry.h"
 
-#define LpImageMng (ImageMng::GetInstance())
+#define LpImageMng (ImageMng::GetInstance().)
 
 typedef std::vector<int> VEC_INT;
 
@@ -15,7 +15,8 @@ struct ImageName
 	const std::string titleImage  = "resource/Image/title.png";
 	const std::string mainImage   = "resource/Image/main.png";
 	const std::string resultImage = "resource/Image/result.png";
-	const std::string playerImage = "resource/Image/player.png";
+	const std::string wallImage   = "resource/Image/map.png";
+	const std::string chipImage   = "resource/Image/chip.png";
 	
 };
 

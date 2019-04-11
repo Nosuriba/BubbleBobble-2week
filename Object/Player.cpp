@@ -17,8 +17,8 @@ Player::Player(int groundLine)
 	ReadActionFile("Action/player.act");
 	playerImg	 = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
-	pos		 = vel  = Vector2f(0, 0);
-	divCnt	 = size = Vector2(0, 0);
+	pos	  = vel  = Vector2f(0, 0);
+	 size = Vector2(0, 0);
 	turnFlag = false;
 	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
 
@@ -40,15 +40,16 @@ Rect Player::GetRect()
 
 
 
-void Player::HitWall(bool hitFlag, Rect rcB)
+bool Player::HitWall(bool hitFlag, Rect rcB)
 {
 	this->hitFlag = hitFlag;
 	if (hitFlag)
 	{
 		/// •Ç‚Ì“–‚½‚Á‚½êŠ‚É‚æ‚Á‚ÄAˆÊ’u•â³‚ğs‚Á‚Ä‚¢‚é
-		pos.x = (pos.x < rcB.center.x ? pos.x = rcB.Left() - size.x : pos.x = rcB.Right());
+		pos.x = (turnFlag ? pos.x = rcB.Right() : pos.x = rcB.Left() - size.x);
 	}
-	
+
+	return this->hitFlag;
 }
 
 void Player::HitGround(bool groundFlag, Rect rcB)

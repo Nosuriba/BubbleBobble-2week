@@ -18,8 +18,7 @@ const bool CollisionDetector::GroundCollCheck(Rect rcA, Rect rcB)
 const bool CollisionDetector::WallCollCheck(Rect rcA, Rect rcB)
 {
 	return ((rcA.Right() > rcB.Left() && CollCheck(rcA, rcB)) ||
-			(rcA.Left() < rcB.Right() && CollCheck(rcA, rcB))) &&
-			(rcA.Top() > rcB.Top()/* && rcA.center.y < rcB.Bottom()*/);
+			(rcA.Left() < rcB.Right() && CollCheck(rcA, rcB)));
 }
 
 const bool CollisionDetector::CollCheck(Rect rcA, Rect rcB)

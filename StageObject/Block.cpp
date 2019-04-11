@@ -1,28 +1,29 @@
-#include <DxLib.h>
-#include "Wall.h"
+#include "Block.h"
+#include "../Input.h"
 #include "../ImageMng.h"
 
+Block::Block()
+{
+	pos	   =  Vector2f(0, 0);
+	divCnt = size = Vector2(0, 0);
+	fileName = "";
+}
 
-
-Wall::Wall()
+Block::~Block()
 {
 }
 
-
-Wall::~Wall()
+void Block::Update(const Input & p)
 {
+	
 }
 
-void Wall::Update()
-{
-}
-
-void Wall::Draw()
+void Block::Draw()
 {
 	DxLib::DrawGraph(pos.x, pos.y, ImageMng::GetInstance().ImgGetID(fileName, divCnt, size)[chipCnt], true);
 }
 
-Rect Wall::GetRect()
+Rect Block::GetRect()
 {
 	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
 	auto rectSize = Size(size.x, size.y);

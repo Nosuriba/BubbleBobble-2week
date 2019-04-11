@@ -24,5 +24,5 @@ void TitleScene::Update(const Input & p)
 	}
 	
 	DxLib::DrawString(0, 0, "ƒ^ƒCƒgƒ‹", 0x000000);
-	DxLib::DrawGraph(0, 0, LpImageMng.ImgGetID(LpImageMng.GetImage().titleImage)[0], true);
+	DxLib::DrawGraph(0, 0, ImageMng::GetInstance().ImgGetID(ImageMng::GetInstance().GetImage().titleImage)[0], true);
 }
