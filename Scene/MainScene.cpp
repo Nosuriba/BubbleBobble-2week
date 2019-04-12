@@ -13,7 +13,7 @@
 #include "../CollisionDetector.h"
 
 MainScene::MainScene() : 
-	chipMax(28,26), chipSize(24), playerSize(48),
+	blockMax(28,26), blockSize(24), playerSize(48),
 	wallMax(26), wallSize(48)
 
 {
@@ -27,26 +27,28 @@ MainScene::~MainScene()
 
 void MainScene::Init()
 {
-	int chipCnt = 0;
+	int blockCnt = 0;
 	int cnt = 0;
 	std::string name[] = {"0"};			/// 特定のステージチップを読み込むようにしている(仮設定)
 	stage = std::make_shared<Stage>();
-	std::list<char> debug;
 
 	auto wallPos = Vector2f(wallSize, wallSize);
 	auto chipData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
+	auto mapSize = stage->GetStageRange();
 
 	for (auto& tmp : chipData)
 	{
 		if (name[tmp] == "0")
 		{
-			auto pos = Vector2f(wallPos.x + (chipSize * (chipCnt % chipMax.x)), wallPos.y + (chipSize * (chipCnt / chipMax.x)));
-			debug.push_back(tmp);
+			/// ﾌﾞﾛｯｸﾃﾞｰﾀの読み込みは縦に読み込まれていくからこのような計算になっている。
+			auto pos = Vector2f(wallPos.x + (blockSize * (blockCnt / blockMax.y)), 
+								wallPos.y + (blockSize * (blockCnt % blockMax.y)));
+			
 			blocks.push_back(std::make_shared<Block>());
-			blocks[cnt]->Init(ImageMng::GetInstance().GetImage().chipImage, pos, Vector2(2, 24), Vector2(0,0), Vector2(chipSize, chipSize));
+			blocks[cnt]->Init(ImageMng::GetInstance().GetImage().chipImage, pos, Vector2(2, 24), Vector2(0,0), Vector2(blockSize, blockSize));
 			cnt++;
 		}
-		chipCnt++;
+		blockCnt++;
 	}
 
 	/// 後にゲームマネージャーのクラスに、持って行ったほうがいいかもしれない処理共だよ
@@ -56,7 +58,7 @@ void MainScene::Init()
 		wall.push_back(std::make_shared<Wall>());
 		wall[i]->Init(ImageMng::GetInstance().GetImage().wallImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
 	}
-	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - wallSize);
+	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
 	player->Init("idle",Vector2f(playerSize, Game::GetInstance().GetScreenSize().y + wallSize), Vector2(playerSize, playerSize));
 	}
 
@@ -92,10 +94,6 @@ void MainScene::Update(const Input & p)
 		}
 	}
 
-	DxLib::DrawString(0, 0, "メイン", 0x000000);
-	DxLib::DrawLine(0, Game::GetInstance().GetScreenSize().y - 48,
-					   Game::GetInstance().GetScreenSize().x, Game::GetInstance().GetScreenSize().y - 48,
-					   0xffffff, 1.0f);
 	player->Draw();
 	if (p.IsTrigger(PAD_INPUT_8))
 	{

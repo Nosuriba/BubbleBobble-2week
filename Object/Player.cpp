@@ -1,9 +1,10 @@
 #include <DxLib.h>
 #include <cmath>
-#include "../ImageMng.h"
-#include "../Input.h"
 #include "CharactorObject.h"
 #include "Player.h"
+#include "../ImageMng.h"
+#include "../Input.h"
+#include "../Game.h"
 
 Player::Player()
 {
@@ -20,9 +21,9 @@ Player::Player(int groundLine)
 	pos	  = vel  = Vector2f(0, 0);
 	 size = Vector2(0, 0);
 	turnFlag = false;
-	jumpFlag = groundFlag = dieFlag = runFlag = hitFlag = false;
+	jumpFlag = groundFlag = dieFlag = hitFlag = false;
 
-	this->groundLine = debugLine = groundLine;
+	this->groundLine = groundLine;
 	updater = &Player::Idle;
 }
 
@@ -40,7 +41,7 @@ Rect Player::GetRect()
 
 
 
-bool Player::HitWall(bool hitFlag, Rect rcB)
+bool Player::HitWall(bool hitFlag, const Rect& rcB)
 {
 	this->hitFlag = hitFlag;
 	if (hitFlag)
@@ -52,7 +53,7 @@ bool Player::HitWall(bool hitFlag, Rect rcB)
 	return this->hitFlag;
 }
 
-bool Player::HitGround(bool groundFlag, Rect rcB)
+bool Player::HitGround(bool groundFlag, const Rect& rcB)
 {
 	/// 落下中にブロックの上に乗った時の処理
 	if (groundFlag && vel.y >= 0.0f)
@@ -63,7 +64,7 @@ bool Player::HitGround(bool groundFlag, Rect rcB)
 	}
 	else
 	{
-		this->groundLine = debugLine;			// いずれ、画面の一番下を指定することになる(画面外指定)
+		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;			// いずれ、画面の一番下を指定することになる(画面外指定)
 	}
 
 	return this->groundFlag;
@@ -77,7 +78,6 @@ void Player::Idle(const Input & p)
 		updater = &Player::Run;
 		actionName = "run";
 		ChangeAction(actionName.c_str());
-		runFlag = true;
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void Player::Idle(const Input & p)
 			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
 			groundFlag = false;
-			vel.y	   -= 12.0f;
+			vel.y	   -= 14.0f;
 			return;
 		}
 	}
@@ -132,7 +132,6 @@ void Player::Run(const Input & p)
 		{
 			actionName = "idle";
 			ChangeAction(actionName.c_str());
-			runFlag = false;
 			vel.x = 0;
 			updater = &Player::Idle;
 		}
@@ -142,8 +141,7 @@ void Player::Run(const Input & p)
 		vel.x = 0;
 	}
 
-	OnGround();
-
+	
 	/// 地面についているかの判定
 	if (groundFlag)
 	{
@@ -155,7 +153,7 @@ void Player::Run(const Input & p)
 			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
 			groundFlag = false;
-			vel.y	  -= 12.0f;
+			vel.y	  -= 14.0f;
 			updater    = &Player::Jump;
 		}
 	}
@@ -163,6 +161,9 @@ void Player::Run(const Input & p)
 	{
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
+
+	OnGround();
+
 	
 	ProceedAnimFile();
 }
@@ -267,6 +268,11 @@ void Player::OnGround()
 void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
+
+	if (pos.y > Game::GetInstance().GetScreenSize().y)
+	{
+		pos.y = -(size.y);
+	}
 	
 	pos += vel;
 }

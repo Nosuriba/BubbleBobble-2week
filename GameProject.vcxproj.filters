@@ -72,9 +72,6 @@
     <ClCompile Include="Object\Bubble.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Object\CharactorObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -88,6 +85,9 @@
       <Filter>StageObject</Filter>
     </ClCompile>
     <ClCompile Include="StageObject\Block.cpp">
+      <Filter>StageObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
       <Filter>StageObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,9 +137,6 @@
     <ClInclude Include="Object\Bubble.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Object\CharactorObject.h">
       <Filter>Object</Filter>
     </ClInclude>
@@ -153,6 +150,9 @@
       <Filter>StageObject</Filter>
     </ClInclude>
     <ClInclude Include="StageObject\Block.h">
+      <Filter>StageObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
       <Filter>StageObject</Filter>
     </ClInclude>
   </ItemGroup>

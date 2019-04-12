@@ -29,8 +29,8 @@ public:
 	std::vector<std::shared_ptr<Block>> blocks;
 	//VEC2_BLOCK blocks;
 
-	const Vector2 chipMax;
-	const int chipSize;
+	const Vector2 blockMax;
+	const int blockSize;
 	const int playerSize;
 	const int wallSize;
 	const int wallMax;
