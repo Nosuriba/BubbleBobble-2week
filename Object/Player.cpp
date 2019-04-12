@@ -12,16 +12,15 @@ Player::Player()
 
 Player::Player(int groundLine)
 {
-	actionName	  = "idle";
-	nowActionName = actionName.c_str();
+	nowActionName = "idle";
 	nowCutIdx	  = 0;
 	ReadActionFile("Action/player.act");
 	playerImg	 = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
-	pos	  = vel  = Vector2f(0, 0);
-	 size = Vector2(0, 0);
+	pos	 = vel = Vector2f(0, 0);
+	size = Vector2(0, 0);
 	turnFlag = false;
-	jumpFlag = groundFlag = dieFlag = hitFlag = false;
+	jumpFlag = dieFlag = hitFlag = false;
 
 	this->groundLine = groundLine;
 	updater = &Player::Idle;
@@ -59,7 +58,7 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	if (groundFlag && vel.y >= 0.0f)
 	{
  		this->vel.y		 = 0;
-		this->groundLine = rcB.Top() + 1;		// è∞Ç…è≠ÇµÇﬂÇËçûÇﬁÇÊÇ§Ç…ÇµÇƒÇ¢ÇÈÅB
+		this->groundLine = rcB.Top() + 1;		/// è∞Ç…è≠ÇµÇﬂÇËçûÇﬁÇÊÇ§Ç…ÇµÇƒÇ¢ÇÈÅB
 	}
 	else
 	{
@@ -75,8 +74,7 @@ void Player::Idle(const Input & p)
 		p.IsPressing(PAD_INPUT_LEFT))
 	{
 		updater = &Player::Run;
-		actionName = "run";
-		ChangeAction(actionName.c_str());
+		ChangeAction("run");
 		return;
 	}
 	
@@ -94,8 +92,7 @@ void Player::Idle(const Input & p)
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
 			updater = &Player::Jump;
-			actionName = "jump";
-			ChangeAction(actionName.c_str());
+			ChangeAction("jump");
 			jumpFlag   = true;
 			vel.y	   -= 14.0f;
 			return;
@@ -103,7 +100,8 @@ void Player::Idle(const Input & p)
 	}
 	else
 	{
-		vel.y  = (vel.y < 0.5f ? vel.y+= 0.7f : vel.y = 5.0);
+		updater = &Player::Jump;
+		ChangeAction("jump");
 	}
 
 	ProceedAnimFile();
@@ -126,8 +124,7 @@ void Player::Run(const Input & p)
 		}
 		else
 		{
-			actionName = "idle";
-			ChangeAction(actionName.c_str());
+			ChangeAction("idle");
 			vel.x = 0;
 			updater = &Player::Idle;
 		}
@@ -144,8 +141,7 @@ void Player::Run(const Input & p)
 		// pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
-			actionName = "jump";
-			ChangeAction(actionName.c_str());
+			ChangeAction("jump");
 			jumpFlag   = true;
 			vel.y	  -= 14.0f;
 			updater    = &Player::Jump;
@@ -153,11 +149,9 @@ void Player::Run(const Input & p)
 	}
 	else
 	{
-		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
+		updater = &Player::Jump;
+		ChangeAction("jump");
 	}
-
-	
-
 	
 	ProceedAnimFile();
 }
@@ -167,9 +161,8 @@ void Player::Jump(const Input & p)
 	/// ínñ Ç…Ç¬Ç¢ÇƒÇ¢ÇÈÇ©ÇÃîªíË
 	if (OnGround())
 	{
-		actionName = "idle";
-		ChangeAction(actionName.c_str());
 		updater = &Player::Idle;
+		ChangeAction("idle");
 		vel.y = 0;
 		pos.y = groundLine - size.y;
 		return;
@@ -177,7 +170,7 @@ void Player::Jump(const Input & p)
 	else
 	{
 		///	óéâ∫èàóù
-		vel.y  = (vel.y < 0.5f ? vel.y+= 0.7f : vel.y = 5.0);
+		vel.y  = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
 	if (!hitFlag)
@@ -200,9 +193,6 @@ void Player::Jump(const Input & p)
 	else
 	{
 		vel.x = 0;
-		ChangeAction("idle");
-		updater = &Player::Idle;
-		return;
 	}
 	ProceedAnimFile();
 }
@@ -227,8 +217,7 @@ void Player::Shot(const Input & p)
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
-			actionName = "jump";
-			ChangeAction(actionName.c_str());
+			ChangeAction("jump");
 			jumpFlag = true;
 			vel.y -= 12.0f;
 			updater = &Player::Jump;
@@ -243,7 +232,7 @@ void Player::Shot(const Input & p)
 
 bool Player::OnGround()
 {
-	if (pos.y + size.y > groundLine)
+	if (pos.y + size.y >= groundLine)
 	{
 		jumpFlag = false;
 		return true;
@@ -272,7 +261,7 @@ void Player::Draw()
 
 void Player::DebugDraw()
 {
-	DrawString(0, 0, actionName.c_str(), 0xffffff);
+	DrawString(0, 0, nowActionName.c_str(), 0xffffff);
 
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
 }

@@ -59,7 +59,7 @@ void MainScene::Init()
 		wall[i]->Init(ImageMng::GetInstance().GetImage().wallImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
 	}
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
-	player->Init("idle",Vector2f(playerSize, Game::GetInstance().GetScreenSize().y + wallSize), Vector2(playerSize, playerSize));
+	player->Init("idle",Vector2f(playerSize * 2, Game::GetInstance().GetScreenSize().y - blockSize), Vector2(playerSize, playerSize));
 	}
 
 void MainScene::Update(const Input & p)

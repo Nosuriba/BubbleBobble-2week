@@ -27,8 +27,6 @@ private:
 
 	void DebugDraw();
 
-	std::string actionName;
-
 	int playerImg;
 
 	bool hitFlag;

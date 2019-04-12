@@ -50,8 +50,7 @@ bool CharactorObject::ProceedAnimFile()
 		{
 			nowCutIdx = 0;
 
-			/// ｱﾆﾒｰｼｮﾝがループしなかったので、コメントアウトをしている
-			/*/// ｱﾆﾒｰｼｮﾝのｺﾏを最初のｺﾏに戻すかの処理
+			/// ｱﾆﾒｰｼｮﾝのｺﾏを最初のｺﾏに戻すかの処理
 			if (actionData.actionInfo[nowActionName].isLoop)
 			{
 				nowCutIdx = 0;
@@ -59,7 +58,7 @@ bool CharactorObject::ProceedAnimFile()
 			else
 			{
 				return true;
-			}*/
+			}
 		}
 	}
 
