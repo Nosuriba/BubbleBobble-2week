@@ -21,7 +21,7 @@ private:
 	void Run(const Input & p);
 	void Jump(const Input & p);
 	void Shot(const Input & p);
-	void OnGround();
+	bool OnGround();						// ’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚©‚Ì”»’è—p
 
 	void (Player::*updater)(const Input & p);
 
@@ -33,7 +33,6 @@ private:
 
 	bool hitFlag;
 	bool jumpFlag;		// true:”ò‚ñ‚Å‚¢‚é, false:”ò‚ñ‚Å‚¢‚È‚¢
-	bool groundFlag;	// true:’nã, false:‹ó’†
 	bool dieFlag;		// true:¶‚«‚Ä‚¢‚é, false:€‚ñ‚Å‚¢‚é
 };
 

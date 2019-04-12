@@ -58,7 +58,6 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	/// 落下中にブロックの上に乗った時の処理
 	if (groundFlag && vel.y >= 0.0f)
 	{
-		this->groundFlag = groundFlag;
  		this->vel.y		 = 0;
 		this->groundLine = rcB.Top() + 1;		// 床に少しめり込むようにしている。
 	}
@@ -67,7 +66,7 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;			// いずれ、画面の一番下を指定することになる(画面外指定)
 	}
 
-	return this->groundFlag;
+	return groundFlag;
 }
 
 void Player::Idle(const Input & p)
@@ -87,10 +86,8 @@ void Player::Idle(const Input & p)
 		updater = &Player::Shot;
 	}
 
-	OnGround();
-
 	/// 地面についているかの判定
-	if (groundFlag)
+	if (OnGround())
 	{
 		vel = Vector2f(0,0);
 		pos.y = groundLine - size.y;
@@ -100,7 +97,6 @@ void Player::Idle(const Input & p)
 			actionName = "jump";
 			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
-			groundFlag = false;
 			vel.y	   -= 14.0f;
 			return;
 		}
@@ -140,10 +136,9 @@ void Player::Run(const Input & p)
 	{
 		vel.x = 0;
 	}
-
 	
 	/// 地面についているかの判定
-	if (groundFlag)
+	if (OnGround())
 	{
 		vel.y = 0;
 		// pos.y = groundLine - size.y;
@@ -152,7 +147,6 @@ void Player::Run(const Input & p)
 			actionName = "jump";
 			ChangeAction(actionName.c_str());
 			jumpFlag   = true;
-			groundFlag = false;
 			vel.y	  -= 14.0f;
 			updater    = &Player::Jump;
 		}
@@ -162,7 +156,7 @@ void Player::Run(const Input & p)
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
-	OnGround();
+	
 
 	
 	ProceedAnimFile();
@@ -170,10 +164,8 @@ void Player::Run(const Input & p)
 
 void Player::Jump(const Input & p)
 {
-	OnGround();
-
 	/// 地面についているかの判定
-	if (groundFlag)
+	if (OnGround())
 	{
 		actionName = "idle";
 		ChangeAction(actionName.c_str());
@@ -230,7 +222,7 @@ void Player::Shot(const Input & p)
 	
 
 	/// 地面についているかの判定
-	if (groundFlag)
+	if (OnGround())
 	{
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_5))
@@ -238,7 +230,6 @@ void Player::Shot(const Input & p)
 			actionName = "jump";
 			ChangeAction(actionName.c_str());
 			jumpFlag = true;
-			groundFlag = false;
 			vel.y -= 12.0f;
 			updater = &Player::Jump;
 		}
@@ -247,21 +238,17 @@ void Player::Shot(const Input & p)
 	{
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
-	OnGround();
 	ProceedAnimFile();
 }
 
-void Player::OnGround()
+bool Player::OnGround()
 {
 	if (pos.y + size.y > groundLine)
 	{
 		jumpFlag = false;
-		groundFlag = true;
+		return true;
 	}
-	else
-	{
-		groundFlag = false;
-	}
+	return false;
 }
 
 
