@@ -11,8 +11,8 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	bool HitWall(bool hitFlag, Rect rcB);						// 壁と当たったかの判定
-	void HitGround(bool groundFlag, Rect rcB);		// ジャンプ中、ブロックに乗ったかの判定
+	bool HitWall(bool hitFlag, Rect rcB);			// 壁と当たったかの判定
+	bool HitGround(bool groundFlag, Rect rcB);		// ジャンプ中、ブロックに乗ったかの判定
 	void Update(const Input & p);
 	void Draw();
 	Rect GetRect();									// 矩形取得用
@@ -38,6 +38,7 @@ private:
 	bool dieFlag;		// true:生きている, false:死んでいる
 
 	int debugLine;	   // 最初に設定した床の位置を保存している(debug用)
+
 
 };
 

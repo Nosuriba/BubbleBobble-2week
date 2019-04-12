@@ -6,7 +6,7 @@
 
 std::unique_ptr<Game, Game::GameDeleter> Game::s_Instance(new Game());
 
-Game::Game() : screenSize(768, 768)
+Game::Game() : screenSize(768, 672)
 {
 }
 

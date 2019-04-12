@@ -52,7 +52,7 @@ bool Player::HitWall(bool hitFlag, Rect rcB)
 	return this->hitFlag;
 }
 
-void Player::HitGround(bool groundFlag, Rect rcB)
+bool Player::HitGround(bool groundFlag, Rect rcB)
 {
 	/// 落下中にブロックの上に乗った時の処理
 	if (groundFlag && vel.y >= 0.0f)
@@ -65,6 +65,8 @@ void Player::HitGround(bool groundFlag, Rect rcB)
 	{
 		this->groundLine = debugLine;			// いずれ、画面の一番下を指定することになる(画面外指定)
 	}
+
+	return this->groundFlag;
 }
 
 void Player::Idle(const Input & p)
@@ -224,7 +226,7 @@ void Player::Shot(const Input & p)
 		updater = &Player::Idle;
 	}
 
-	OnGround();
+	
 
 	/// 地面についているかの判定
 	if (groundFlag)
@@ -244,7 +246,7 @@ void Player::Shot(const Input & p)
 	{
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
-
+	OnGround();
 	ProceedAnimFile();
 }
 
