@@ -25,9 +25,9 @@ void CharactorObject::ChangeAction(const char * name)
 void CharactorObject::Init(std::string actionName, const Vector2f & pos, const Vector2 & size)
 {
 	this->nowActionName = actionName;
-	this->nowCutIdx = 0;
-	this->pos = pos;
-	this->size = size;
+	this->nowCutIdx		= 0;
+	this->pos			= pos;
+	this->size			= size;
 
 }
 

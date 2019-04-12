@@ -32,7 +32,6 @@ void MainScene::Init()
 	std::string name[] = {"0"};			/// 特定のステージチップを読み込むようにしている(仮設定)
 	stage = std::make_shared<Stage>();
 
-	auto wallPos = Vector2f(wallSize, wallSize);
 	auto chipData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
 	auto mapSize = stage->GetStageRange();
 
@@ -41,8 +40,8 @@ void MainScene::Init()
 		if (name[tmp] == "0")
 		{
 			/// ﾌﾞﾛｯｸﾃﾞｰﾀの読み込みは縦に読み込まれていくからこのような計算になっている。
-			auto pos = Vector2f(wallPos.x + (blockSize * (blockCnt / blockMax.y)), 
-								wallPos.y + (blockSize * (blockCnt % blockMax.y)));
+			auto pos = Vector2f(wallSize + (blockSize * (blockCnt / blockMax.y)), 
+								wallSize + (blockSize * (blockCnt % blockMax.y)));
 			
 			blocks.push_back(std::make_shared<Block>());
 			blocks[cnt]->Init(ImageMng::GetInstance().GetImage().chipImage, pos, Vector2(2, 24), Vector2(0,0), Vector2(blockSize, blockSize));
@@ -88,6 +87,7 @@ void MainScene::Update(const Input & p)
 	}
 	for (auto itr : wall)
 	{
+		
 		if (player->HitWall(CollisionDetector::WallCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
 		{
 			break;

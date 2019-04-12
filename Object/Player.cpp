@@ -63,6 +63,7 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	else
 	{
 		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;			// いずれ、画面の一番下を指定することになる(画面外指定)
+		
 	}
 
 	return groundFlag;
@@ -109,7 +110,6 @@ void Player::Idle(const Input & p)
 
 void Player::Run(const Input & p)
 {
-	
 	if (!hitFlag)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
@@ -209,8 +209,6 @@ void Player::Shot(const Input & p)
 		updater = &Player::Idle;
 	}
 
-	
-
 	/// 地面についているかの判定
 	if (OnGround())
 	{
@@ -225,7 +223,8 @@ void Player::Shot(const Input & p)
 	}
 	else
 	{
-		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
+		updater = &Player::Jump;
+		ChangeAction("jump");
 	}
 	ProceedAnimFile();
 }
