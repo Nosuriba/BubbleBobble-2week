@@ -6,28 +6,29 @@
 #include "../Input.h"
 #include "../Game.h"
 
-Player::Player()
+Player::Player() : invCnt(10)
 {
 }
 
-Player::Player(int groundLine)
+Player::Player(int groundLine) : invCnt(30)
 {
 	nowActionName = "idle";
 	nowCutIdx	  = 0;
 	ReadActionFile("Action/player.act");
-	playerImg	 = DxLib::LoadGraph(actionData.imgFilePath.c_str());
+	playerImg	  = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
 	pos	 = vel = Vector2f(0, 0);
 	size = Vector2(0, 0);
 	turnFlag = false;
 	jumpFlag = dieFlag = hitFlag = false;
 
-	this->groundLine = groundLine;
+	this->groundLine = groundLine + 1;		/// 床にめり込むように補正している。
 	updater = &Player::Idle;
 }
 
 Player::~Player()
 {
+	DxLib::DeleteGraph(playerImg);
 }
 
 Rect Player::GetRect()
@@ -37,8 +38,6 @@ Rect Player::GetRect()
 
 	return Rect(center, rectSize);
 }
-
-
 
 bool Player::HitWall(bool hitFlag, const Rect& rcB)
 {
@@ -62,11 +61,21 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	}
 	else
 	{
-		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;			// いずれ、画面の一番下を指定することになる(画面外指定)
-		
+		// いずれ、画面の一番下を指定することになる(画面外指定)
+		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;
 	}
 
 	return groundFlag;
+}
+
+bool Player::CreateBubble()
+{
+	if (shotFlag)
+	{
+		shotInvCnt = invCnt;
+		return shotFlag;
+	}
+	return shotFlag;
 }
 
 void Player::Idle(const Input & p)
@@ -138,7 +147,6 @@ void Player::Run(const Input & p)
 	if (OnGround())
 	{
 		vel.y = 0;
-		// pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
 			ChangeAction("jump");
@@ -199,6 +207,10 @@ void Player::Jump(const Input & p)
 
 void Player::Shot(const Input & p)
 {
+	if (shotInvCnt < 0)
+	{
+
+	}
 	if (p.IsPressing(PAD_INPUT_6))
 	{
 
@@ -243,6 +255,8 @@ bool Player::OnGround()
 void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
+
+	shotInvCnt = (shotInvCnt < 0 ? shotInvCnt = 0  :  shotInvCnt -= 1);
 
 	if (pos.y > Game::GetInstance().GetScreenSize().y)
 	{
