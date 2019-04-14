@@ -12,7 +12,7 @@ Player::Player() : invCnt(10)
 
 Player::Player(int groundLine) : invCnt(30)
 {
-	nowActionName = "idle";
+	Idle();
 	nowCutIdx	  = 0;
 	ReadActionFile("Action/player.act");
 	playerImg	  = DxLib::LoadGraph(actionData.imgFilePath.c_str());
@@ -21,9 +21,7 @@ Player::Player(int groundLine) : invCnt(30)
 	size = Vector2(0, 0);
 	turnFlag = false;
 	jumpFlag = dieFlag = hitFlag = false;
-
 	this->groundLine = groundLine + 1;		/// 床にめり込むように補正している。
-	updater = &Player::Idle;
 }
 
 Player::~Player()
@@ -61,10 +59,8 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	}
 	else
 	{
-		// いずれ、画面の一番下を指定することになる(画面外指定)
-		this->groundLine = Game::GetInstance().GetScreenSize().y + size.y * 2;
+		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
 	}
-
 	return groundFlag;
 }
 
@@ -78,46 +74,66 @@ bool Player::CreateBubble()
 	return shotFlag;
 }
 
-void Player::Idle(const Input & p)
+void Player::Idle()
+{
+	ChangeAction("idle");
+	updater = &Player::IdleUpdate;
+}
+
+void Player::Run()
+{
+	ChangeAction("run");
+	updater = &Player::RunUpdate;
+}
+
+void Player::Jump()
+{
+	ChangeAction("jump");
+	updater = &Player::JumpUpdate;
+	jumpFlag = true;
+}
+
+void Player::Shot()
+{
+	ChangeAction("eat");
+	updater = &Player::ShotUpdate;
+}
+
+void Player::IdleUpdate(const Input & p)
 {
 	if (p.IsPressing(PAD_INPUT_RIGHT) ||
 		p.IsPressing(PAD_INPUT_LEFT))
 	{
-		updater = &Player::Run;
-		ChangeAction("run");
+		Run();
 		return;
 	}
-	
+
 	if (p.IsPressing(PAD_INPUT_6))
 	{
-		ChangeAction("eat");
-		updater = &Player::Shot;
+		Shot();
 	}
 
 	/// 地面についているかの判定
 	if (OnGround())
 	{
-		vel = Vector2f(0,0);
+		vel = Vector2f(0, 0);
 		pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
-			updater = &Player::Jump;
-			ChangeAction("jump");
-			jumpFlag   = true;
-			vel.y	   -= 14.0f;
+			vel.y -= 14.0f;
+			Jump();
 			return;
 		}
 	}
 	else
 	{
-		updater = &Player::Jump;
-		ChangeAction("jump");
+		Jump();
 	}
 
 	ProceedAnimFile();
 }
 
-void Player::Run(const Input & p)
+void Player::RunUpdate(const Input & p)
 {
 	if (!hitFlag)
 	{
@@ -133,52 +149,47 @@ void Player::Run(const Input & p)
 		}
 		else
 		{
-			ChangeAction("idle");
 			vel.x = 0;
-			updater = &Player::Idle;
+			Idle();
 		}
 	}
 	else
 	{
 		vel.x = 0;
 	}
-	
+
 	/// 地面についているかの判定
 	if (OnGround())
 	{
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
-			ChangeAction("jump");
-			jumpFlag   = true;
-			vel.y	  -= 14.0f;
-			updater    = &Player::Jump;
+			vel.y -= 14.0f;
+			Jump();
 		}
 	}
 	else
 	{
-		updater = &Player::Jump;
-		ChangeAction("jump");
+		Jump();
 	}
-	
+
 	ProceedAnimFile();
 }
 
-void Player::Jump(const Input & p)
+void Player::JumpUpdate(const Input & p)
 {
 	/// 地面についているかの判定
 	if (OnGround())
 	{
-		updater = &Player::Idle;
-		ChangeAction("idle");
 		vel.y = 0;
 		pos.y = groundLine - size.y;
+		Idle();
 		return;
 	}
 	else
 	{
 		///	落下処理
-		vel.y  = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
+		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
 	if (!hitFlag)
@@ -205,7 +216,7 @@ void Player::Jump(const Input & p)
 	ProceedAnimFile();
 }
 
-void Player::Shot(const Input & p)
+void Player::ShotUpdate(const Input & p)
 {
 	if (shotInvCnt < 0)
 	{
@@ -217,8 +228,7 @@ void Player::Shot(const Input & p)
 	}
 	else
 	{
-		ChangeAction("idle");
-		updater = &Player::Idle;
+		Idle();
 	}
 
 	/// 地面についているかの判定
@@ -227,16 +237,13 @@ void Player::Shot(const Input & p)
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_5))
 		{
-			ChangeAction("jump");
-			jumpFlag = true;
-			vel.y -= 12.0f;
-			updater = &Player::Jump;
+			vel.y -= 14.0f;
+			Jump();
 		}
 	}
 	else
 	{
-		updater = &Player::Jump;
-		ChangeAction("jump");
+		Jump();
 	}
 	ProceedAnimFile();
 }
@@ -250,7 +257,6 @@ bool Player::OnGround()
 	}
 	return false;
 }
-
 
 void Player::Update(const Input & p)
 {

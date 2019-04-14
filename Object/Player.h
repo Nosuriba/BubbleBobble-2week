@@ -18,10 +18,15 @@ public:
 	void Draw();
 	Rect GetRect();									   // 矩形取得用
 private:
-	void Idle(const Input & p);
-	void Run(const Input & p);
-	void Jump(const Input & p);
-	void Shot(const Input & p);
+	void Idle();
+	void Run();
+	void Jump();
+	void Shot();
+	
+	void IdleUpdate(const Input & p);
+	void RunUpdate(const Input & p);
+	void JumpUpdate(const Input & p);
+	void ShotUpdate(const Input & p);
 
 	bool OnGround();						// 地面についているかの判定用
 
