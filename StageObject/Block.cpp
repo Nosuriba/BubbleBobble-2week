@@ -1,3 +1,4 @@
+#include <DxLib.h>
 #include "Block.h"
 #include "../Input.h"
 #include "../ImageMng.h"
@@ -13,7 +14,7 @@ Block::~Block()
 {
 }
 
-void Block::Update(const Input & p)
+void Block::Update()
 {
 	
 }

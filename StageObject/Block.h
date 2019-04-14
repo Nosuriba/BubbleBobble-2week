@@ -9,7 +9,7 @@ class Block :
 public:
 	Block();
 	~Block();
-	void Update(const Input & p);
+	void Update();
 	void Draw();
 	Rect GetRect();
 private:

@@ -2,7 +2,6 @@
 #include <cmath>
 #include "CharactorObject.h"
 #include "Player.h"
-#include "../ImageMng.h"
 #include "../Input.h"
 #include "../Game.h"
 

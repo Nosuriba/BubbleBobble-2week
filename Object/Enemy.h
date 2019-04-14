@@ -8,12 +8,23 @@ class Enemy :
 {
 public:
 	Enemy();
-	Enemy(int groundLine);
 	~Enemy();
 	void Update(const Input & p);
 	void Draw();
-	void InitAnim(void);
-	void AddAnim(std::string animName, const Vector2 & id,
-				 int frame, int interval);
+	Rect GetRect();
+private:
+	void Idle();
+	void Run();
+	void Jump();
+	void Die();
+
+	void IdleUpdate(const Input& p);
+	void RunUpdate(const Input& p);
+	void JumpUpdate(const Input& p);
+	void DieUpdate(const Input& p);
+
+	void(Enemy::*updater)(const Input& p);
+
+	int enemyImage;
 };
 
