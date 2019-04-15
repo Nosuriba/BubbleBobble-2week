@@ -1,6 +1,9 @@
 #pragma once
 #include "CharactorObject.h"
 
+class Bubble;
+using shared_Bubble = std::shared_ptr<Bubble>;
+
 class Bubble :
 	public CharactorObject
 {
@@ -10,17 +13,27 @@ public:
 
 	void Update();
 	void Draw();
+	bool HitPlayer(const bool hitFlag);
+	bool HitEnemy(const bool hitFlag);
+	bool HitObject(const bool hitFlag);
+	bool HitBubble(const bool hitFlag);
 	Rect GetRect();
+	Rect ShotGetRect();
+	shared_Bubble DeleteBubble(const shared_Bubble & itr);
 private:
-	void Spit();		// –A‚ğ“f‚¢‚½
+	void Shot();		// –A‚ğ“f‚¢‚½
 	void Floating();	// –A‚ª•‚‚¢‚Ä‚¢‚é	
+	void Pop();
 
-	void SpitUpdate();
+
+	void ShotUpdate();
 	void FloatingUpdate();
+	void PopUpdate();
 
 	void (Bubble::*updater)();
 
 	bool bubbleDir;		// true:¶•ûŒü, false:‰E•ûŒü
+	bool deleteFlag;	// true:íœ, false:íœ‚µ‚È‚¢
 
 	int bubbleImage;
 	int invCnt;

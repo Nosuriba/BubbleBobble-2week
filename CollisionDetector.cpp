@@ -16,15 +16,17 @@ const bool CollisionDetector::GroundCollCheck(Rect rcA, Rect rcB)
 }
 
 const bool CollisionDetector::WallCollCheck(Rect rcA, Rect rcB)
-{
+{	
+	auto RL = (rcA.Right() > rcB.Left());
+	auto LR = rcA.Left() < rcB.Right();
+	auto Coll = CollCheck(rcA, rcB);
+
 	return ((rcA.Right() > rcB.Left() && CollCheck(rcA, rcB)) ||
 			(rcA.Left() < rcB.Right() && CollCheck(rcA, rcB)));
 }
 
 const bool CollisionDetector::CollCheck(Rect rcA, Rect rcB)
 {
-	///	当たり判定を矩形に触れるくらいの位置に修正したが、床の判定の結果が何も変わらなかった
-	/// 別の方法を考えろカス
 	return abs(rcA.center.x - rcB.center.x) < (rcA.Width() + rcB.Width()) / 2
 		&& abs(rcA.center.y - rcB.center.y) < (rcA.Height() + rcB.Height()) / 2;
 }

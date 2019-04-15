@@ -73,6 +73,14 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	return groundFlag;
 }
 
+void Player::StepBubble(bool stepFlag, const Input & p)
+{
+	if (stepFlag && p.IsPressing(PAD_INPUT_5))
+	{
+		vel.y = -10.0f;
+	}
+}
+
 bool Player::ShotCheck()
 {
 	if (shotFlag)
@@ -322,5 +330,5 @@ void Player::Draw()
 void Player::DebugDraw()
 {
 	DrawString(0, 0, nowActionName.c_str(), 0xffffff);
-	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
+	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, false);
 }

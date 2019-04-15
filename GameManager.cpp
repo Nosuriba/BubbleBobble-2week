@@ -100,19 +100,44 @@ void GameManager::PlayerCollision()
 	}
 }
 
+void GameManager::BubbleCollision(const Input& p)
+{
+	for (auto itr : bubbles)
+	{
+		/// 壁との当たり判定
+		for (auto wall : walls)
+		{
+			if (itr->HitObject(CollisionDetector::WallCollCheck(itr->ShotGetRect(), wall->GetRect())))
+			{
+				return;
+			}
+		}
+		/// ﾌﾞﾛｯｸとの当たり判定
+		for (auto block : blocks)
+		{
+			if (itr->HitObject(CollisionDetector::WallCollCheck(itr->ShotGetRect(), block->GetRect())))
+			{
+				return;
+			}
+		}
+
+		/// ﾌﾟﾚｲﾔｰとの当たり判定
+		if (itr->HitPlayer(CollisionDetector::CollCheck(itr->GetRect(), player->GetRect())))
+		{
+			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), itr->GetRect()), p);
+		}
+	}
+}
+
 void GameManager::Update(const Input & p)
 {
 	player->Update(p);
 	CreateBubble();
 	PlayerCollision();		/// プレイヤーの当たり判定を検出している
+	BubbleCollision(p);
 
 	player->Draw();
 
-	for (auto itr : bubbles)
-	{
-		itr->Update();
-		itr->Draw();
-	}
 	for (auto itr : walls)
 	{
 		itr->Draw();
@@ -120,6 +145,12 @@ void GameManager::Update(const Input & p)
 	for (auto itr : blocks)
 	{
 		itr->Draw();
+	}
+	for (auto itr : bubbles)
+	{
+		itr->Update();
+		itr->Draw();
+		itr->DeleteBubble(itr);
 	}
 	
 }
