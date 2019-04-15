@@ -2,15 +2,16 @@
 #include "Input.h"
 #include "Game.h"
 #include "Stage.h"
-#include "ImageMng.h"
 #include "AudioMng.h"
+#include "CollisionDetector.h"
 #include "Object/Player.h"
+#include "Object/Bubble.h"
 #include "StageObject/Block.h"
 #include "StageObject/Wall.h"
-#include "CollisionDetector.h"
+
 
 GameManager::GameManager() :
-	blockMax(28, 26), blockSize(24), playerSize(48),
+	blockMax(28, 26), blockSize(24), playerSize(48), bubbleSize(48),
 	wallMax(26), wallSize(48)
 {
 }
@@ -35,6 +36,15 @@ void GameManager::CreateStage()
 	BlockInstance();
 }
 
+void GameManager::CreateBubble()
+{
+	if (player->ShotCheck())
+	{
+		bubbles.push_back(std::make_shared<Bubble>(player->GetTurnFlag()));
+		bubbles[bubbles.size() - 1]->Init("shot", player->GetPos(), Vector2(bubbleSize, bubbleSize));
+	}
+}
+
 void GameManager::WallInstance()
 {
 	for (auto i = 0; i < wallMax; i++)
@@ -43,7 +53,7 @@ void GameManager::WallInstance()
 							 wallSize + (wallSize * (i % (wallMax / 2))));
 
 		walls.push_back(std::make_shared<Wall>());
-		walls[i]->Init(ImageMng::GetInstance().GetImage().wallImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
+		walls[i]->Init("resource/Image/wall.png", pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
 	}
 }
 
@@ -64,7 +74,7 @@ void GameManager::BlockInstance()
 								wallSize + (blockSize * (blockCnt % blockMax.y)));
 
 			blocks.push_back(std::make_shared<Block>());
-			blocks[cnt]->Init(ImageMng::GetInstance().GetImage().chipImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(blockSize, blockSize));
+			blocks[cnt]->Init("resource/Image/block.png", pos, Vector2(2, 24), Vector2(0, 0), Vector2(blockSize, blockSize));
 			cnt++;
 		}
 		blockCnt++;
@@ -93,17 +103,23 @@ void GameManager::PlayerCollision()
 void GameManager::Update(const Input & p)
 {
 	player->Update(p);
-	PlayerCollision();
+	CreateBubble();
+	PlayerCollision();		/// プレイヤーの当たり判定を検出している
 
 	player->Draw();
 
+	for (auto itr : bubbles)
+	{
+		itr->Update();
+		itr->Draw();
+	}
 	for (auto itr : walls)
 	{
 		itr->Draw();
 	}
-
 	for (auto itr : blocks)
 	{
 		itr->Draw();
 	}
+	
 }

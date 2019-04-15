@@ -5,22 +5,22 @@
 #include "../Input.h"
 #include "../Game.h"
 
-Player::Player() : invCnt(10)
+Player::Player() : shotFrame(5)
 {
 }
 
-Player::Player(int groundLine) : invCnt(30)
+Player::Player(int groundLine) : shotFrame(5)
 {
 	Idle();
 	nowCutIdx	  = 0;
 	ReadActionFile("Action/player.act");
 	playerImg	  = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
+	this->groundLine = groundLine + 1;		/// 床にめり込むように補正している。
 	pos	 = vel = Vector2f(0, 0);
 	size = Vector2(0, 0);
-	turnFlag = false;
-	jumpFlag = dieFlag = hitFlag = false;
-	this->groundLine = groundLine + 1;		/// 床にめり込むように補正している。
+	jumpFlag = dieFlag = hitFlag = turnFlag = shotFlag = false;
+	
 }
 
 Player::~Player()
@@ -34,6 +34,16 @@ Rect Player::GetRect()
 	auto rectSize = Size(size.x, size.y);
 
 	return Rect(center, rectSize);
+}
+
+const bool & Player::GetTurnFlag()
+{
+	return turnFlag;
+}
+
+const Vector2f& Player::GetPos()
+{
+	return pos;
 }
 
 bool Player::HitWall(bool hitFlag, const Rect& rcB)
@@ -63,14 +73,15 @@ bool Player::HitGround(bool groundFlag, const Rect& rcB)
 	return groundFlag;
 }
 
-bool Player::CreateBubble()
+bool Player::ShotCheck()
 {
 	if (shotFlag)
 	{
-		shotInvCnt = invCnt;
-		return shotFlag;
+		invCnt = shotFrame;
+		shotFlag = false;
+		return true;
 	}
-	return shotFlag;
+	return false;
 }
 
 void Player::Idle()
@@ -111,8 +122,9 @@ void Player::IdleUpdate(const Input & p)
 		return;
 	}
 
-	if (p.IsPressing(PAD_INPUT_6))
+	if (p.IsTrigger(PAD_INPUT_6))
 	{
+		shotFlag = true;
 		Shot();
 	}
 
@@ -161,6 +173,12 @@ void Player::RunUpdate(const Input & p)
 		vel.x = 0;
 	}
 
+	if (p.IsTrigger(PAD_INPUT_6))
+	{
+		shotFlag = true;
+		Shot();
+	}
+
 	/// 地面についているかの判定
 	if (OnGround())
 	{
@@ -195,6 +213,12 @@ void Player::JumpUpdate(const Input & p)
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
+	if (p.IsTrigger(PAD_INPUT_6))
+	{
+		shotFlag = true;
+		Shot();
+	}
+
 	if (!hitFlag)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
@@ -221,34 +245,44 @@ void Player::JumpUpdate(const Input & p)
 
 void Player::ShotUpdate(const Input & p)
 {
-	if (shotInvCnt < 0)
-	{
-
-	}
-	if (p.IsPressing(PAD_INPUT_6))
-	{
-
-	}
-	else
-	{
-		Idle();
-	}
-
 	/// 地面についているかの判定
 	if (OnGround())
 	{
 		vel.y = 0;
-		if (p.IsTrigger(PAD_INPUT_5))
+		pos.y = groundLine - size.y;
+	}
+	else
+	{
+		///	落下処理
+		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
+	}
+
+	if (!hitFlag)
+	{
+		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
-			vel.y -= 14.0f;
-			Jump();
+			turnFlag = false;
+			vel.x = 7.0f;
+		}
+		else if (p.IsPressing(PAD_INPUT_LEFT))
+		{
+			turnFlag = true;
+			vel.x = -7.0f;
+		}
+		else
+		{
+			vel.x = 0;
 		}
 	}
 	else
 	{
-		Jump();
+		vel.x = 0;
 	}
-	ProceedAnimFile();
+
+	if (ProceedAnimFile())
+	{
+		Idle();
+	}
 }
 
 void Player::DieUpdate(const Input & p)
@@ -269,7 +303,7 @@ void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
 
-	shotInvCnt = (shotInvCnt < 0 ? shotInvCnt = 0  :  shotInvCnt -= 1);
+	invCnt = (invCnt < 0 ? invCnt = 0  :  invCnt -= 1);
 
 	if (pos.y > Game::GetInstance().GetScreenSize().y)
 	{

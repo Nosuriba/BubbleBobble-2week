@@ -13,9 +13,12 @@ public:
 	~Player();
 	bool HitWall(bool hitFlag, const Rect& rcB);		// 壁と当たったかの判定
 	bool HitGround(bool groundFlag, const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
-	bool CreateBubble();								// ショットが打てるかの判定用
+	bool ShotCheck();									// ショットが打てるかの判定用
 	void Update(const Input & p);
 	void Draw();
+
+	const bool& GetTurnFlag();
+	const Vector2f& GetPos(); 
 	Rect GetRect();									   // 矩形取得用
 private:
 	void Idle();
@@ -37,13 +40,13 @@ private:
 	void (Player::*updater)(const Input & p);
 
 	int playerImg;
-	int shotInvCnt;		// ショットが打てるまでの間隔
+	int invCnt;			// ショットが打てるまでの間隔
 
 	bool hitFlag;
 	bool shotFlag;
 	bool jumpFlag;		// true:飛んでいる, false:飛んでいない
 	bool dieFlag;		// true:生きている, false:死んでいる
 
-	const int invCnt;
+	const int shotFrame;
 };
 

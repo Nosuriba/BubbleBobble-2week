@@ -1,4 +1,3 @@
-
 #include <DxLib.h>
 #include "ImageMng.h"
 
@@ -10,11 +9,6 @@ ImageMng::ImageMng()
 
 ImageMng::~ImageMng()
 {
-}
-
-const ImageName ImageMng::GetImage()
-{
-	return image;
 }
 
 const VEC_INT ImageMng::ImgGetID(std::string fileName)
