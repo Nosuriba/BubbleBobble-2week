@@ -19,7 +19,11 @@ public:
 	void Init();
 	void Update(const Input & p);
 private:
-	void CreateBlock();				// ½Ã°¼ŞÌŞÛ¯¸‚Ì¶¬‚ğ‚µ‚Ä‚¢‚é
+	void CreateStage();				// ½Ã°¼Ş‚Ì¶¬‚ğ‚µ‚Ä‚¢‚é
+	void WallInstance();			// •Ç‚Ìİ’u
+	void BlockInstance();			// ÌŞÛ¯¸‚Ìİ’u
+	void PlayerCollision();
+
 
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Stage> stage;

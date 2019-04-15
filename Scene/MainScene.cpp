@@ -26,4 +26,5 @@ void MainScene::Update(const Input & p)
 	{
 		Game::GetInstance().ChangeScene(new ResultScene());
 	}
+
 }

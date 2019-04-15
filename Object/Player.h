@@ -22,11 +22,13 @@ private:
 	void Run();
 	void Jump();
 	void Shot();
+	void Die();
 	
 	void IdleUpdate(const Input & p);
 	void RunUpdate(const Input & p);
 	void JumpUpdate(const Input & p);
 	void ShotUpdate(const Input & p);
+	void DieUpdate(const Input & p);
 
 	bool OnGround();						// ’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚©‚Ì”»’è—p
 

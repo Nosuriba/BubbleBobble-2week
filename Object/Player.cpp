@@ -30,7 +30,7 @@ Player::~Player()
 
 Rect Player::GetRect()
 {
-	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
+	auto center   = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
 	auto rectSize = Size(size.x, size.y);
 
 	return Rect(center, rectSize);
@@ -96,6 +96,10 @@ void Player::Shot()
 {
 	ChangeAction("eat");
 	updater = &Player::ShotUpdate;
+}
+
+void Player::Die()
+{
 }
 
 void Player::IdleUpdate(const Input & p)
@@ -247,6 +251,10 @@ void Player::ShotUpdate(const Input & p)
 	ProceedAnimFile();
 }
 
+void Player::DieUpdate(const Input & p)
+{
+}
+
 bool Player::OnGround()
 {
 	if (pos.y + size.y >= groundLine)
@@ -280,6 +288,5 @@ void Player::Draw()
 void Player::DebugDraw()
 {
 	DrawString(0, 0, nowActionName.c_str(), 0xffffff);
-
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, true);
 }

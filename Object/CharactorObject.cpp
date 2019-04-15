@@ -31,7 +31,6 @@ void CharactorObject::Init(std::string actionName, const Vector2f & pos, const V
 
 }
 
-
 bool CharactorObject::ProceedAnimFile()
 {
 	if ((signed)frame < actionData.actionInfo[nowActionName].cuts[nowCutIdx].duration)
@@ -153,9 +152,4 @@ void CharactorObject::Draw(int img)
 	DxLib::DrawRectRotaGraph2(pos.x, pos.y, rc.Left(), rc.Top(),
 							  rc.Width(), rc.Height(), centerX - (size.x / 2), cut.center.y - (size.y / 2),
 							  1.0f, 0.0, img, true, turnFlag);
-}
-
-Rect CharactorObject::GetRect()
-{
-	return Rect();
 }

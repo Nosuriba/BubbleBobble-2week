@@ -57,3 +57,11 @@ void Enemy::Update(const Input & p)
 void Enemy::Draw()
 {
 }
+
+Rect Enemy::GetRect()
+{
+	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
+	auto rectSize = Size(size.x, size.y);
+
+	return Rect(center, rectSize);
+}

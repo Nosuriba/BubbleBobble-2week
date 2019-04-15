@@ -41,3 +41,11 @@ void Bubble::Draw()
 {
 }
 
+Rect Bubble::GetRect()
+{
+	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
+	auto rectSize = Size(size.x, size.y);
+
+	return Rect(center, rectSize);
+}
+

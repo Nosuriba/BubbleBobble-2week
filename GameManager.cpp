@@ -26,33 +26,40 @@ void GameManager::Init()
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
 	player->Init("idle", Vector2f(playerSize * 2, Game::GetInstance().GetScreenSize().y - blockSize), Vector2(playerSize, playerSize));
 
-	CreateBlock();
+	CreateStage();
 }
 
-void GameManager::CreateBlock()
+void GameManager::CreateStage()
 {
-	int blockCnt = 0;
-	int cnt		 = 0;
-	std::string name[] = { "0" };			/// 特定のステージチップを読み込むようにしている(仮設定)
-	auto chipData	   = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
-	auto mapSize	   = stage->GetStageRange();
+	WallInstance();
+	BlockInstance();
+}
 
-	/// 壁の生成
+void GameManager::WallInstance()
+{
 	for (auto i = 0; i < wallMax; i++)
 	{
 		auto pos = Vector2f((Game::GetInstance().GetScreenSize().x - wallSize) * (i / (wallMax / 2)),
-			wallSize + (wallSize * (i % (wallMax / 2))));
+							 wallSize + (wallSize * (i % (wallMax / 2))));
 
 		walls.push_back(std::make_shared<Wall>());
 		walls[i]->Init(ImageMng::GetInstance().GetImage().wallImage, pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
 	}
+}
 
-	/// ﾌﾞﾛｯｸの生成
+void GameManager::BlockInstance()
+{
+	int blockCnt = 0;
+	int cnt = 0;
+	std::string name[] = { "0" };			/// 特定のステージチップを読み込むようにしている(仮設定)
+	auto chipData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
+	auto mapSize = stage->GetStageRange();
+
 	for (auto& tmp : chipData)
 	{
 		if (name[tmp] == "0")
 		{
-			/// ﾌﾞﾛｯｸﾃﾞｰﾀの読み込みは縦に読み込まれていくからこのような計算になっている。
+			/// ﾌﾞﾛｯｸﾃﾞｰﾀの読み込みは縦に読み込まれていくのでこのような計算になっている。
 			auto pos = Vector2f(wallSize + (blockSize * (blockCnt / blockMax.y)),
 								wallSize + (blockSize * (blockCnt % blockMax.y)));
 
@@ -62,21 +69,10 @@ void GameManager::CreateBlock()
 		}
 		blockCnt++;
 	}
-
-	
 }
 
-void GameManager::Update(const Input & p)
+void GameManager::PlayerCollision()
 {
-	player->Update(p);
-	player->Draw();
-
-	/// 壁の描画と壁に当たったかの処理
-	for (auto itr : walls)
-	{
-		itr->Draw();
-		itr->Update();
-	}
 	for (auto itr : walls)
 	{
 		if (player->HitWall(CollisionDetector::WallCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
@@ -85,11 +81,6 @@ void GameManager::Update(const Input & p)
 		}
 	}
 
-	/// ﾌﾞﾛｯｸの描画とﾌﾞﾛｯｸの床に当たったかの処理
-	for (auto itr : blocks)
-	{
-		itr->Draw();
-	}
 	for (auto itr : blocks)
 	{
 		if (player->HitGround(CollisionDetector::GroundCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
@@ -97,6 +88,22 @@ void GameManager::Update(const Input & p)
 			break;
 		}
 	}
+}
 
-	
+void GameManager::Update(const Input & p)
+{
+	player->Update(p);
+	PlayerCollision();
+
+	player->Draw();
+
+	for (auto itr : walls)
+	{
+		itr->Draw();
+	}
+
+	for (auto itr : blocks)
+	{
+		itr->Draw();
+	}
 }

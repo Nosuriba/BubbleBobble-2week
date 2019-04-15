@@ -21,7 +21,6 @@ public:
 	CharactorObject(int groundLine);
 	~CharactorObject();
 	void Draw(int img);
-	virtual Rect GetRect();
 	
 	// ｱｸｼｮﾝ名, 座標, 画像サイズ
 	void Init(std::string actionName, const Vector2f & pos, const Vector2 & size);
