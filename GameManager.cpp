@@ -104,6 +104,12 @@ void GameManager::BubbleCollision(const Input& p)
 {
 	for (auto itr = bubbles.begin(); itr != bubbles.end(); itr++)
 	{
+		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
+		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect())))
+		{
+			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()), p);
+		}
+
 		if ((*itr)->CheckShotState())
 		{
 			/// •Ç‚Æ‚Ì“–‚½‚è”»’è
@@ -125,18 +131,27 @@ void GameManager::BubbleCollision(const Input& p)
 		}
 		else
 		{
-			if (itr != bubbles.begin())
+			/// –A“¯m‚Ì“–‚½‚è”»’è(²ÃÚ°À‚ªæ“ªA––”ö‚Å‚Í‚È‚¢‚Æ‚«‚És‚¤)
+			if (itr != bubbles.begin() && itr != bubbles.end() - 1)
 			{
 				auto prevItr = itr - 1;
-				(*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*prevItr)->GetRect()));
+				auto nextItr = itr + 1;
+
+				/// ‘O‚Éo‚µ‚½–A‚Æ‚Ì“–‚½‚è”»’è(–A‚ªŠ„‚ê‚Ä‚¢‚È‚¯‚ê‚Î‰Á‘¬‚·‚é)
+				if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect()), true) &&
+					(*prevItr)->CheckPopState())
+				{
+					(*nextItr)->ChangePop();		
+				}
+				/// Œã‚Éo‚µ‚½–A‚Æ‚Ì“–‚½‚è”»’è(–A‚ªŠ„‚ê‚Ä‚¢‚È‚­‚Ä‚à‰Á‘¬‚µ‚È‚¢)
+				if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect()), false) &&
+					(*itr)->CheckPopState())
+				{
+					(*prevItr)->ChangePop();
+				}
 			}
-		}
-	
-		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
-		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect())))
-		{
-			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()), p);
-		}
+		}	
+		
 	}
 }
 
@@ -144,7 +159,6 @@ void GameManager::Update(const Input & p)
 {
 	player->Update(p);
 	player->Draw();
-	CreateBubble();
 	PlayerCollision();		/// ƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’è‚ğŒŸo‚µ‚Ä‚¢‚é
 	BubbleCollision(p);
 
@@ -159,22 +173,24 @@ void GameManager::Update(const Input & p)
 
 	for (int i = 0; i < bubbles.size(); i++)
 	{
+		bubbles[i]->Update();
+		bubbles[i]->Draw();
+		if (bubbles[i]->CheckDebugF())
+		{
+			auto debug = i;
+			auto d = 0;
+		}
 		if (bubbles[i]->CheckDelete())
 		{
 			bubbles.erase(bubbles.begin() + i);
-			continue;
-		}
-		bubbles[i]->Update();
-		bubbles[i]->Draw();
-
-	
+		}		
 	}
 
-
+	CreateBubble();
 	/// –A‚ªˆê’è”‚ğ’´‚¦‚½‚çAÅ‰‚Éì‚ç‚ê‚½–A‚ğíœ‚·‚é
-	if (bubbles.size() > 15)
+	if (bubbles.size() > 10)
 	{
-		bubbles.erase(bubbles.begin());	
+		bubbles.erase(bubbles.begin());
 	}
 
 }

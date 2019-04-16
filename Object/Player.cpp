@@ -46,7 +46,7 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-bool Player::HitWall(bool hitFlag, const Rect& rcB)
+const bool& Player::HitWall(const bool& hitFlag, const Rect& rcB)
 {
 	this->hitFlag = hitFlag;
 	if (hitFlag)
@@ -58,7 +58,7 @@ bool Player::HitWall(bool hitFlag, const Rect& rcB)
 	return this->hitFlag;
 }
 
-bool Player::HitGround(bool groundFlag, const Rect& rcB)
+const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
 {
 	/// —Ž‰º’†‚ÉƒuƒƒbƒN‚Ìã‚Éæ‚Á‚½Žž‚Ìˆ—
 	if (groundFlag && vel.y >= 0.0f)

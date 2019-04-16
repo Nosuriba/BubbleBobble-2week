@@ -37,13 +37,17 @@ Rect Bubble::ShotGetRect()
 	return Rect(center, rectSize);
 }
 
-bool Bubble::CheckDelete()
+const bool& Bubble::CheckDelete()
 {
-	if (deleteFlag) { return true; }
-	return false;
+	return deleteFlag;
 }
 
-bool Bubble::HitPlayer(const bool hitFlag)
+bool Bubble::CheckDebugF()
+{
+	return (updater == &Bubble::FloatingUpdate);
+}
+
+const bool& Bubble::HitPlayer(const bool& hitFlag)
 {
 	if (updater == &Bubble::FloatingUpdate && hitFlag)
 	{
@@ -53,7 +57,7 @@ bool Bubble::HitPlayer(const bool hitFlag)
 	return false;
 }
 
-bool Bubble::HitEnemy(const bool hitFlag)
+const bool& Bubble::HitEnemy(const bool &hitFlag)
 {
 	if (updater == &Bubble::ShotUpdate && hitFlag)
 	{
@@ -63,7 +67,7 @@ bool Bubble::HitEnemy(const bool hitFlag)
 	return false;
 }
 
-bool Bubble::HitObject(const bool hitFlag)
+const bool& Bubble::HitObject(const bool& hitFlag)
 {
 	if (updater == &Bubble::ShotUpdate && hitFlag)
 	{
@@ -73,21 +77,33 @@ bool Bubble::HitObject(const bool hitFlag)
 	return false;
 }
 
-bool Bubble::HitBubble(const bool hitFlag)
+const bool& Bubble::HitBubble(const bool& hitFlag, const bool& accelFlag)
 {
-	if (hitFlag)
+	if (updater == &Bubble::PopUpdate)
+	{
+		vel = Vector2f(0, 0);
+		return hitFlag;
+	}
+	if (hitFlag && accelFlag)
 	{
 		vel.y = -1.5f;
-		return true;
 	}
-	vel.y = -0.5f;
-	return false;
+	else
+	{
+		vel.y = -0.5f;
+	}
+
+	return hitFlag;
 }
 
-bool Bubble::CheckShotState()
+const bool& Bubble::CheckShotState()
 {
-	if (updater == &Bubble::ShotUpdate) { return true;}
-	return false;
+	return (updater == &Bubble::ShotUpdate);
+}
+
+const bool& Bubble::CheckPopState()
+{
+	return (updater == &Bubble::PopUpdate);
 }
 
 void Bubble::Shot()
@@ -157,6 +173,12 @@ void Bubble::Draw()
 #endif
 
 	CharactorObject::Draw(bubbleImage);
+}
+
+void Bubble::ChangePop()
+{
+	if (updater != &Bubble::PopUpdate){ Pop(); }
+	
 }
 
 void Bubble::DebugDraw()
