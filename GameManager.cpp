@@ -131,17 +131,21 @@ void GameManager::BubbleCollision(const Input& p)
 		}
 		else
 		{
-			/// –A“¯Žm‚Ì“–‚½‚è”»’è(²ÃÚ°À‚ªæ“ªA––”ö‚Å‚Í‚È‚¢‚Æ‚«‚És‚¤)
-			if (itr != bubbles.begin() && itr != bubbles.end() - 1)
+			/// –A“¯Žm‚Ì“–‚½‚è”»’è(²ÃÚ°À‚ªæ“ªA––”ö‚Å‚Í‚È‚¢‚Æ‚«‚És‚¤)		’l‚Ì0”Ô–Ú‚ðŒ©‚Ä‚¢‚È‚¢‚Ì‚ÅA‚»‚±‚Ì•”•ª‚ð‚¿‚á‚ñ‚Æ‚Ý‚Æ‚¯ƒ{ƒP
+			if (itr != bubbles.end() - 1)
 			{
-				auto prevItr = itr - 1;
-				auto nextItr = itr + 1;
+				auto prevItr = (itr == bubbles.begin() ? itr : itr - 1);
+				auto nextItr =  itr + 1;
 
 				/// ‘O‚Éo‚µ‚½–A‚Æ‚Ì“–‚½‚è”»’è(–A‚ªŠ„‚ê‚Ä‚¢‚È‚¯‚ê‚Î‰Á‘¬‚·‚é)
 				if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect()), true) &&
 					(*prevItr)->CheckPopState())
 				{
-					(*nextItr)->ChangePop();		
+					(*itr)->ChangePop();
+					if (prevItr == bubbles.begin())
+					{
+						(*prevItr)->ChangePop();
+					}
 				}
 				/// Œã‚Éo‚µ‚½–A‚Æ‚Ì“–‚½‚è”»’è(–A‚ªŠ„‚ê‚Ä‚¢‚È‚­‚Ä‚à‰Á‘¬‚µ‚È‚¢)
 				if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect()), false) &&
@@ -173,24 +177,20 @@ void GameManager::Update(const Input & p)
 
 	for (int i = 0; i < bubbles.size(); i++)
 	{
-		bubbles[i]->Update();
-		bubbles[i]->Draw();
-		if (bubbles[i]->CheckDebugF())
-		{
-			auto debug = i;
-			auto d = 0;
-		}
 		if (bubbles[i]->CheckDelete())
 		{
 			bubbles.erase(bubbles.begin() + i);
-		}		
+			continue;
+		}
+		bubbles[i]->Update();
+		bubbles[i]->Draw();
+			
 	}
-
 	CreateBubble();
 	/// –A‚ªˆê’è”‚ð’´‚¦‚½‚çAÅ‰‚Éì‚ç‚ê‚½–A‚ðíœ‚·‚é
 	if (bubbles.size() > 10)
 	{
-		bubbles.erase(bubbles.begin());
+		bubbles[0]->ChangePop();
 	}
 
 }
