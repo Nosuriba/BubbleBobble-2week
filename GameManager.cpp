@@ -85,7 +85,7 @@ void GameManager::PlayerCollision()
 {
 	for (auto itr : walls)
 	{
-		if (player->HitWall(CollisionDetector::WallCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
+		if (player->HitWall(CollisionDetector::SideCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
 		{
 			break;
 		}
@@ -104,23 +104,27 @@ void GameManager::BubbleCollision(const Input& p)
 {
 	for (auto itr : bubbles)
 	{
-		/// 壁との当たり判定
-		for (auto wall : walls)
+		if (itr->CheckShotState())
 		{
-			if (itr->HitObject(CollisionDetector::WallCollCheck(itr->ShotGetRect(), wall->GetRect())))
+			/// 壁との当たり判定
+			for (auto wall : walls)
 			{
-				return;
+				if (itr->HitObject(CollisionDetector::SideCollCheck(itr->GetRect(), wall->GetRect())))
+				{
+					return;
+				}
 			}
-		}
-		/// ﾌﾞﾛｯｸとの当たり判定
-		for (auto block : blocks)
-		{
-			if (itr->HitObject(CollisionDetector::WallCollCheck(itr->ShotGetRect(), block->GetRect())))
+			/// ﾌﾞﾛｯｸとの当たり判定
+			for (auto block : blocks)
 			{
-				return;
+				if (itr->HitObject(CollisionDetector::SideCollCheck(itr->ShotGetRect(), block->GetRect())))
+				{
+					return;
+				}
 			}
-		}
 
+		}
+	
 		/// ﾌﾟﾚｲﾔｰとの当たり判定
 		if (itr->HitPlayer(CollisionDetector::CollCheck(itr->GetRect(), player->GetRect())))
 		{
@@ -132,11 +136,8 @@ void GameManager::BubbleCollision(const Input& p)
 void GameManager::Update(const Input & p)
 {
 	player->Update(p);
-	CreateBubble();
-	PlayerCollision();		/// プレイヤーの当たり判定を検出している
-	BubbleCollision(p);
-
 	player->Draw();
+	CreateBubble();
 
 	for (auto itr : walls)
 	{
@@ -152,5 +153,15 @@ void GameManager::Update(const Input & p)
 		itr->Draw();
 		itr->DeleteBubble(itr);
 	}
-	
+
+	PlayerCollision();		/// プレイヤーの当たり判定を検出している
+	BubbleCollision(p);
+
+
+	/// 泡が一定数を超えたら、最初に作られた泡を削除する
+	if (bubbles.size() > 15)
+	{
+		bubbles.erase(bubbles.begin());	
+	}
+
 }

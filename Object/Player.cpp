@@ -323,8 +323,12 @@ void Player::Update(const Input & p)
 
 void Player::Draw()
 {
-	DebugDraw();
 	CharactorObject::Draw(playerImg);
+
+#ifdef _DEBUG
+	DebugDraw();
+#endif 
+
 }
 
 void Player::DebugDraw()

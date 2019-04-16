@@ -86,6 +86,12 @@ bool Bubble::HitBubble(const bool hitFlag)
 	return false;
 }
 
+bool Bubble::CheckShotState()
+{
+	if (updater == &Bubble::ShotUpdate) { return true;}
+	return false;
+}
+
 void Bubble::Shot()
 {
 	ChangeAction("shot");

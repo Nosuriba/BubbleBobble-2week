@@ -17,6 +17,7 @@ public:
 	bool HitEnemy(const bool hitFlag);
 	bool HitObject(const bool hitFlag);
 	bool HitBubble(const bool hitFlag);
+	bool CheckShotState();
 	Rect GetRect();
 	Rect ShotGetRect();
 	shared_Bubble DeleteBubble(const shared_Bubble & itr);
