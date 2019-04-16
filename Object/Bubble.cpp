@@ -77,9 +77,10 @@ bool Bubble::HitBubble(const bool hitFlag)
 {
 	if (hitFlag)
 	{
-		vel.y = -1.0f;
+		vel.y = -1.5f;
 		return true;
 	}
+	vel.y = -0.5f;
 	return false;
 }
 
@@ -98,6 +99,7 @@ void Bubble::Shot()
 void Bubble::Floating()
 {
 	vel.x = 0;
+	vel.y = -0.5;
 	ChangeAction("floating");
 	updater = &Bubble::FloatingUpdate;
 }
@@ -133,7 +135,7 @@ void Bubble::ShotUpdate()
 
 void Bubble::FloatingUpdate()
 {
-	vel.y = -0.5;
+	
 }
 
 void Bubble::PopUpdate()

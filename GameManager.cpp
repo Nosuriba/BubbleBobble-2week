@@ -102,14 +102,14 @@ void GameManager::PlayerCollision()
 
 void GameManager::BubbleCollision(const Input& p)
 {
-	for (auto itr : bubbles)
+	for (auto itr = bubbles.begin(); itr != bubbles.end(); itr++)
 	{
-		if (itr->CheckShotState())
+		if ((*itr)->CheckShotState())
 		{
 			/// •Ç‚Æ‚Ì“–‚½‚è”»’è
 			for (auto wall : walls)
 			{
-				if (itr->HitObject(CollisionDetector::SideCollCheck(itr->GetRect(), wall->GetRect())))
+				if ((*itr)->HitObject(CollisionDetector::SideCollCheck((*itr)->GetRect(), wall->GetRect())))
 				{
 					return;
 				}
@@ -117,17 +117,25 @@ void GameManager::BubbleCollision(const Input& p)
 			/// ÌÞÛ¯¸‚Æ‚Ì“–‚½‚è”»’è
 			for (auto block : blocks)
 			{
-				if (itr->HitObject(CollisionDetector::SideCollCheck(itr->ShotGetRect(), block->GetRect())))
+				if ((*itr)->HitObject(CollisionDetector::SideCollCheck((*itr)->ShotGetRect(), block->GetRect())))
 				{
 					return;
 				}
 			}
 		}
+		else
+		{
+			if (itr != bubbles.begin())
+			{
+				auto prevItr = itr - 1;
+				(*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*prevItr)->GetRect()));
+			}
+		}
 	
 		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
-		if (itr->HitPlayer(CollisionDetector::CollCheck(itr->GetRect(), player->GetRect())))
+		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect())))
 		{
-			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), itr->GetRect()), p);
+			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()), p);
 		}
 	}
 }
