@@ -77,7 +77,7 @@ void Player::StepBubble(bool stepFlag, const Input & p)
 {
 	if (stepFlag && p.IsPressing(PAD_INPUT_5))
 	{
-		vel.y = -10.0f;
+		vel.y = -12.0f;
 	}
 }
 

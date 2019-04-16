@@ -37,18 +37,15 @@ Rect Bubble::ShotGetRect()
 	return Rect(center, rectSize);
 }
 
-shared_Bubble Bubble::DeleteBubble(const shared_Bubble & itr)
+bool Bubble::CheckDelete()
 {
-	if (deleteFlag)
-	{
-		return nullptr;		// ñAÇÃçÌèú
-	}
-	return itr;				// ÇªÇÃÇ‹Ç‹ï‘Ç∑
+	if (deleteFlag) { return true; }
+	return false;
 }
 
 bool Bubble::HitPlayer(const bool hitFlag)
 {
-	if (updater == &Bubble::Floating && hitFlag)
+	if (updater == &Bubble::FloatingUpdate && hitFlag)
 	{
 		Pop();
 		return true;
@@ -109,6 +106,7 @@ void Bubble::Pop()
 {
 	vel = Vector2f(0,0);
 	ChangeAction("pop");
+	turnFlag = false;				/// ¥Ã™∏ƒÇÃï`âÊÇÃîΩì]ÇñhÇ¢ÇƒÇ¢ÇÈ
 	updater = &Bubble::PopUpdate;
 }
 
@@ -152,5 +150,24 @@ void Bubble::Update()
 
 void Bubble::Draw()
 {
+#ifdef _DEBUG
+	DebugDraw();
+#endif
+
 	CharactorObject::Draw(bubbleImage);
+}
+
+void Bubble::DebugDraw()
+{
+	DrawString(100, 0, nowActionName.c_str(), 0xffffff);
+	if (nowActionName == "floating")
+	{
+		DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, false);
+	}
+	else if (nowActionName == "shot")
+	{
+		DrawBox(ShotGetRect().Left(), ShotGetRect().Top(), ShotGetRect().Right(), ShotGetRect().Bottom(), 0xff0000, false);
+	}
+	else {}
+
 }

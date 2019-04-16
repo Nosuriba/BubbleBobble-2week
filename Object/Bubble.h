@@ -2,7 +2,6 @@
 #include "CharactorObject.h"
 
 class Bubble;
-using shared_Bubble = std::shared_ptr<Bubble>;
 
 class Bubble :
 	public CharactorObject
@@ -13,14 +12,16 @@ public:
 
 	void Update();
 	void Draw();
+	void DebugDraw();
 	bool HitPlayer(const bool hitFlag);
 	bool HitEnemy(const bool hitFlag);
 	bool HitObject(const bool hitFlag);
 	bool HitBubble(const bool hitFlag);
 	bool CheckShotState();
+	bool CheckDelete();
 	Rect GetRect();
 	Rect ShotGetRect();
-	shared_Bubble DeleteBubble(const shared_Bubble & itr);
+	
 private:
 	void Shot();		// –A‚ð“f‚¢‚½Žž
 	void Floating();	// –A‚ª•‚‚¢‚Ä‚¢‚éŽž	

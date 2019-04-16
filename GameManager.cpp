@@ -122,7 +122,6 @@ void GameManager::BubbleCollision(const Input& p)
 					return;
 				}
 			}
-
 		}
 	
 		/// ﾌﾟﾚｲﾔｰとの当たり判定
@@ -138,6 +137,8 @@ void GameManager::Update(const Input & p)
 	player->Update(p);
 	player->Draw();
 	CreateBubble();
+	PlayerCollision();		/// プレイヤーの当たり判定を検出している
+	BubbleCollision(p);
 
 	for (auto itr : walls)
 	{
@@ -147,15 +148,19 @@ void GameManager::Update(const Input & p)
 	{
 		itr->Draw();
 	}
-	for (auto itr : bubbles)
-	{
-		itr->Update();
-		itr->Draw();
-		itr->DeleteBubble(itr);
-	}
 
-	PlayerCollision();		/// プレイヤーの当たり判定を検出している
-	BubbleCollision(p);
+	for (int i = 0; i < bubbles.size(); i++)
+	{
+		if (bubbles[i]->CheckDelete())
+		{
+			bubbles.erase(bubbles.begin() + i);
+			continue;
+		}
+		bubbles[i]->Update();
+		bubbles[i]->Draw();
+
+	
+	}
 
 
 	/// 泡が一定数を超えたら、最初に作られた泡を削除する
