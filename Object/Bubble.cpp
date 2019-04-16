@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include "../Game.h"
 #include "Bubble.h"
 
 Bubble::Bubble(const bool& bubbleDir) : spitFrame(10)
@@ -40,11 +41,6 @@ Rect Bubble::ShotGetRect()
 const bool& Bubble::CheckDelete()
 {
 	return deleteFlag;
-}
-
-bool Bubble::CheckDebugF()
-{
-	return (updater == &Bubble::FloatingUpdate);
 }
 
 const bool& Bubble::HitPlayer(const bool& hitFlag)
@@ -162,6 +158,11 @@ void Bubble::PopUpdate()
 void Bubble::Update()
 {
 	(this->*updater)();
+	if (updater == &Bubble::FloatingUpdate)
+	{
+		CeilCheck();
+	}
+	
 
 	pos += vel;
 }
@@ -179,6 +180,18 @@ void Bubble::ChangePop()
 {
 	if (updater != &Bubble::PopUpdate){ Pop(); }
 	
+}
+
+void Bubble::CeilCheck()
+{
+	if (pos.y < (size.y * 2) + (size.y / 2))
+	{
+		vel.x = 0.5f;
+		if (pos.y < size.y + (size.y / 2))
+		{
+			vel.y = 0;
+		}
+	}
 }
 
 void Bubble::DebugDraw()

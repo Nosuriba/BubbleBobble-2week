@@ -20,7 +20,6 @@ public:
 	const bool& CheckShotState();
 	const bool& CheckPopState();
 	const bool& CheckDelete();
-	bool CheckDebugF();			/// •‚‚¢‚Ä‚éó‘Ô‚©‚ÌŠm”F—p(Œã‚Åâ‘ÎÁ‚·)
 	Rect GetRect();
 	Rect ShotGetRect();
 private:
@@ -32,6 +31,7 @@ private:
 	void FloatingUpdate();
 	void PopUpdate();
 
+	void CeilCheck();
 	void DebugDraw();
 
 	void (Bubble::*updater)();

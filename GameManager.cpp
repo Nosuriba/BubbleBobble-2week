@@ -142,16 +142,16 @@ void GameManager::BubbleCollision(const Input& p)
 					(*prevItr)->CheckPopState())
 				{
 					(*itr)->ChangePop();
-					if (prevItr == bubbles.begin())
-					{
-						(*prevItr)->ChangePop();
-					}
 				}
 				/// Œã‚Éo‚µ‚½–A‚Æ‚Ì“–‚½‚è”»’è(–A‚ªŠ„‚ê‚Ä‚¢‚È‚­‚Ä‚à‰Á‘¬‚µ‚È‚¢)
 				if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect()), false) &&
 					(*itr)->CheckPopState())
 				{
 					(*prevItr)->ChangePop();
+					if (itr == bubbles.begin() && (*itr)->CheckPopState())
+					{
+						(*itr)->ChangePop();
+					}
 				}
 			}
 		}	
