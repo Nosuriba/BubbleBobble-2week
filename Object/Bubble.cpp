@@ -2,6 +2,19 @@
 #include "../Game.h"
 #include "Bubble.h"
 
+Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
+{
+	///	âºÇÃèâä˙âª
+	Floating();
+	nowCutIdx = 0;
+	ReadActionFile("Action/bubble.act");		// ñºëOÇÕÇ±Ç§Ç∑ÇÈó\íË
+	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
+	gameFlag = deleteFlag = false;
+
+	vel.y = -(0.4f * (GetRand(6) + 1));
+	invCnt  = spitFrame;
+}
+
 Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
 {
 	///	âºÇÃèâä˙âª
@@ -11,9 +24,8 @@ Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(
 	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
 	this->bubbleDir = bubbleDir;
+	gameFlag = true;
 	deleteFlag = false;
-	pos		= vel = Vector2f(0, 0);
-	size	= Vector2();
 	invCnt  = spitFrame;
 }
 
@@ -41,6 +53,11 @@ Rect Bubble::ShotGetRect()
 const bool& Bubble::CheckDelete()
 {
 	return deleteFlag;
+}
+
+const Vector2f & Bubble::GetPos()
+{
+	return pos;
 }
 
 const bool& Bubble::HitPlayer(const bool& hitFlag)
@@ -73,22 +90,26 @@ const bool& Bubble::HitObject(const bool& hitFlag)
 	return false;
 }
 
-const bool& Bubble::HitBubble(const bool& hitFlag, const bool& accelFlag)
+const bool& Bubble::HitBubble(const bool & hitFlag, Rect rcA, Rect rcB)
 {
-	if (updater == &Bubble::PopUpdate)
+	if (hitFlag)
 	{
-		vel = Vector2f(0, 0);
-		return hitFlag;
-	}
-	if (hitFlag && accelFlag)
-	{
+		/// å„Ç≈ãÈå`ÇÃà íuÇ…ÇÊÇ¡Çƒà⁄ìÆï˚å¸ÇïœÇ¶ÇÈÇÊÇ§Ç…í≤êÆÇ∑ÇÈ(âºê›íË)
 		vel.y = -colSpeed;
 	}
 	else
 	{
 		vel.y = -defSpeed;
 	}
+	return hitFlag;
+}
 
+const bool& Bubble::PopDetector(const bool& hitFlag)
+{
+	if (updater == &Bubble::PopUpdate)
+	{
+		vel = Vector2f(0, 0);
+	}
 	return hitFlag;
 }
 
@@ -100,6 +121,24 @@ const bool& Bubble::CheckShotState()
 const bool& Bubble::CheckPopState()
 {
 	return (updater == &Bubble::PopUpdate);
+}
+
+void Bubble::ChangePop()
+{
+	if (updater != &Bubble::PopUpdate) { Pop(); }
+
+}
+
+void Bubble::CeilCheck()
+{
+	if (pos.y < (size.y * 2) + (size.y / 2))
+	{
+		vel.x = defSpeed;
+		if (pos.y < size.y + (size.y / 2))
+		{
+			vel.y = 0;
+		}
+	}
 }
 
 void Bubble::Shot()
@@ -158,7 +197,7 @@ void Bubble::PopUpdate()
 void Bubble::Update()
 {
 	(this->*updater)();
-	if (updater == &Bubble::FloatingUpdate)
+	if (updater == &Bubble::FloatingUpdate && gameFlag)
 	{
 		CeilCheck();
 	}
@@ -170,29 +209,14 @@ void Bubble::Update()
 void Bubble::Draw()
 {
 #ifdef _DEBUG
+	if (gameFlag)
 	DebugDraw();
 #endif
 
 	CharactorObject::Draw(bubbleImage);
 }
 
-void Bubble::ChangePop()
-{
-	if (updater != &Bubble::PopUpdate){ Pop(); }
-	
-}
 
-void Bubble::CeilCheck()
-{
-	if (pos.y < (size.y * 2) + (size.y / 2))
-	{
-		vel.x = defSpeed;
-		if (pos.y < size.y + (size.y / 2))
-		{
-			vel.y = 0;
-		}
-	}
-}
 
 void Bubble::DebugDraw()
 {

@@ -101,12 +101,6 @@ void GameManager::PlayerCollision()
 
 void GameManager::BubbleCollision(const Input& p)
 {
-	auto CheckHitBubble = [](Rect prev, Rect current, Rect next)
-	{
-		return (CollisionDetector::GroundCollCheck(prev, current) ||
-				CollisionDetector::GroundCollCheck(current, next) ||
-				CollisionDetector::GroundCollCheck(prev, next));
-	};
 	for (auto itr = bubbles.begin(); itr != bubbles.end(); itr++)
 	{
 		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
@@ -139,19 +133,27 @@ void GameManager::BubbleCollision(const Input& p)
 		{
 			auto prevItr =  (itr == bubbles.begin()	  ? itr : itr - 1);
 			auto nextItr =  (itr == bubbles.end() - 1 ? itr : itr + 1);
-			/// ã‚©‚ç‰º‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—(Š„‚ê‚Ä‚¢‚È‚¢–A‚Æ“–‚½‚é‚ÆAã‚Ì–A‚Í‰Á‘¬‚·‚é)
-			if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect()), 
-				 true) &&			/// –A‚ª“–‚½‚Á‚½Žž‚Ì‰Á‘¬ˆ—‚ð•”•ª“I‚É“®‚©‚¹‚é‚æ‚¤‚É‚·‚é
-				(*prevItr)->CheckPopState())
+			/// ã‚©‚ç‰º‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
+			if ((*prevItr)->PopDetector(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect()) &&
+				(*prevItr)->CheckPopState()))
 			{
 				(*itr)->ChangePop();
 			}
 			/// ‰º‚©‚çã‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
-			if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect()), 
-				 CheckHitBubble((*prevItr)->GetRect(), (*itr)->GetRect(), (*nextItr)->GetRect())) &&
+			if ((*nextItr)->PopDetector(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect())) &&
 				(*nextItr)->CheckPopState())
 			{
 				(*itr)->ChangePop();
+			}
+
+			for (auto bubble : bubbles)
+			{
+				if ((*itr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), bubble->GetRect()),
+									  (*itr)->GetRect(), bubble->GetRect()) && 
+									  bubble->CheckPopState())
+				{
+					break;
+				}
 			}
 		}	
 		

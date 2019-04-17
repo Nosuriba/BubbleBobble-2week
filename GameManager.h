@@ -28,8 +28,6 @@ private:
 	void PlayerCollision();	// ﾌﾟﾚｲﾔｰの当たり判定検出用
 	void BubbleCollision(const Input & p);	// 泡の当たり判定検出用
 
-	/*void 
-*/
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Stage>  stage;
 
