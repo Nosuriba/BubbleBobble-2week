@@ -43,4 +43,6 @@ private:
 	int invCnt;
 
 	const int spitFrame;
+	const float defSpeed;
+	const float colSpeed;
 };

@@ -2,7 +2,7 @@
 #include "../Game.h"
 #include "Bubble.h"
 
-Bubble::Bubble(const bool& bubbleDir) : spitFrame(10)
+Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
 {
 	///	âºÇÃèâä˙âª
 	Shot();
@@ -82,11 +82,11 @@ const bool& Bubble::HitBubble(const bool& hitFlag, const bool& accelFlag)
 	}
 	if (hitFlag && accelFlag)
 	{
-		vel.y = -1.5f;
+		vel.y = -colSpeed;
 	}
 	else
 	{
-		vel.y = -0.5f;
+		vel.y = -defSpeed;
 	}
 
 	return hitFlag;
@@ -186,7 +186,7 @@ void Bubble::CeilCheck()
 {
 	if (pos.y < (size.y * 2) + (size.y / 2))
 	{
-		vel.x = 0.5f;
+		vel.x = defSpeed;
 		if (pos.y < size.y + (size.y / 2))
 		{
 			vel.y = 0;

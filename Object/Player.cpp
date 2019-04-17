@@ -52,6 +52,7 @@ const bool& Player::HitWall(const bool& hitFlag, const Rect& rcB)
 	if (hitFlag)
 	{
 		/// ï«ÇÃìñÇΩÇ¡ÇΩèÍèäÇ…ÇÊÇ¡ÇƒÅAà íuï‚ê≥ÇçsÇ¡ÇƒÇ¢ÇÈ
+		vel.x = 0;
 		pos.x = (turnFlag ? pos.x = rcB.Right() : pos.x = rcB.Left() - size.x);
 	}
 
@@ -107,6 +108,7 @@ void Player::Run()
 void Player::Jump()
 {
 	ChangeAction("jump");
+	nowCutIdx = 2;
 	updater = &Player::JumpUpdate;
 	jumpFlag = true;
 }
@@ -176,10 +178,6 @@ void Player::RunUpdate(const Input & p)
 			Idle();
 		}
 	}
-	else
-	{
-		vel.x = 0;
-	}
 
 	if (p.IsTrigger(PAD_INPUT_6))
 	{
@@ -244,10 +242,7 @@ void Player::JumpUpdate(const Input & p)
 			vel.x = 0;
 		}
 	}
-	else
-	{
-		vel.x = 0;
-	}
+	
 	ProceedAnimFile();
 }
 
@@ -281,10 +276,6 @@ void Player::ShotUpdate(const Input & p)
 		{
 			vel.x = 0;
 		}
-	}
-	else
-	{
-		vel.x = 0;
 	}
 
 	if (ProceedAnimFile())
