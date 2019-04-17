@@ -47,7 +47,5 @@ void TitleScene::Update(const Input & p)
 		bubbles[i]->Draw();
 
 	}
-	
-	DxLib::DrawString(0, 0, "ƒ^ƒCƒgƒ‹", 0x000000);
 	DxLib::DrawGraph(Game::GetInstance().GetScreenSize() .x / 7, 0, ImageMng::GetInstance().ImgGetID("resource/Image/title.png")[0], true);
 }
