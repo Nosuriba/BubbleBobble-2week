@@ -2,6 +2,7 @@
 #include "CharactorObject.h"
 
 class Bubble;
+class Input;
 
 class Bubble :
 	public CharactorObject
@@ -14,7 +15,7 @@ public:
 	void Update();
 	void Draw();
 	void ChangePop();
-	const bool& HitPlayer(const bool& hitFlag);
+	const bool& HitPlayer(const bool& hitFlag, const bool& groundFlag, const Input& p);
 	const bool& HitEnemy(const bool& hitFlag);
 	const bool& HitObject(const bool& hitFlag);
 	const bool& HitBubble(const bool& hitFlag);

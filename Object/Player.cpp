@@ -74,12 +74,9 @@ const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
 	return groundFlag;
 }
 
-void Player::StepBubble(bool stepFlag, const Input & p)
+void Player::StepBubble()
 {
-	if (stepFlag && p.IsPressing(PAD_INPUT_2))
-	{
-		vel.y = -12.0f;
-	}
+	vel.y = -12.0f;
 }
 
 bool Player::ShotCheck()

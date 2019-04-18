@@ -13,7 +13,7 @@ public:
 	~Player();
 	const bool& HitWall(const bool& hitFlag, const Rect& rcB);		// 壁と当たったかの判定
 	const bool& HitGround(const bool& groundFlag, const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
-	void StepBubble(bool stepFlag, const Input& p);		// 泡を踏んだかの判定
+	void StepBubble();		// 泡を踏んだかの判定
 	bool ShotCheck();									// ショットが打てるかの判定用
 
 	void Update(const Input & p);

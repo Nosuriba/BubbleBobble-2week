@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../Game.h"
 #include "../CollisionDetector.h"
+#include "../Input.h"
 #include "Bubble.h"
 
 Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
@@ -99,11 +100,22 @@ const Vector2f & Bubble::GetPos()
 	return pos;
 }
 
-const bool& Bubble::HitPlayer(const bool& hitFlag)
+const bool& Bubble::HitPlayer(const bool& hitFlag, const bool& groundFlag, const Input& p)
 {
 	if (updater == &Bubble::FloatingUpdate && hitFlag)
 	{
-		Pop();
+		if (!(p.IsPressing(PAD_INPUT_1)))
+		{
+			Pop();
+			return false;
+		}
+		else
+		{
+			if (!groundFlag)
+			{
+				Pop();
+			}
+		}
 		return true;
 	}
 	return false;

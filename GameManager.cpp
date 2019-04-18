@@ -104,9 +104,11 @@ void GameManager::BubbleCollision(const Input& p)
 	for (auto itr = bubbles.begin(); itr != bubbles.end(); itr++)
 	{
 		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
-		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect())))
+		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect()), 
+							  CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()),
+			                  p))
 		{
-			player->StepBubble(CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()), p);
+			player->StepBubble();
 		}
 
 		/// –A‚ªƒVƒ‡ƒbƒg‚Ìó‘Ô‚Ì
