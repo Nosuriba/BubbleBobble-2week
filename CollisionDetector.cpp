@@ -17,10 +17,6 @@ const bool CollisionDetector::GroundCollCheck(Rect rcA, Rect rcB)
 
 const bool CollisionDetector::SideCollCheck(Rect rcA, Rect rcB)
 {	
-	auto RL = (rcA.Right() > rcB.Left());
-	auto LR = rcA.Left() < rcB.Right();
-	auto Coll = CollCheck(rcA, rcB);
-
 	return ((rcA.Right() > rcB.Left() && CollCheck(rcA, rcB)) ||
 			(rcA.Left() < rcB.Right() && CollCheck(rcA, rcB)));
 }

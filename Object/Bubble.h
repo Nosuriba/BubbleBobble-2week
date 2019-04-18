@@ -17,11 +17,11 @@ public:
 	const bool& HitPlayer(const bool& hitFlag);
 	const bool& HitEnemy(const bool& hitFlag);
 	const bool& HitObject(const bool& hitFlag);
-	const bool& HitBubble(const bool& hitFlag, const bool& accelFlag);
+	const bool& HitBubble(const bool& hitFlag);
 	const bool& CheckShotState();
 	const bool& CheckPopState();
 	const bool& CheckDelete();
-	void MoveContact(const Rect& rcA, const Rect& rcB);
+	void MoveContact(const Rect& rcB);
 	const Vector2f& GetPos();
 	Rect GetRect();
 	Rect ShotGetRect();
@@ -34,7 +34,7 @@ private:
 	void FloatingUpdate();
 	void PopUpdate();
 
-	void CeilCheck();
+	const bool& CeilCheck();
 	void DebugDraw();
 
 	void (Bubble::*updater)();

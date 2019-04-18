@@ -76,7 +76,7 @@ const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
 
 void Player::StepBubble(bool stepFlag, const Input & p)
 {
-	if (stepFlag && p.IsPressing(PAD_INPUT_5))
+	if (stepFlag && p.IsPressing(PAD_INPUT_2))
 	{
 		vel.y = -12.0f;
 	}
@@ -132,7 +132,7 @@ void Player::IdleUpdate(const Input & p)
 		return;
 	}
 
-	if (p.IsTrigger(PAD_INPUT_6))
+	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
 		Shot();
@@ -143,7 +143,7 @@ void Player::IdleUpdate(const Input & p)
 	{
 		vel = Vector2f(0, 0);
 		pos.y = groundLine - size.y;
-		if (p.IsTrigger(PAD_INPUT_5))
+		if (p.IsTrigger(PAD_INPUT_1))
 		{
 			vel.y -= 14.0f;
 			Jump();
@@ -179,7 +179,7 @@ void Player::RunUpdate(const Input & p)
 		}
 	}
 
-	if (p.IsTrigger(PAD_INPUT_6))
+	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
 		Shot();
@@ -189,7 +189,7 @@ void Player::RunUpdate(const Input & p)
 	if (OnGround())
 	{
 		vel.y = 0;
-		if (p.IsTrigger(PAD_INPUT_5))
+		if (p.IsTrigger(PAD_INPUT_1))
 		{
 			vel.y -= 14.0f;
 			Jump();
@@ -219,7 +219,7 @@ void Player::JumpUpdate(const Input & p)
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
-	if (p.IsTrigger(PAD_INPUT_6))
+	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
 		Shot();

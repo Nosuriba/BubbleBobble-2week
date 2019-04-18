@@ -133,27 +133,28 @@ void GameManager::BubbleCollision(const Input& p)
 		{
 			auto prevItr =  (itr == bubbles.begin()	  ? itr : itr - 1);
 			auto nextItr =  (itr == bubbles.end() - 1 ? itr : itr + 1);
-			auto accelFlag = (1 & (itr != prevItr));
 			/// ã‚©‚ç‰º‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
-			if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect()), accelFlag) &&
+			if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect())) &&
 				(*prevItr)->CheckPopState())
 			{
 				(*itr)->ChangePop();
 			}
 			/// ‰º‚©‚çã‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
-			if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect()), false) &&
+			if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect())) &&
 				(*nextItr)->CheckPopState())
 			{
 				(*itr)->ChangePop();
 			}
 
+			/// –A“¯Žm‚ª‚Ô‚Â‚©‚Á‚½Žž‚Ì‹““®
 			for (auto bubble = bubbles.begin(); bubble != bubbles.end(); bubble++)
 			{
-				if (itr != bubble)
+				auto shotState = !((*itr)->CheckShotState() && (*bubble)->CheckShotState());
+				auto popState = !((*itr)->CheckPopState() && (*bubble)->CheckPopState());
+				if (itr != bubble && shotState && popState)
 				{
-					(*itr)->MoveContact((*itr)->GetRect(), (*bubble)->GetRect());
+					(*itr)->MoveContact((*bubble)->GetRect());
 				}
-				
 			}
 		}	
 		

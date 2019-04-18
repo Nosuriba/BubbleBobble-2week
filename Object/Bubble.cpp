@@ -56,25 +56,42 @@ const bool& Bubble::CheckDelete()
 	return deleteFlag;
 }
 
-void Bubble::MoveContact(const Rect & rcA, const Rect & rcB)
+void Bubble::MoveContact(const Rect & rcB)
 {
-	CeilCheck();
-	
-	if (CollisionDetector::SideCollCheck(rcA, rcB))
+	if (GetRect().Right() - (size.x / 3) > rcB.Left() &&
+	    GetRect().Right() - (size.x / 3) < rcB.center.x && 
+		CollisionDetector::SideCollCheck(GetRect(), rcB))
 	{
-		if (rcA.Left() < rcB.Right())
-		{
-			vel.x = defSpeed;
-		}
-		else if (rcA.Right() > rcB.Left())
-		{
-			vel.x = -defSpeed;
-		}
-		else
-		{
-			vel.x = 0;
-		}
+		vel.x = -defSpeed / 2;
 	}
+	else if (GetRect().Left() + (size.x / 3) < rcB.Right() &&
+			 GetRect().Left() + (size.x / 3) > rcB.center.x &&
+			 CollisionDetector::SideCollCheck(GetRect(), rcB))
+	{
+		vel.x = defSpeed / 2;
+	}
+	else
+	{
+		vel.x = 0;
+	}
+
+	if (GetRect().Bottom() > rcB.Top() &&
+		GetRect().Bottom() - (size.y / 3) < rcB.center.y &&
+		CollisionDetector::CollCheck(GetRect(), rcB))
+	{
+		vel.y = -defSpeed * 2;
+	}
+	else if (GetRect().Top()  < rcB.Bottom() &&
+			 GetRect().Top() + (size.y / 3) > rcB.center.y &&
+			 CollisionDetector::CollCheck(GetRect(), rcB))
+	{
+		vel.y = defSpeed / 2;
+	}
+	else
+	{
+		vel.y = -defSpeed / 2;
+	}
+	
 }
 
 const Vector2f & Bubble::GetPos()
@@ -112,22 +129,13 @@ const bool& Bubble::HitObject(const bool& hitFlag)
 	return false;
 }
 
-const bool& Bubble::HitBubble(const bool& hitFlag, const bool& accelFlag)
+const bool& Bubble::HitBubble(const bool& hitFlag)
 {
 	if (updater == &Bubble::PopUpdate)
 	{
 		vel = Vector2f(0, 0);
 		return hitFlag;
 	}
-	if (hitFlag && accelFlag)
-	{
-		vel.y = -colSpeed;
-	}
-	else
-	{
-		vel.y = -defSpeed;
-	}
-
 	return hitFlag;
 }
 
@@ -147,27 +155,18 @@ void Bubble::ChangePop()
 
 }
 
-void Bubble::CeilCheck()
+const bool& Bubble::CeilCheck()
 {
+	auto rtnFlag = false;
 	if (pos.y < (size.y * 2) + (size.y / 2))
 	{
+		rtnFlag = true;
 		if (pos.y < size.y + (size.y / 2))
 		{
 			vel.y = 0;
 		}
-		if ((int)(pos.x) != (int)(Game::GetInstance().GetScreenSize().x / 2 - (size.x / 2)))
-		{
-			if (pos.x > Game::GetInstance().GetScreenSize().x / 2 - (size.x / 2))
-			{
-				vel.x = -defSpeed;
-			}
-			else
-			{
-				vel.x = defSpeed;
-			}
-		}
 	}
-
+	return rtnFlag;
 }
 
 void Bubble::Shot()
@@ -188,7 +187,7 @@ void Bubble::Pop()
 {
 	vel = Vector2f(0,0);
 	ChangeAction("pop");
-	turnFlag = false;				/// ´Ìª¸Ä‚Ì•`‰æ‚Ì”½“]‚ð–h‚¢‚Ä‚¢‚é
+	turnFlag = false;				/// ´Ìª¸Ä‚Ì•`‰æ”½“]‚ð–h‚¢‚Ä‚¢‚é
 	updater = &Bubble::PopUpdate;
 }
 
@@ -226,11 +225,6 @@ void Bubble::PopUpdate()
 void Bubble::Update()
 {
 	(this->*updater)();
-	/*if (updater == &Bubble::FloatingUpdate && gameFlag)
-	{
-		CeilCheck();
-	}*/
-	
 
 	pos += vel;
 }
@@ -244,8 +238,6 @@ void Bubble::Draw()
 
 	CharactorObject::Draw(bubbleImage);
 }
-
-
 
 void Bubble::DebugDraw()
 {
