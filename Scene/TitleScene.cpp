@@ -32,7 +32,7 @@ void TitleScene::Update(const Input & p)
 	if (invCnt < 0)
 	{
 		bubbles.push_back(std::make_shared<Bubble>());
-		bubbles[bubbles.size() - 1]->Init("floating", Vector2f(48 * GetRand(18), Game::GetInstance().GetScreenSize().y),
+		bubbles[bubbles.size() - 1]->Init("floating", Vector2f(48 * GetRand(17), Game::GetInstance().GetScreenSize().y),
 													  Vector2(48, 48));
 		invCnt = 20;
 	}
@@ -47,7 +47,5 @@ void TitleScene::Update(const Input & p)
 		bubbles[i]->Draw();
 
 	}
-	
-	DxLib::DrawString(0, 0, "ƒ^ƒCƒgƒ‹", 0x000000);
 	DxLib::DrawGraph(Game::GetInstance().GetScreenSize() .x / 7, 0, ImageMng::GetInstance().ImgGetID("resource/Image/title.png")[0], true);
 }

@@ -90,26 +90,22 @@ const bool& Bubble::HitObject(const bool& hitFlag)
 	return false;
 }
 
-const bool& Bubble::HitBubble(const bool & hitFlag, Rect rcA, Rect rcB)
+const bool& Bubble::HitBubble(const bool& hitFlag, const bool& accelFlag)
 {
-	if (hitFlag)
+	if (updater == &Bubble::PopUpdate)
 	{
-		/// Œã‚Å‹éŒ`‚ÌˆÊ’u‚É‚æ‚Á‚ÄˆÚ“®•ûŒü‚ğ•Ï‚¦‚é‚æ‚¤‚É’²®‚·‚é(‰¼İ’è)
+		vel = Vector2f(0, 0);
+		return hitFlag;
+	}
+	if (hitFlag && accelFlag)
+	{
 		vel.y = -colSpeed;
 	}
 	else
 	{
 		vel.y = -defSpeed;
 	}
-	return hitFlag;
-}
 
-const bool& Bubble::PopDetector(const bool& hitFlag)
-{
-	if (updater == &Bubble::PopUpdate)
-	{
-		vel = Vector2f(0, 0);
-	}
 	return hitFlag;
 }
 

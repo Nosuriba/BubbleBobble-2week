@@ -17,8 +17,7 @@ public:
 	const bool& HitPlayer(const bool& hitFlag);
 	const bool& HitEnemy(const bool& hitFlag);
 	const bool& HitObject(const bool& hitFlag);
-	const bool& HitBubble(const bool& hitFlag, Rect rcA, Rect rcB);
-	const bool& PopDetector(const bool& hitFlag);
+	const bool& HitBubble(const bool& hitFlag, const bool& accelFlag);
 	const bool& CheckShotState();
 	const bool& CheckPopState();
 	const bool& CheckDelete();
