@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Game.h"
+#include "../CollisionDetector.h"
 #include "Bubble.h"
 
 Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
@@ -53,6 +54,27 @@ Rect Bubble::ShotGetRect()
 const bool& Bubble::CheckDelete()
 {
 	return deleteFlag;
+}
+
+void Bubble::MoveContact(const Rect & rcA, const Rect & rcB)
+{
+	CeilCheck();
+	
+	if (CollisionDetector::SideCollCheck(rcA, rcB))
+	{
+		if (rcA.Left() < rcB.Right())
+		{
+			vel.x = defSpeed;
+		}
+		else if (rcA.Right() > rcB.Left())
+		{
+			vel.x = -defSpeed;
+		}
+		else
+		{
+			vel.x = 0;
+		}
+	}
 }
 
 const Vector2f & Bubble::GetPos()
@@ -129,12 +151,23 @@ void Bubble::CeilCheck()
 {
 	if (pos.y < (size.y * 2) + (size.y / 2))
 	{
-		vel.x = defSpeed;
 		if (pos.y < size.y + (size.y / 2))
 		{
 			vel.y = 0;
 		}
+		if ((int)(pos.x) != (int)(Game::GetInstance().GetScreenSize().x / 2 - (size.x / 2)))
+		{
+			if (pos.x > Game::GetInstance().GetScreenSize().x / 2 - (size.x / 2))
+			{
+				vel.x = -defSpeed;
+			}
+			else
+			{
+				vel.x = defSpeed;
+			}
+		}
 	}
+
 }
 
 void Bubble::Shot()
@@ -193,10 +226,10 @@ void Bubble::PopUpdate()
 void Bubble::Update()
 {
 	(this->*updater)();
-	if (updater == &Bubble::FloatingUpdate && gameFlag)
+	/*if (updater == &Bubble::FloatingUpdate && gameFlag)
 	{
 		CeilCheck();
-	}
+	}*/
 	
 
 	pos += vel;

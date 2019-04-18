@@ -21,6 +21,7 @@ public:
 	const bool& CheckShotState();
 	const bool& CheckPopState();
 	const bool& CheckDelete();
+	void MoveContact(const Rect& rcA, const Rect& rcB);
 	const Vector2f& GetPos();
 	Rect GetRect();
 	Rect ShotGetRect();

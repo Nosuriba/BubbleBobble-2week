@@ -146,6 +146,15 @@ void GameManager::BubbleCollision(const Input& p)
 			{
 				(*itr)->ChangePop();
 			}
+
+			for (auto bubble = bubbles.begin(); bubble != bubbles.end(); bubble++)
+			{
+				if (itr != bubble)
+				{
+					(*itr)->MoveContact((*itr)->GetRect(), (*bubble)->GetRect());
+				}
+				
+			}
 		}	
 		
 	}
