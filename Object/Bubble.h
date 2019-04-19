@@ -23,8 +23,8 @@ public:
 	const bool& HitObject(const Rect& rcA, const Rect& rcB);
 	const bool& HitBubble(const Rect& rcA, const Rect& rcB);
 
-	const bool& CheckShotState();
-	const bool& CheckPopState();
+	const bool& CeilCheck();
+	const bool& CheckFloating();
 	const bool& CheckDelete();
 
 	void MoveContact(const Rect& rcB);
@@ -43,7 +43,7 @@ private:
 
 	void SideCheck(const Rect & player, const Rect& wall);
 	const bool& GroundCheck(const Rect& rcB, const Input& p);
-	const bool& CeilCheck();
+	
 	void DebugDraw();
 
 	void (Bubble::*updater)();

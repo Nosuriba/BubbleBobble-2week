@@ -89,7 +89,7 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 	int actionCnt = 0;
 	DxLib::FileRead_read(&actionCnt, sizeof(actionCnt), h);
 
-	for (int i = 0; i < actionCnt; i++)
+	for (int i = 0; i < actionCnt; ++i)
 	{
 		int actionNameSize;
 		DxLib::FileRead_read(&actionNameSize, sizeof(actionNameSize), h);
@@ -108,7 +108,7 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 		DxLib::FileRead_read(&cutCount, sizeof(cutCount), h);
 		actInfo.cuts.resize(cutCount);
 
-		for (int a = 0; a < cutCount; a++)
+		for (int a = 0; a < cutCount; ++a)
 		{
 
 			DxLib::FileRead_read(&actInfo.cuts[a], (sizeof(actInfo.cuts[a]) - sizeof(actInfo.cuts[a].actRects)), h);
