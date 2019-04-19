@@ -110,7 +110,6 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 
 		for (int a = 0; a < cutCount; ++a)
 		{
-
 			DxLib::FileRead_read(&actInfo.cuts[a], (sizeof(actInfo.cuts[a]) - sizeof(actInfo.cuts[a].actRects)), h);
 
 			// 矩形のデータを取得している

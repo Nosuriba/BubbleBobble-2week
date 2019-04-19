@@ -143,20 +143,11 @@ void GameManager::BubbleCollision(const Input& p)
 				return;
 			}
 		}
-		for (auto wall : walls)
-		{
-			
-		}
 	}
 }
 
 void GameManager::Update(const Input & p)
 {
-	player->Update(p);
-	player->Draw();
-	PlayerCollision();		/// プレイヤーの当たり判定を検出している
-	BubbleCollision(p);
-
 	for (auto itr : walls)
 	{
 		itr->Draw();
@@ -165,6 +156,13 @@ void GameManager::Update(const Input & p)
 	{
 		itr->Draw();
 	}
+
+	player->Update(p);
+	player->Draw();
+	PlayerCollision();
+	BubbleCollision(p);
+
+	
 
 	for (int i = 0; i < bubbles.size(); ++i)
 	{

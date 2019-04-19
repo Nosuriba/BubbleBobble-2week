@@ -243,6 +243,7 @@ const bool& Bubble::CeilCheck()
 	if (pos.y < (size.y * 2) + (size.y / 2))
 	{
 		rtnFlag = true;
+
 		if (pos.y < size.y + (size.y / 2))
 		{
 			vel.y = 0;
@@ -302,8 +303,6 @@ void Bubble::PopUpdate()
 	vel = Vector2f(0, 0);
 	deleteFlag = ProceedAnimFile();
 }
-
-
 
 void Bubble::Update()
 {
