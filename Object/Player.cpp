@@ -46,27 +46,27 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-const bool& Player::HitWall(const Rect& rcB)
+const bool& Player::HitWall(const Rect& wall)
 {
-	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), rcB);
+	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), wall);
 	if (hitFlag)
 	{
 		/// 壁の当たった場所によって、位置補正を行っている
 		vel.x = 0;
-		pos.x = (turnFlag ? pos.x = rcB.Right() : pos.x = rcB.Left() - size.x);
+		pos.x = (turnFlag ? wall.Right() : wall.Left() - size.x);
 	}
 
 	return this->hitFlag;
 }
 
-const bool& Player::HitGround(const Rect& rcB)
+const bool& Player::HitGround(const Rect& block)
 {
-	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), rcB);
+	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + rcB.size.height))
+	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + block.size.height))
 	{
  		this->vel.y		 = 0;
-		this->groundLine = rcB.Top() + 1;		/// 床に少しめり込むようにしている。
+		this->groundLine = block.Top() + 1;		/// 床に少しめり込むようにしている。
 	}
 	else
 	{

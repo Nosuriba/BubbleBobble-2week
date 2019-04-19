@@ -11,8 +11,8 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	const bool& HitWall(const Rect& rcB);		// 壁と当たったかの判定
-	const bool& HitGround(const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
+	const bool& HitWall(const Rect& wall);		// 壁と当たったかの判定
+	const bool& HitGround(const Rect& ground);	// ジャンプ中、ブロックに乗ったかの判定
 	void StepBubble();		// 泡を踏んだかの判定
 	bool ShotCheck();									// ショットが打てるかの判定用
 

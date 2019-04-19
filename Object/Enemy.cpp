@@ -34,34 +34,39 @@ Enemy::~Enemy()
 	DxLib::DeleteGraph(enemyImg);
 }
 
-const bool & Enemy::HitWall(const Rect & rcB)
+const bool & Enemy::HitWall(const Rect & wall)
 {
-	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), rcB);
+	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), wall);
 	if (hitCheck)
 	{
 		/// 壁に当たったら、方向転換するようにしている
 		turnFlag = !turnFlag;
-		pos.x = (turnFlag ? pos.x = rcB.Right() : pos.x = rcB.Left() - size.x);
+		pos.x	 = (turnFlag ? wall.Right() : wall.Left() - size.x);
 		
 	}
 
 	return hitCheck;
 }
 
-const bool & Enemy::HitGround(const Rect & rcB)
+const bool & Enemy::HitGround(const Rect & block)
 {
-	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), rcB);
+	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + rcB.size.height))
+	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + block.size.height))
 	{
 		this->vel.y = 0;
-		this->groundLine = rcB.Top() + 1;		/// 床に少しめり込むようにしている。
+		this->groundLine = block.Top() + 1;		/// 床に少しめり込むようにしている。
 	}
 	else
 	{
 		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
 	}
 	return underCheck;
+}
+
+const bool & Enemy::UpperCheck(const Rect & block)
+{
+	return false;
 }
 
 Rect Enemy::GetRect()
