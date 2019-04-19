@@ -92,7 +92,7 @@ void GameManager::PlayerCollision()
 
 	for (auto itr : blocks)
 	{
-		if (player->HitGround(CollisionDetector::GroundCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
+		if (player->HitGround(CollisionDetector::UnderCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
 		{
 			break;
 		}
@@ -104,9 +104,7 @@ void GameManager::BubbleCollision(const Input& p)
 	for (auto itr = bubbles.begin(); itr != bubbles.end(); itr++)
 	{
 		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
-		if ((*itr)->HitPlayer(CollisionDetector::CollCheck((*itr)->GetRect(), player->GetRect()), 
-							  CollisionDetector::GroundCollCheck(player->GetRect(), (*itr)->GetRect()),
-			                  p))
+		if ((*itr)->HitPlayer(player->GetRect(), p))
 		{
 			player->StepBubble();
 		}
@@ -117,7 +115,7 @@ void GameManager::BubbleCollision(const Input& p)
 			/// •Ç‚Æ‚Ì“–‚½‚è”»’è
 			for (auto wall : walls)
 			{
-				if ((*itr)->HitObject(CollisionDetector::SideCollCheck((*itr)->GetRect(), wall->GetRect())))
+				if ((*itr)->HitObject((*itr)->GetRect(), wall->GetRect()))
 				{
 					return;
 				}
@@ -125,7 +123,7 @@ void GameManager::BubbleCollision(const Input& p)
 			/// ÌÞÛ¯¸‚Æ‚Ì“–‚½‚è”»’è
 			for (auto block : blocks)
 			{
-				if ((*itr)->HitObject(CollisionDetector::SideCollCheck((*itr)->ShotGetRect(), block->GetRect())))
+				if ((*itr)->HitObject((*itr)->ShotGetRect(), block->GetRect()))
 				{
 					return;
 				}
@@ -133,16 +131,17 @@ void GameManager::BubbleCollision(const Input& p)
 		}
 		else
 		{
+			//// ŒÂX‚Ì“–‚½‚è”»’è‚ÌŒ©’¼‚µ‚ð‚·‚é
 			auto prevItr =  (itr == bubbles.begin()	  ? itr : itr - 1);
 			auto nextItr =  (itr == bubbles.end() - 1 ? itr : itr + 1);
 			/// ã‚©‚ç‰º‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
-			if ((*prevItr)->HitBubble(CollisionDetector::CollCheck((*itr)->ShotGetRect(), (*prevItr)->GetRect())) &&
+			if ((*prevItr)->HitBubble((*itr)->ShotGetRect(), (*prevItr)->GetRect()) &&
 				(*prevItr)->CheckPopState())
 			{
 				(*itr)->ChangePop();
 			}
 			/// ‰º‚©‚çã‚É‚©‚¯‚Ä–A‚ªŠ„‚ê‚é‚©‚Ìˆ—
-			if ((*nextItr)->HitBubble(CollisionDetector::CollCheck((*itr)->GetRect(), (*nextItr)->GetRect())) &&
+			if ((*nextItr)->HitBubble((*itr)->GetRect(), (*nextItr)->GetRect()) &&
 				(*nextItr)->CheckPopState())
 			{
 				(*itr)->ChangePop();
@@ -158,8 +157,13 @@ void GameManager::BubbleCollision(const Input& p)
 					(*itr)->MoveContact((*bubble)->GetRect());
 				}
 			}
+
+			for (auto wall : walls)
+			{
+				(*itr)->HitAcross(player->GetRect(), wall->GetRect());
+			}
+
 		}	
-		
 	}
 }
 

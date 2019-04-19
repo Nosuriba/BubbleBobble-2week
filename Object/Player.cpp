@@ -62,7 +62,7 @@ const bool& Player::HitWall(const bool& hitFlag, const Rect& rcB)
 const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
 {
 	/// 落下中にブロックの上に乗った時の処理
-	if (groundFlag && vel.y >= 0.0f)
+	if (groundFlag && vel.y >= 0.0f && GetRect().Bottom() > (size.y + rcB.size.height))
 	{
  		this->vel.y		 = 0;
 		this->groundLine = rcB.Top() + 1;		/// 床に少しめり込むようにしている。
@@ -162,12 +162,12 @@ void Player::RunUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 7.0f;
+			vel.x = 5.0f;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -7.0f;
+			vel.x = -5.0f;
 		}
 		else
 		{
@@ -227,12 +227,12 @@ void Player::JumpUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 7.0f;
+			vel.x = 5.0f;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -7.0f;
+			vel.x = -5.0f;
 		}
 		else
 		{
@@ -262,12 +262,12 @@ void Player::ShotUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 7.0f;
+			vel.x = 5.0f;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -7.0f;
+			vel.x = -5.0f;
 		}
 		else
 		{

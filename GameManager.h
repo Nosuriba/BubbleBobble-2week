@@ -20,13 +20,13 @@ public:
 	void Init();
 	void Update(const Input & p);
 private:
-	void CreateStage();		// ｽﾃｰｼﾞの生成をしている
-	void CreateBubble();
-	void WallInstance();	// 壁の設置
-	void BlockInstance();	// ﾌﾞﾛｯｸの設置
+	void CreateStage();		
+	void CreateBubble();	
+	void WallInstance();	
+	void BlockInstance();	
 
-	void PlayerCollision();	// ﾌﾟﾚｲﾔｰの当たり判定検出用
-	void BubbleCollision(const Input & p);	// 泡の当たり判定検出用
+	void PlayerCollision();	
+	void BubbleCollision(const Input & p);	
 
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Stage>  stage;

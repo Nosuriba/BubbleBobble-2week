@@ -10,7 +10,7 @@ CollisionDetector::~CollisionDetector()
 {
 }
 
-const bool CollisionDetector::GroundCollCheck(Rect rcA, Rect rcB)
+const bool CollisionDetector::UnderCollCheck(Rect rcA, Rect rcB)
 {
 	return (rcA.Bottom() >= rcB.Top() && rcA.Bottom() <= (rcB.Top() + (rcB.Height() / 3)) && CollCheck(rcA, rcB));
 }

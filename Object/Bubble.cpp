@@ -57,8 +57,18 @@ const bool& Bubble::CheckDelete()
 	return deleteFlag;
 }
 
+void Bubble::HitAcross(const Rect & player, const Rect& wall)
+{
+	if (updater == &Bubble::FloatingUpdate)
+	{
+		SideCheck(player, wall);
+	}
+	
+}
+
 void Bubble::MoveContact(const Rect & rcB)
 {
+	/// –A“¯m‚ª“–‚½‚Á‚½‚Ì‹““®(‰¡ˆÚ“®)
 	if (GetRect().Right() - (size.x / 3) > rcB.Left() &&
 	    GetRect().Right() - (size.x / 3) < rcB.center.x && 
 		CollisionDetector::SideCollCheck(GetRect(), rcB))
@@ -76,6 +86,7 @@ void Bubble::MoveContact(const Rect & rcB)
 		vel.x = 0;
 	}
 
+	/// –A“¯m‚ª“–‚½‚Á‚½‚Ì‹““®(cˆÚ“®)
 	if (GetRect().Bottom() > rcB.Top() &&
 		GetRect().Bottom() - (size.y / 3) < rcB.center.y &&
 		CollisionDetector::CollCheck(GetRect(), rcB))
@@ -100,40 +111,29 @@ const Vector2f & Bubble::GetPos()
 	return pos;
 }
 
-const bool& Bubble::HitPlayer(const bool& hitFlag, const bool& groundFlag, const Input& p)
+const bool & Bubble::HitPlayer(const Rect &rcB, const Input & p)
 {
-	if (updater == &Bubble::FloatingUpdate && hitFlag)
+	if (updater == &Bubble::FloatingUpdate)
 	{
-		if (!(p.IsPressing(PAD_INPUT_1)))
-		{
-			Pop();
-			return false;
-		}
-		else
-		{
-			if (!groundFlag)
-			{
-				Pop();
-			}
-		}
-		return true;
+		return GroundCheck(rcB, p);
 	}
 	return false;
 }
 
-const bool& Bubble::HitEnemy(const bool &hitFlag)
+const bool& Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
 {
-	if (updater == &Bubble::ShotUpdate && hitFlag)
+	/*if (updater == &Bubble::ShotUpdate && hitFlag)
 	{
 		deleteFlag = false;
 		return true;
-	}
+	}*/
 	return false;
 }
 
-const bool& Bubble::HitObject(const bool& hitFlag)
+const bool& Bubble::HitObject(const Rect& rcA, const Rect& rcB)
 {
-	if (updater == &Bubble::ShotUpdate && hitFlag)
+	auto sideCheck = CollisionDetector::SideCollCheck(rcA, rcB);
+	if (updater == &Bubble::ShotUpdate && sideCheck)
 	{
 		Floating();
 		return true;
@@ -141,14 +141,13 @@ const bool& Bubble::HitObject(const bool& hitFlag)
 	return false;
 }
 
-const bool& Bubble::HitBubble(const bool& hitFlag)
+const bool& Bubble::HitBubble(const Rect& rcA, const Rect& rcB)
 {
 	if (updater == &Bubble::PopUpdate)
 	{
 		vel = Vector2f(0, 0);
-		return hitFlag;
 	}
-	return hitFlag;
+	return CollisionDetector::CollCheck(rcA, rcB);
 }
 
 const bool& Bubble::CheckShotState()
@@ -165,6 +164,76 @@ void Bubble::ChangePop()
 {
 	if (updater != &Bubble::PopUpdate) { Pop(); }
 
+}
+
+void Bubble::SideCheck(const Rect & player, const Rect& wall)
+{
+	auto hitPlayer = (CollisionDetector::CollCheck(GetRect(), player));
+	
+	if (hitPlayer)
+	{
+		/// •Ç‚É“–‚½‚Á‚½A–A‚ğŠ„‚é
+		if (CollisionDetector::SideCollCheck(GetRect(), wall))
+		{
+			Pop();
+			return;
+		}
+		else
+		{
+			if (GetRect().center.x + (size.x / 2) > player.center.x - (player.size.width / 2) && 
+				GetRect().center.x + (size.x / 2) < player.center.x)
+			{
+				/// ÌßÚ²Ô°‚Ì¶‘¤‚Æ“–‚½‚Á‚½‚Ì‹““®
+				vel.x = -defSpeed;
+			}
+			else if (GetRect().center.x - (size.x / 2) < player.center.x + (player.size.width / 2) && 
+					 GetRect().center.x - (size.x / 2) > player.center.x)
+			{
+				/// ÌßÚ²Ô°‚Ì‰E‘¤‚Æ“–‚½‚Á‚½‚Ì‹““®
+				vel.x = defSpeed;
+			}
+			else{}
+		}
+	}
+	else
+	{
+		vel.x = 0;
+	}
+}
+
+const bool & Bubble::GroundCheck(const Rect & rcB, const Input & p)
+{
+	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), rcB));
+	auto sideCheck   = (CollisionDetector::SideCollCheck(GetRect(), rcB));
+	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), rcB));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+	auto underPlayer = (CollisionDetector::UnderCollCheck(rcB, GetRect()));		// ÌßÚ²Ô°‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+
+	if (hitCheck)
+	{
+		if (p.IsPressing(PAD_INPUT_1))
+		{
+			/// ’nã‚ÅÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚É–A‚É“–‚½‚é‚ÆA–A‚ªŠ„‚ê‚é
+			if (underBubble || (GetRect().Top() < rcB.center.y + (size.y / 4)))
+			{
+				Pop();
+				return false;
+			}
+			/// ÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ğ”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
+			if (underPlayer)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (underPlayer)
+			{
+				Pop();
+			}
+		}
+		
+	}
+	return false;
 }
 
 const bool& Bubble::CeilCheck()
@@ -197,7 +266,6 @@ void Bubble::Floating()
 
 void Bubble::Pop()
 {
-	vel = Vector2f(0,0);
 	ChangeAction("pop");
 	turnFlag = false;				/// ´Ìª¸Ä‚Ì•`‰æ”½“]‚ğ–h‚¢‚Ä‚¢‚é
 	updater = &Bubble::PopUpdate;
@@ -226,13 +294,15 @@ void Bubble::ShotUpdate()
 
 void Bubble::FloatingUpdate()
 {
-	
 }
 
 void Bubble::PopUpdate()
 {
+	vel = Vector2f(0, 0);
 	deleteFlag = ProceedAnimFile();
 }
+
+
 
 void Bubble::Update()
 {
