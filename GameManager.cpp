@@ -3,14 +3,14 @@
 #include "Game.h"
 #include "Stage.h"
 #include "AudioMng.h"
-#include "CollisionDetector.h"
 #include "Object/Player.h"
+#include "Object/Enemy.h"
 #include "Object/Bubble.h"
 #include "StageObject/Block.h"
 #include "StageObject/Wall.h"
 
 GameManager::GameManager() :
-	blockMax(28, 26), blockSize(24), playerSize(48), bubbleSize(48),
+	blockMax(28, 26), blockSize(24), charSize(48), bubbleSize(48),
 	wallMax(26), wallSize(48)
 {
 }
@@ -24,8 +24,11 @@ void GameManager::Init()
 	stage = std::make_shared<Stage>();
 
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
-	player->Init("idle", Vector2f(playerSize * 2, Game::GetInstance().GetScreenSize().y - blockSize), Vector2(playerSize, playerSize));
+	player->Init("idle", Vector2f(charSize * 2, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 
+	/// ìGÇÃê∂ê¨(âºê›íË)
+	enemys.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
+	enemys[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 	CreateStage();
 }
 
@@ -84,7 +87,7 @@ void GameManager::PlayerCollision()
 {
 	for (auto itr : walls)
 	{
-		if (player->HitWall(CollisionDetector::SideCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
+		if (player->HitWall(itr->GetRect()))
 		{
 			break;
 		}
@@ -92,9 +95,31 @@ void GameManager::PlayerCollision()
 
 	for (auto itr : blocks)
 	{
-		if (player->HitGround(CollisionDetector::UnderCollCheck(player->GetRect(), itr->GetRect()), itr->GetRect()))
+		if (player->HitGround(itr->GetRect()))
 		{
 			break;
+		}
+	}
+}
+
+void GameManager::EnemyCollision()
+{
+	for (auto itr : enemys)
+	{
+		for (auto wall : walls)
+		{
+			if (itr->HitWall(wall->GetRect()))
+			{
+				break;
+			}
+		}
+
+		for (auto block : blocks)
+		{
+			if (itr->HitGround(block->GetRect()))
+			{
+				break;
+			}
 		}
 	}
 }
@@ -159,7 +184,13 @@ void GameManager::Update(const Input & p)
 
 	player->Update(p);
 	player->Draw();
+	for (auto enemy : enemys)
+	{
+		enemy->Update();
+		enemy->Draw();
+	}
 	PlayerCollision();
+	EnemyCollision();
 	BubbleCollision(p);
 
 	

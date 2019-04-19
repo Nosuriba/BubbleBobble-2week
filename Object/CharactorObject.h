@@ -26,7 +26,7 @@ public:
 	void Init(std::string actionName, const Vector2f & pos, const Vector2 & size);
 
 protected:
-	void ChangeAction(const char * name);		// アクション切り替え
+	void ChangeAction(const char * name);		// ｱｸｼｮﾝ切り替え
 	bool ProceedAnimFile();						// ｱﾆﾒｰｼｮﾝﾌﾚｰﾑを1進める
 	void ReadActionFile(const char* actionPath);// ﾌｧｲﾙの読み込み
 	Vector2f GetPos() const;
@@ -43,5 +43,7 @@ protected:
 	int nowCutIdx;
 	unsigned int frame;
 
+	bool jumpFlag;		// true:ｼﾞｬﾝﾌﾟ中, false:ｼﾞｬﾝﾌﾟしていない
 	bool turnFlag;		// true:左向き, false:右向き
+	bool dieFlag;		// true:死亡, false:生存
 };

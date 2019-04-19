@@ -1,9 +1,9 @@
 #include <DxLib.h>
 #include <cmath>
-#include "CharactorObject.h"
 #include "Player.h"
 #include "../Input.h"
 #include "../Game.h"
+#include "../CollisionDetector.h"
 
 Player::Player() : shotFrame(5)
 {
@@ -46,9 +46,9 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-const bool& Player::HitWall(const bool& hitFlag, const Rect& rcB)
+const bool& Player::HitWall(const Rect& rcB)
 {
-	this->hitFlag = hitFlag;
+	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), rcB);
 	if (hitFlag)
 	{
 		/// 壁の当たった場所によって、位置補正を行っている
@@ -59,10 +59,11 @@ const bool& Player::HitWall(const bool& hitFlag, const Rect& rcB)
 	return this->hitFlag;
 }
 
-const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
+const bool& Player::HitGround(const Rect& rcB)
 {
+	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), rcB);
 	/// 落下中にブロックの上に乗った時の処理
-	if (groundFlag && vel.y >= 0.0f && GetRect().Bottom() > (size.y + rcB.size.height))
+	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + rcB.size.height))
 	{
  		this->vel.y		 = 0;
 		this->groundLine = rcB.Top() + 1;		/// 床に少しめり込むようにしている。
@@ -71,7 +72,7 @@ const bool& Player::HitGround(const bool& groundFlag, const Rect& rcB)
 	{
 		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
 	}
-	return groundFlag;
+	return underCheck;
 }
 
 void Player::StepBubble()
@@ -321,6 +322,6 @@ void Player::Draw()
 
 void Player::DebugDraw()
 {
-	DrawString(0, 0, nowActionName.c_str(), 0xffffff);
+	// DrawString(0, 0, nowActionName.c_str(), 0xffffff);
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, false);
 }

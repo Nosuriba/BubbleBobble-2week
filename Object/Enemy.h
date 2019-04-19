@@ -8,23 +8,33 @@ class Enemy :
 {
 public:
 	Enemy();
+	Enemy(int groundLine);
 	~Enemy();
-	void Update(const Input & p);
+	const bool& HitWall(const Rect& rcB);		// 壁と当たったかの判定
+	const bool& HitGround(const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
+
+	void Update();
 	void Draw();
 	Rect GetRect();
 private:
 	void Idle();
 	void Run();
 	void Jump();
+	void Bubble();
 	void Die();
 
-	void IdleUpdate(const Input& p);
-	void RunUpdate(const Input& p);
-	void JumpUpdate(const Input& p);
-	void DieUpdate(const Input& p);
+	void IdleUpdate();
+	void RunUpdate();
+	void JumpUpdate();
+	void BubbleUpdate();
+	void DieUpdate();
 
-	void(Enemy::*updater)(const Input& p);
+	const bool& OnGround();
 
-	int enemyImage;
+	void DebugDraw();
+
+	void(Enemy::*updater)();
+
+	int enemyImg;
 };
 

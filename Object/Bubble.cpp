@@ -36,6 +36,11 @@ Bubble::~Bubble()
 	DxLib::DeleteGraph(bubbleImage);
 }
 
+const Vector2f & Bubble::GetPos()
+{
+	return pos;
+}
+
 Rect Bubble::GetRect()
 {
 	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
@@ -107,11 +112,6 @@ void Bubble::MoveContact(const Rect & rcB)
 		vel.y = -defSpeed;
 	}
 	
-}
-
-const Vector2f & Bubble::GetPos()
-{
-	return pos;
 }
 
 const bool & Bubble::HitPlayer(const Rect &rcB, const Input & p)

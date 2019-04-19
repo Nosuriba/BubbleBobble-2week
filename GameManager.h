@@ -5,11 +5,13 @@
 #include "Geometry.h"
 
 class Input;
-class Player;
 class Stage;
+class Player;
+class Enemy;
+class Bubble;
 class Wall;
 class Block;
-class Bubble;
+
 
 class GameManager
 {
@@ -26,18 +28,20 @@ private:
 	void BlockInstance();	
 
 	void PlayerCollision();	
-	void BubbleCollision(const Input & p);	
+	void EnemyCollision();
+	void BubbleCollision(const Input & p);
 
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Stage>  stage;
 
+	std::vector<std::shared_ptr<Enemy>>  enemys;
 	std::vector<std::shared_ptr<Wall>>   walls;
 	std::vector<std::shared_ptr<Block>>  blocks;
 	std::vector<std::shared_ptr<Bubble>> bubbles;
 	
 	const Vector2 blockMax;
 	const int blockSize;
-	const int playerSize;
+	const int charSize;
 	const int bubbleSize;
 	const int wallSize;
 	const int wallMax;

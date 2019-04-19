@@ -11,8 +11,8 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	const bool& HitWall(const bool& hitFlag, const Rect& rcB);		// 壁と当たったかの判定
-	const bool& HitGround(const bool& groundFlag, const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
+	const bool& HitWall(const Rect& rcB);		// 壁と当たったかの判定
+	const bool& HitGround(const Rect& rcB);	// ジャンプ中、ブロックに乗ったかの判定
 	void StepBubble();		// 泡を踏んだかの判定
 	bool ShotCheck();									// ショットが打てるかの判定用
 
@@ -46,9 +46,7 @@ private:
 
 	bool hitFlag;
 	bool shotFlag;
-	bool jumpFlag;		// true:飛んでいる, false:飛んでいない
-	bool dieFlag;		// true:生きている, false:死んでいる
-
+	
 	const int shotFrame;
 };
 
