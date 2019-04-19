@@ -131,6 +131,7 @@ void GameManager::BubbleCollision(const Input& p)
 		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
 		if ((*itr)->HitPlayer(player->GetRect(), p))
 		{
+			auto debug = (*itr)->HitPlayer(player->GetRect(), p);
 			player->StepBubble();
 		}
 		
@@ -192,8 +193,6 @@ void GameManager::Update(const Input & p)
 	PlayerCollision();
 	EnemyCollision();
 	BubbleCollision(p);
-
-	
 
 	for (int i = 0; i < bubbles.size(); ++i)
 	{

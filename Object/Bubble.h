@@ -18,7 +18,7 @@ public:
 
 	void HitAcross(const Rect & player, const Rect& wall);
 
-	const bool& HitPlayer(const Rect& rcB, const Input& p);
+	int HitPlayer(const Rect& rcB, const Input& p);
 	const bool& HitEnemy(const Rect& rcA, const Rect& rcB);
 	const bool& HitObject(const Rect& rcA, const Rect& rcB);
 	const bool& HitBubble(const Rect& rcA, const Rect& rcB);
@@ -42,7 +42,7 @@ private:
 	void PopUpdate();
 
 	void SideCheck(const Rect & player, const Rect& wall);
-	const bool& GroundCheck(const Rect& rcB, const Input& p);
+	int GroundCheck(const Rect& rcB, const Input& p);
 	
 	void DebugDraw();
 

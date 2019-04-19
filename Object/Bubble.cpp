@@ -114,13 +114,13 @@ void Bubble::MoveContact(const Rect & rcB)
 	
 }
 
-const bool & Bubble::HitPlayer(const Rect &rcB, const Input & p)
+int Bubble::HitPlayer(const Rect &rcB, const Input & p)
 {
 	if (updater == &Bubble::FloatingUpdate)
 	{
 		return GroundCheck(rcB, p);
 	}
-	return false;
+	return 0;
 }
 
 const bool& Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
@@ -202,7 +202,7 @@ void Bubble::SideCheck(const Rect & player, const Rect& wall)
 	}
 }
 
-const bool & Bubble::GroundCheck(const Rect & rcB, const Input & p)
+int Bubble::GroundCheck(const Rect & rcB, const Input & p)
 {
 	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), rcB));
 	auto sideCheck   = (CollisionDetector::SideCollCheck(GetRect(), rcB));
@@ -217,12 +217,12 @@ const bool & Bubble::GroundCheck(const Rect & rcB, const Input & p)
 			if (underBubble || (GetRect().Top() < rcB.center.y + (size.y / 4)))
 			{
 				Pop();
-				return false;
+				return 0;
 			}
 			/// ÎÞÀÝ‚ð‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ð”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
 			if (underPlayer)
 			{
-				return true;
+				return 1;
 			}
 		}
 		else
@@ -230,11 +230,12 @@ const bool & Bubble::GroundCheck(const Rect & rcB, const Input & p)
 			if (underPlayer)
 			{
 				Pop();
+				return 0;
 			}
 		}
 		
 	}
-	return false;
+	return 0;
 }
 
 const bool& Bubble::CeilCheck()
