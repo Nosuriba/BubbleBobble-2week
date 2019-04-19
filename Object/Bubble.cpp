@@ -68,16 +68,19 @@ void Bubble::HitAcross(const Rect & player, const Rect& wall)
 
 void Bubble::MoveContact(const Rect & rcB)
 {
+	auto hitCheck = (CollisionDetector::CollCheck(GetRect(), rcB));
+	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), rcB));
+
 	/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ì‹““®(‰¡ˆÚ“®)
 	if (GetRect().Right() - (size.x / 3) > rcB.Left() &&
 	    GetRect().Right() - (size.x / 3) < rcB.center.x && 
-		CollisionDetector::SideCollCheck(GetRect(), rcB))
+		sideCheck)
 	{
 		vel.x = -defSpeed / 2;
 	}
 	else if (GetRect().Left() + (size.x / 3) < rcB.Right() &&
 			 GetRect().Left() + (size.x / 3) > rcB.center.x &&
-			 CollisionDetector::SideCollCheck(GetRect(), rcB))
+			 sideCheck)
 	{
 		vel.x = defSpeed / 2;
 	}
@@ -87,21 +90,21 @@ void Bubble::MoveContact(const Rect & rcB)
 	}
 
 	/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ì‹““®(cˆÚ“®)
-	if (GetRect().Bottom() > rcB.Top() &&
-		GetRect().Bottom() - (size.y / 3) < rcB.center.y &&
-		CollisionDetector::CollCheck(GetRect(), rcB))
+	if (GetRect().Bottom() > rcB.center.y &&
+		GetRect().Bottom() < rcB.center.y + (size.y / 2) &&
+		hitCheck)
 	{
 		vel.y = -defSpeed * 2;
 	}
-	else if (GetRect().Top()  < rcB.Bottom() &&
-			 GetRect().Top() + (size.y / 3) > rcB.center.y &&
-			 CollisionDetector::CollCheck(GetRect(), rcB))
+	else if (GetRect().Top() < rcB.center.y &&
+			 GetRect().Top() > rcB.center.y - (size.y / 2) &&
+			 hitCheck)
 	{
 		vel.y = defSpeed / 2;
 	}
 	else
 	{
-		vel.y = -defSpeed / 2;
+		vel.y = -defSpeed;
 	}
 	
 }
