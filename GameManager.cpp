@@ -55,7 +55,7 @@ void GameManager::WallInstance()
 							 wallSize + (wallSize * (i % (wallMax / 2))));
 
 		walls.push_back(std::make_shared<Wall>());
-		walls[i]->Init("resource/Image/wall.png", pos, Vector2(2, 24), Vector2(0, 0), Vector2(wallSize, wallSize));
+		walls[i]->Init("resource/Image/wall.png", pos, Vector2(2, 8), Vector2(0, 0), Vector2(wallSize, wallSize));
 	}
 }
 
@@ -64,10 +64,10 @@ void GameManager::BlockInstance()
 	int blockCnt = 0;
 	int cnt = 0;
 	std::string name[] = { "0" };			/// 特定のステージチップを読み込むようにしている(仮設定)
-	auto chipData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
+	auto blockData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
 	auto mapSize = stage->GetStageRange();
 
-	for (auto& tmp : chipData)
+	for (auto& tmp : blockData)
 	{
 		if (name[tmp] == "0")
 		{
@@ -76,7 +76,7 @@ void GameManager::BlockInstance()
 								wallSize + (blockSize * (blockCnt % blockMax.y)));
 
 			blocks.push_back(std::make_shared<Block>());
-			blocks[cnt]->Init("resource/Image/block.png", pos, Vector2(2, 24), Vector2(0, 0), Vector2(blockSize, blockSize));
+			blocks[cnt]->Init("resource/Image/block.png", pos, Vector2(2, 8), Vector2(0, 0), Vector2(blockSize, blockSize));
 			cnt++;
 		}
 		blockCnt++;
@@ -183,6 +183,10 @@ void GameManager::Update(const Input & p)
 		itr->Draw();
 	}
 
+	PlayerCollision();
+	EnemyCollision();
+	BubbleCollision(p);
+
 	player->Update(p);
 	player->Draw();
 	for (auto enemy : enemys)
@@ -190,9 +194,7 @@ void GameManager::Update(const Input & p)
 		enemy->Update();
 		enemy->Draw();
 	}
-	PlayerCollision();
-	EnemyCollision();
-	BubbleCollision(p);
+	
 
 	for (int i = 0; i < bubbles.size(); ++i)
 	{

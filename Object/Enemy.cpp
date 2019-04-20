@@ -34,7 +34,7 @@ Enemy::~Enemy()
 	DxLib::DeleteGraph(enemyImg);
 }
 
-const bool & Enemy::HitWall(const Rect & wall)
+bool Enemy::HitWall(const Rect & wall)
 {
 	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), wall);
 	if (hitCheck)
@@ -42,13 +42,12 @@ const bool & Enemy::HitWall(const Rect & wall)
 		/// 壁に当たったら、方向転換するようにしている
 		turnFlag = !turnFlag;
 		pos.x	 = (turnFlag ? wall.Right() : wall.Left() - size.x);
-		
 	}
 
 	return hitCheck;
 }
 
-const bool & Enemy::HitGround(const Rect & block)
+bool Enemy::HitGround(const Rect & block)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
 	/// 落下中にブロックの上に乗った時の処理
@@ -64,7 +63,7 @@ const bool & Enemy::HitGround(const Rect & block)
 	return underCheck;
 }
 
-const bool & Enemy::UpperCheck(const Rect & block)
+bool Enemy::UpperCheck(const Rect& player, const Rect & block)
 {
 	return false;
 }
@@ -131,7 +130,7 @@ void Enemy::DieUpdate()
 {
 }
 
-const bool& Enemy::OnGround()
+bool Enemy::OnGround()
 {
 	if (pos.y + size.y >= groundLine)
 	{

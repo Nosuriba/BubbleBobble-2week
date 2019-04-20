@@ -36,7 +36,7 @@ void TitleScene::Update(const Input & p)
 													  Vector2(48, 48));
 		invCnt = 20;
 	}
-	for (int i = 0; i < bubbles.size(); ++i)
+	for (unsigned int i = 0; i < bubbles.size(); ++i)
 	{
 		if (bubbles[i]->GetPos().y < -(bubbles[i]->GetRect().size.height))
 		{

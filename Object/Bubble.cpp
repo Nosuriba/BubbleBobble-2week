@@ -43,7 +43,7 @@ const Vector2f & Bubble::GetPos()
 
 Rect Bubble::GetRect()
 {
-	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
+	auto center   = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
 	auto rectSize = Size(size.x, size.y);
 
 	return Rect(center, rectSize);
@@ -51,13 +51,13 @@ Rect Bubble::GetRect()
 
 Rect Bubble::ShotGetRect()
 {
-	auto center = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
+	auto center   = Vector2(pos.x + (size.x / 2), pos.y + (size.x / 2));
 	auto rectSize = Size(size.x / 2, size.y / 2);
 
 	return Rect(center, rectSize);
 }
 
-const bool& Bubble::CheckDelete()
+bool Bubble::CheckDelete()
 {
 	return deleteFlag;
 }
@@ -73,7 +73,7 @@ void Bubble::HitAcross(const Rect & player, const Rect& wall)
 
 void Bubble::MoveContact(const Rect & rcB)
 {
-	auto hitCheck = (CollisionDetector::CollCheck(GetRect(), rcB));
+	auto hitCheck  = (CollisionDetector::CollCheck(GetRect(), rcB));
 	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), rcB));
 
 	/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ì‹““®(‰¡ˆÚ“®)
@@ -114,16 +114,16 @@ void Bubble::MoveContact(const Rect & rcB)
 	
 }
 
-int Bubble::HitPlayer(const Rect &rcB, const Input & p)
+bool Bubble::HitPlayer(const Rect &rcB, const Input & p)
 {
 	if (updater == &Bubble::FloatingUpdate)
 	{
 		return GroundCheck(rcB, p);
 	}
-	return 0;
+	return false;
 }
 
-const bool& Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
 {
 	auto hitCheck = (CollisionDetector::CollCheck(rcA, rcB));
 	if (updater == &Bubble::ShotUpdate && hitCheck)
@@ -134,7 +134,7 @@ const bool& Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
 	return false;
 }
 
-const bool& Bubble::HitObject(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitObject(const Rect& rcA, const Rect& rcB)
 {
 	auto sideCheck = CollisionDetector::SideCollCheck(rcA, rcB);
 	if (updater == &Bubble::ShotUpdate && sideCheck)
@@ -145,7 +145,7 @@ const bool& Bubble::HitObject(const Rect& rcA, const Rect& rcB)
 	return false;
 }
 
-const bool& Bubble::HitBubble(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitBubble(const Rect& rcA, const Rect& rcB)
 {
 	auto hitCheck = CollisionDetector::CollCheck(rcA, rcB);
 
@@ -157,14 +157,13 @@ const bool& Bubble::HitBubble(const Rect& rcA, const Rect& rcB)
 	return false;
 }
 
-const bool& Bubble::CheckFloating()
+bool Bubble::CheckFloating()
 {
 	return (updater == &Bubble::FloatingUpdate);
 }
 void Bubble::ChangePop()
 {
 	if (updater != &Bubble::PopUpdate) { Pop(); }
-
 }
 
 void Bubble::SideCheck(const Rect & player, const Rect& wall)
@@ -202,7 +201,7 @@ void Bubble::SideCheck(const Rect & player, const Rect& wall)
 	}
 }
 
-int Bubble::GroundCheck(const Rect & rcB, const Input & p)
+bool Bubble::GroundCheck(const Rect & rcB, const Input & p)
 {
 	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), rcB));
 	auto sideCheck   = (CollisionDetector::SideCollCheck(GetRect(), rcB));
@@ -217,12 +216,12 @@ int Bubble::GroundCheck(const Rect & rcB, const Input & p)
 			if (underBubble || (GetRect().Top() < rcB.center.y + (size.y / 4)))
 			{
 				Pop();
-				return 0;
+				return false;
 			}
 			/// ÎÞÀÝ‚ð‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ð”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
 			if (underPlayer)
 			{
-				return 1;
+				return true;
 			}
 		}
 		else
@@ -230,15 +229,15 @@ int Bubble::GroundCheck(const Rect & rcB, const Input & p)
 			if (underPlayer)
 			{
 				Pop();
-				return 0;
+				return false;
 			}
 		}
 		
 	}
-	return 0;
+	return false;
 }
 
-const bool& Bubble::CeilCheck()
+bool Bubble::CeilCheck()
 {
 	auto rtnFlag = false;
 	if (pos.y < (size.y * 2) + (size.y / 2))

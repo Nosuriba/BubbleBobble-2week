@@ -36,7 +36,7 @@ Rect Player::GetRect()
 	return Rect(center, rectSize);
 }
 
-const bool & Player::GetTurnFlag()
+bool Player::GetTurnFlag()
 {
 	return turnFlag;
 }
@@ -46,7 +46,7 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-const bool& Player::HitWall(const Rect& wall)
+bool Player::HitWall(const Rect& wall)
 {
 	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), wall);
 	if (hitFlag)
@@ -59,7 +59,7 @@ const bool& Player::HitWall(const Rect& wall)
 	return this->hitFlag;
 }
 
-const bool& Player::HitGround(const Rect& block)
+bool Player::HitGround(const Rect& block)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
 	/// —‰º’†‚ÉƒuƒƒbƒN‚Ìã‚Éæ‚Á‚½‚Ìˆ—
@@ -107,8 +107,8 @@ void Player::Jump()
 {
 	ChangeAction("jump");
 	nowCutIdx = 2;
-	updater = &Player::JumpUpdate;
-	jumpFlag = true;
+	updater   = &Player::JumpUpdate;
+	jumpFlag  = true;
 }
 
 void Player::Shot()
@@ -197,7 +197,6 @@ void Player::RunUpdate(const Input & p)
 	{
 		Jump();
 	}
-
 	ProceedAnimFile();
 }
 
