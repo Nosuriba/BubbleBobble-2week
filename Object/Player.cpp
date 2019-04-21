@@ -28,6 +28,13 @@ Player::~Player()
 	DxLib::DeleteGraph(playerImg);
 }
 
+bool Player::HitEnemy(const Rect & eRect)
+{
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
+
+	return false;
+}
+
 Rect Player::GetRect()
 {
 	auto center   = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
@@ -46,27 +53,27 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-bool Player::HitWall(const Rect& wall)
+bool Player::HitWall(const Rect& wRect)
 {
-	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), wall);
+	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), wRect);
 	if (hitFlag)
 	{
 		/// 壁の当たった場所によって、位置補正を行っている
 		vel.x = 0;
-		pos.x = (turnFlag ? wall.Right() : wall.Left() - size.x);
+		pos.x = (turnFlag ? wRect.Right() : wRect.Left() - size.x);
 	}
 
 	return this->hitFlag;
 }
 
-bool Player::HitGround(const Rect& block)
+bool Player::HitGround(const Rect& bRect)
 {
-	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
+	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + block.size.height))
+	if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
 	{
  		this->vel.y		 = 0;
-		this->groundLine = block.Top() + 1;		/// 床に少しめり込むようにしている。
+		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
 	}
 	else
 	{

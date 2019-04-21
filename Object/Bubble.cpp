@@ -62,29 +62,28 @@ bool Bubble::CheckDelete()
 	return deleteFlag;
 }
 
-void Bubble::HitAcross(const Rect & player, const Rect& wall)
+void Bubble::HitAcross(const Rect & pRect, const Rect& wRect)
 {
 	if (updater == &Bubble::FloatingUpdate)
 	{
-		SideCheck(player, wall);
+		SideCheck(pRect, wRect);
 	}
-	
 }
 
-void Bubble::MoveContact(const Rect & rcB)
+void Bubble::MoveContact(const Rect & bblRect)
 {
-	auto hitCheck  = (CollisionDetector::CollCheck(GetRect(), rcB));
-	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), rcB));
+	auto hitCheck  = (CollisionDetector::CollCheck(GetRect(), bblRect));
+	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), bblRect));
 
 	/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ì‹““®(‰¡ˆÚ“®)
-	if (GetRect().Right() - (size.x / 3) > rcB.Left() &&
-	    GetRect().Right() - (size.x / 3) < rcB.center.x && 
+	if (GetRect().Right() - (size.x / 3) > bblRect.Left() &&
+	    GetRect().Right() - (size.x / 3) < bblRect.center.x &&
 		sideCheck)
 	{
 		vel.x = -defSpeed / 2;
 	}
-	else if (GetRect().Left() + (size.x / 3) < rcB.Right() &&
-			 GetRect().Left() + (size.x / 3) > rcB.center.x &&
+	else if (GetRect().Left() + (size.x / 3) < bblRect.Right() &&
+			 GetRect().Left() + (size.x / 3) > bblRect.center.x &&
 			 sideCheck)
 	{
 		vel.x = defSpeed / 2;
@@ -95,14 +94,14 @@ void Bubble::MoveContact(const Rect & rcB)
 	}
 
 	/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ì‹““®(cˆÚ“®)
-	if (GetRect().Bottom() > rcB.center.y &&
-		GetRect().Bottom() < rcB.center.y + (size.y / 2) &&
+	if (GetRect().Bottom() > bblRect.center.y &&
+		GetRect().Bottom() < bblRect.center.y + (size.y / 2) &&
 		hitCheck)
 	{
 		vel.y = -defSpeed * 2;
 	}
-	else if (GetRect().Top() < rcB.center.y &&
-			 GetRect().Top() > rcB.center.y - (size.y / 2) &&
+	else if (GetRect().Top() < bblRect.center.y &&
+			 GetRect().Top() > bblRect.center.y - (size.y / 2) &&
 			 hitCheck)
 	{
 		vel.y = defSpeed / 2;
@@ -114,18 +113,18 @@ void Bubble::MoveContact(const Rect & rcB)
 	
 }
 
-bool Bubble::HitPlayer(const Rect &rcB, const Input & p)
+bool Bubble::HitPlayer(const Rect &pRect, const Input & p)
 {
 	if (updater == &Bubble::FloatingUpdate)
 	{
-		return GroundCheck(rcB, p);
+		return GroundCheck(pRect, p);
 	}
 	return false;
 }
 
-bool Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitEnemy(const Rect& eRect)
 {
-	auto hitCheck = (CollisionDetector::CollCheck(rcA, rcB));
+	auto hitCheck = (CollisionDetector::CollCheck(GetRect(), eRect));
 	if (updater == &Bubble::ShotUpdate && hitCheck)
 	{
 		deleteFlag = false;
@@ -134,10 +133,23 @@ bool Bubble::HitEnemy(const Rect& rcA, const Rect& rcB)
 	return false;
 }
 
-bool Bubble::HitObject(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitObject(const Rect& objRect)
 {
-	auto sideCheck = CollisionDetector::SideCollCheck(rcA, rcB);
-	if (updater == &Bubble::ShotUpdate && sideCheck)
+	auto selHitCheck = [=](const Rect& objRect)		
+	{
+		if (objRect.size.height == size.y)
+		{
+			/// •Ç‚Æ‚Ì“–‚½‚è”»’è
+			return CollisionDetector::SideCollCheck(GetRect(), objRect);
+		}
+		else
+		{
+			/// ÌÞÛ¯¸‚Æ‚Ì“–‚½‚è”»’è
+			return CollisionDetector::SideCollCheck(ShotGetRect(), objRect);
+		}
+	};
+	
+	if (updater == &Bubble::ShotUpdate && selHitCheck(objRect))
 	{
 		Floating();
 		return true;
@@ -145,9 +157,9 @@ bool Bubble::HitObject(const Rect& rcA, const Rect& rcB)
 	return false;
 }
 
-bool Bubble::HitBubble(const Rect& rcA, const Rect& rcB)
+bool Bubble::HitBubble(const Rect& bblRect)
 {
-	auto hitCheck = CollisionDetector::CollCheck(rcA, rcB);
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), bblRect);
 
 	if (updater == &Bubble::PopUpdate && hitCheck)
 	{

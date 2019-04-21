@@ -10,9 +10,10 @@ public:
 	Enemy();
 	Enemy(int groundLine);
 	~Enemy();
-	bool HitWall(const Rect& wall);			// 壁と当たったかの判定
-	bool HitGround(const Rect& block);		// ジャンプ中、ブロックに乗ったかの判定
-	bool UpperCheck(const Rect& player, const Rect& block);		
+	bool HitBubble(const Rect& bubble);
+	bool HitWall(const Rect& wall);							// 壁と当たったかの判定
+	bool HitGround(const Rect& block);						// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
+	bool UpperCheck(const Rect& player, const Rect& block);	// ﾌﾟﾚｲﾔｰが上にいるかの判定	
 
 	void Update();
 	void Draw();
@@ -37,5 +38,6 @@ private:
 	void(Enemy::*updater)();
 
 	int enemyImg;
+	int waitCnt;		/// 敵の待機時間用
 };
 

@@ -69,7 +69,7 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 	int h = DxLib::FileRead_open(actionPath, false);
 	int hData;			// Ì§²Ù“à—e‚ğŠi”[‚·‚é‚½‚ß‚Ì•Ï”
 
-	float version = 0.0f;
+	float version = 0.f;
 	DxLib::FileRead_read(&version, sizeof(version), h);
 	// assert(version == 1.01f);
 

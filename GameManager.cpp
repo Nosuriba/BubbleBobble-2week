@@ -121,6 +121,15 @@ void GameManager::EnemyCollision()
 				break;
 			}
 		}
+
+		for (auto bubble = bubbles.begin(); bubble != bubbles.end(); bubble++)
+		{
+			if (itr->HitBubble((*bubble)->GetRect()))
+			{
+				bubbles.erase(bubble);
+				break;
+			}
+		}
 	}
 }
 
@@ -139,7 +148,7 @@ void GameManager::BubbleCollision(const Input& p)
 		for (auto bubble = bubbles.begin(); bubble != bubbles.end(); ++bubble)
 		{
 			///	–A‚ªŠ„‚ê‚é‚©‚Ì”»’è‚ğ‚µ‚Ä‚¢‚é
-			if ((*itr)->HitBubble((*itr)->GetRect(), (*bubble)->GetRect())) 
+			if ((*itr)->HitBubble((*bubble)->GetRect())) 
 			{
 				(*itr)->ChangePop();
 			}
@@ -156,7 +165,7 @@ void GameManager::BubbleCollision(const Input& p)
 		for (auto wall : walls)
 		{
 			(*itr)->HitAcross(player->GetRect(), wall->GetRect());
-			if ((*itr)->HitObject((*itr)->GetRect(), wall->GetRect()))
+			if ((*itr)->HitObject(wall->GetRect()))
 			{
 				return;
 			}
@@ -164,7 +173,7 @@ void GameManager::BubbleCollision(const Input& p)
 		/// ÌŞÛ¯¸‚Æ‚Ì“–‚½‚è”»’è
 		for (auto block : blocks)
 		{
-			if ((*itr)->HitObject((*itr)->ShotGetRect(), block->GetRect()))
+			if ((*itr)->HitObject(block->GetRect()))
 			{
 				return;
 			}

@@ -16,18 +16,18 @@ public:
 	void Draw();
 	void ChangePop();
 
-	void HitAcross(const Rect & player, const Rect& wall);
+	void HitAcross(const Rect & pRect, const Rect& wRect);
 
-	bool HitPlayer(const Rect& rcB, const Input& p);
-	bool HitEnemy(const Rect& rcA, const Rect& rcB);
-	bool HitObject(const Rect& rcA, const Rect& rcB);
-	bool HitBubble(const Rect& rcA, const Rect& rcB);
+	bool HitPlayer(const Rect& pRect, const Input& p);
+	bool HitEnemy(const Rect& rcB);
+	bool HitObject(const Rect& objRect);
+	bool HitBubble(const Rect& bblRect);
 
 	bool CeilCheck();
 	bool CheckFloating();
 	bool CheckDelete();
 
-	void MoveContact(const Rect& rcB);
+	void MoveContact(const Rect& bblRect);
 
 	const Vector2f& GetPos();
 	Rect GetRect();
@@ -41,8 +41,8 @@ private:
 	void FloatingUpdate();
 	void PopUpdate();
 
-	void SideCheck(const Rect & player, const Rect& wall);
-	bool GroundCheck(const Rect& rcB, const Input& p);
+	void SideCheck(const Rect & pRect, const Rect& wRect);
+	bool GroundCheck(const Rect& bRect, const Input& p);
 	
 	void DebugDraw();
 

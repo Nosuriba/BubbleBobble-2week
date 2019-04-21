@@ -34,27 +34,39 @@ Enemy::~Enemy()
 	DxLib::DeleteGraph(enemyImg);
 }
 
-bool Enemy::HitWall(const Rect & wall)
+bool Enemy::HitBubble(const Rect & bRect)
 {
-	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), wall);
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), bRect);
+
+	if (updater != &Enemy::BubbleUpdate && hitCheck)
+	{
+		Bubble();
+		return true;
+	}
+	return false;
+}
+
+bool Enemy::HitWall(const Rect & wRect)
+{
+	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), wRect);
 	if (hitCheck)
 	{
 		/// 壁に当たったら、方向転換するようにしている
 		turnFlag = !turnFlag;
-		pos.x	 = (turnFlag ? wall.Right() : wall.Left() - size.x);
+		pos.x	 = (turnFlag ? wRect.Right() : wRect.Left() - size.x);
 	}
 
 	return hitCheck;
 }
 
-bool Enemy::HitGround(const Rect & block)
+bool Enemy::HitGround(const Rect & bRect)
 {
-	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), block);
+	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.0f && GetRect().Bottom() > (size.y + block.size.height))
+	if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
 	{
 		this->vel.y = 0;
-		this->groundLine = block.Top() + 1;		/// 床に少しめり込むようにしている。
+		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
 	}
 	else
 	{
@@ -78,23 +90,35 @@ Rect Enemy::GetRect()
 
 void Enemy::Idle()
 {
+	if (nowActionName != "run") { ChangeAction("run"); }
+	vel = Vector2f(0, 0);
+	updater = &Enemy::IdleUpdate;
 }
 
 void Enemy::Run()
 {
-	
+	if (nowActionName != "run") { ChangeAction("run"); }
+	updater = &Enemy::RunUpdate;
 }
 
 void Enemy::Jump()
 {
+	if (nowActionName != "run") { ChangeAction("run"); }
+	updater = &Enemy::JumpUpdate;
 }
 
 void Enemy::Bubble()
 {
+	ChangeAction("bubble");
+	vel.x = 0.f;
+	updater = &Enemy::BubbleUpdate;
 }
 
 void Enemy::Die()
 {
+	ChangeAction("die");
+	vel = Vector2f(0, 0);		// 速度は仮設定
+	updater = &Enemy::DieUpdate;
 }
 
 void Enemy::IdleUpdate()
