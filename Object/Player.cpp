@@ -85,6 +85,8 @@ bool Player::HitGround(const Rect& bRect)
 
 void Player::StepBubble()
 {
+	AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
+	AudioMng::GetInstance().ChangeVolume(80, AudioMng::GetInstance().GetSound().bubble);
 	vel.y = -12.0f;
 }
 

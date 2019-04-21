@@ -123,11 +123,11 @@ void GameManager::EnemyCollision(const Input& p)
 
 		for (auto block : blocks)
 		{
-			/*if (itr->UpperCheck(player->GetRect(), block->GetRect()))
+			if (itr->UpperCheck(player->GetRect(), block->GetRect()))
 			{
 				break;
-			}*/
-			if (itr->HitGround(block->GetRect()))
+			}
+			if (itr->HitGround(player->GetRect(), block->GetRect()))
 			{
 				break;
 			}

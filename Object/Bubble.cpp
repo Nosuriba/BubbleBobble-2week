@@ -179,6 +179,8 @@ void Bubble::ChangePop()
 	if (updater != &Bubble::PopUpdate)
 	{ 
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
+		AudioMng::GetInstance().ChangeVolume(200, AudioMng::GetInstance().GetSound().pop);
+
 		Pop(); 
 	}
 }
@@ -194,6 +196,7 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 		if (sideCheck)
 		{
 			AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
+			AudioMng::GetInstance().ChangeVolume(200, AudioMng::GetInstance().GetSound().pop);
 			Pop();
 			return;
 		}
@@ -234,13 +237,13 @@ bool Bubble::UnderCheck(const Rect & pRect, const Input & p)
 			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
 			{
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
+				AudioMng::GetInstance().ChangeVolume(200, AudioMng::GetInstance().GetSound().pop);
 				Pop();
 				return false;
 			}
 			/// ÎÞÀÝ‚ð‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ð”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
 			if (underPlayer)
 			{
-				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 				return true;
 			}
 		}
@@ -249,6 +252,7 @@ bool Bubble::UnderCheck(const Rect & pRect, const Input & p)
 			if (underPlayer)
 			{
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
+				AudioMng::GetInstance().ChangeVolume(200, AudioMng::GetInstance().GetSound().pop);
 				Pop();
 				return false;
 			}

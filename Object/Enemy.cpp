@@ -83,33 +83,42 @@ bool Enemy::HitWall(const Rect & wRect)
 	return false;
 }
 
-bool Enemy::HitGround(const Rect & bRect)
+bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	
 	if (updater != &Enemy::DieUpdate)
 	{
-		/// 落下中にブロックの上に乗った時の処理
-		if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
+
+		if (!riseFlag && updater != &Enemy::IdleUpdate)
 		{
-			this->vel.y = 0;
-			this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
-			return true;
+			/// 落下中にブロックの上に乗った時の処理
+			if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
+			{
+				vel.y = 0;
+				groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
+				return true;
+			}
+			vel.y = 5.0f;
+			groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
+		
 		}
-		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
+		
 	}
 	return false;
 }
 
 bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
+	auto rtnFlag = false;
 	if (updater == &Enemy::RunUpdate)
 	{
 		if (pos.y > pRect.Bottom() &&
-		   (int)pos.x == (int)bRect.center.x)
+	   (int)pos.x == (int)bRect.center.x)
 		{
-			groundLine = 0;
-			riseFlag = true;
+			turnFlag   = (GetRect().center.x < pRect.center.x ? true : false);
+			groundLine = 0;			///地面の初期化をしている
+			riseFlag   = true;
 			Idle();
 		}
 		return false;
@@ -117,16 +126,21 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 
 	if (updater == &Enemy::IdleUpdate && waitCnt < 0)
 	{
-		/// ここで敵が上昇するかの判定を取れるようにする
 		if (riseFlag)
 		{
 			vel.y = -charSpeed;
-			RiseCheck(bRect);
-			return true;
+			if (RiseCheck(bRect))
+			{
+				/// 上昇中に当たったﾌﾞﾛｯｸの上側を地面にしている
+				turnFlag = (GetRect().center.x > pRect.center.x ? false : true);
+				groundLine = bRect.Top() + 1;
+				riseFlag   = false;
+				rtnFlag = true;
+			}
 		}
 		else
 		{
-			/// 敵がﾌﾞﾛｯｸの上になった時、状態を変える(ようになってるから上昇判定どうにかしろ)
+			/// 敵の下側が、地面に当たったら落下を止める
 			if ((int)GetRect().Bottom() <= groundLine)
 			{
 				vel.y = 0;
@@ -135,7 +149,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 		}
 		
 	}
-	return false;
+	return rtnFlag;
 }
 
 void Enemy::DieControl(const Rect& objRect)
@@ -224,14 +238,18 @@ void Enemy::IdleUpdate()
 
 void Enemy::RunUpdate()
 {
-	if (turnFlag)
+	if (vel.y == 0.f)
 	{
-		vel.x = charSpeed;
+		if (turnFlag)
+		{
+			vel.x = charSpeed;
+		}
+		else
+		{
+			vel.x = -charSpeed;
+		}
 	}
-	else
-	{
-		vel.x = -charSpeed;
-	}
+	
 
 	ProceedAnimFile();
 }
@@ -249,15 +267,19 @@ void Enemy::BubbleUpdate()
 
 void Enemy::DieUpdate()
 {
-	if (vel.y < charSpeed)
+	if (!dieFlag)
 	{
-		vel.y += fallAccel;
+		if (vel.y < charSpeed)
+		{
+			vel.y += fallAccel;
+		}
+		else
+		{
+			vel.x = 0;
+			vel.y = charSpeed;
+		}
 	}
-	else
-	{
-		vel.x = 0;
-		vel.y = charSpeed;
-	}
+	
 	
 	ProceedAnimFile();
 }
@@ -267,8 +289,6 @@ bool Enemy::RiseCheck(const Rect& bRect)
 	auto underBlock = CollisionDetector::UnderCollCheck(bRect, GetRect());
 	if (underBlock)
 	{
-		groundLine = bRect.Top() - (size.y + bRect.size.height);
-		riseFlag = false;
 		return true;
 	}
 	return false;
@@ -371,7 +391,6 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 			/// ﾎﾞﾀﾝを押し続けていると、泡の上を飛ぶことができる
 			if (underPlayer)
 			{
-				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 				return true;
 			}
 		}

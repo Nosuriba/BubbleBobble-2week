@@ -13,7 +13,7 @@ public:
 	bool HitPlayer(const Rect& pRect, const Rect& wRect, const Input& p);
 	bool HitBubble(const Rect& bblRect);
 	bool HitWall(const Rect& wRect);						// •Ç‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
-	bool HitGround(const Rect& bRect);						// ¼Ş¬İÌß’†AÌŞÛ¯¸‚Éæ‚Á‚½‚©‚Ì”»’è
+	bool HitGround(const Rect& pRect, const Rect& bRect);						// ¼Ş¬İÌß’†AÌŞÛ¯¸‚Éæ‚Á‚½‚©‚Ì”»’è
 	bool UpperCheck(const Rect& pRect, const Rect& bRect);	// ÌßÚ²Ô°‚ªã‚É‚¢‚é‚©‚Ì”»’è	
 	void DieControl(const Rect& objRect);	// €–S‚Ì§Œä—p
 	

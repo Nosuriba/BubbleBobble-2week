@@ -58,6 +58,10 @@ void TitleScene::Update(const Input & p)
 	else
 	{
 		pos += vel;
+		if (p.IsTrigger(PAD_INPUT_8))
+		{
+			pos.y = 0;
+		}
 	}
 	DxLib::DrawGraph(pos.x, pos.y, ImageMng::GetInstance().ImgGetID("resource/Image/title.png")[0], true);
 }
