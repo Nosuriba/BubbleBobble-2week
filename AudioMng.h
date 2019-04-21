@@ -16,6 +16,7 @@ struct SoundName
 	const std::string bubble   = "resource/SE/bubble.mp3";
 	const std::string hit	   = "resource/SE/hit.mp3";
 	const std::string pop	   = "resource/SE/pop.mp3";
+	const std::string jump	   = "resource/SE/jump.mp3";
 	
 	/// ‰¹Šy‚ÌƒpƒX
 	const std::string mainBGM = "resource/BGM/main.mp3";

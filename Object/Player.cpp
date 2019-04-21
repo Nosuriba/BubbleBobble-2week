@@ -155,6 +155,7 @@ void Player::IdleUpdate(const Input & p)
 		if (p.IsTrigger(PAD_INPUT_1))
 		{
 			vel.y -= 14.0f;
+			AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().jump);
 			Jump();
 			return;
 		}
@@ -201,6 +202,7 @@ void Player::RunUpdate(const Input & p)
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_1))
 		{
+			AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().jump);
 			vel.y -= 14.0f;
 			Jump();
 		}
