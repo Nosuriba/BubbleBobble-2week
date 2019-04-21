@@ -213,19 +213,18 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 	}
 }
 
-bool Bubble::GroundCheck(const Rect & rcB, const Input & p)
+bool Bubble::GroundCheck(const Rect & pRect, const Input & p)
 {
-	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), rcB));
-	auto sideCheck   = (CollisionDetector::SideCollCheck(GetRect(), rcB));
-	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), rcB));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
-	auto underPlayer = (CollisionDetector::UnderCollCheck(rcB, GetRect()));		// ÌßÚ²Ô°‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
+	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+	auto underPlayer = (CollisionDetector::UnderCollCheck(pRect, GetRect()));		// ÌßÚ²Ô°‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
 
 	if (hitCheck)
 	{
 		if (p.IsPressing(PAD_INPUT_1))
 		{
 			/// ’nã‚ÅÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚É–A‚É“–‚½‚é‚ÆA–A‚ªŠ„‚ê‚é
-			if (underBubble || (GetRect().Top() < rcB.center.y + (size.y / 4)))
+			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
 			{
 				Pop();
 				return false;

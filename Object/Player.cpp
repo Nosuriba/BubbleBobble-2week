@@ -28,13 +28,6 @@ Player::~Player()
 	DxLib::DeleteGraph(playerImg);
 }
 
-bool Player::HitEnemy(const Rect & eRect)
-{
-	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
-
-	return false;
-}
-
 Rect Player::GetRect()
 {
 	auto center   = Vector2(pos.x + (size.x / 2), pos.y + (size.y / 2));
@@ -51,6 +44,13 @@ bool Player::GetTurnFlag()
 const Vector2f& Player::GetPos()
 {
 	return pos;
+}
+
+bool Player::HitEnemy(const Rect & eRect)
+{
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
+
+	return false;
 }
 
 bool Player::HitWall(const Rect& wRect)

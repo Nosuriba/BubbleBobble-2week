@@ -28,7 +28,7 @@ private:
 	void BlockInstance();	
 
 	void PlayerCollision();	
-	void EnemyCollision();
+	void EnemyCollision(const Input& p);
 	void BubbleCollision(const Input & p);
 
 	std::shared_ptr<Player> player;

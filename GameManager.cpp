@@ -102,17 +102,22 @@ void GameManager::PlayerCollision()
 	}
 }
 
-void GameManager::EnemyCollision()
+void GameManager::EnemyCollision(const Input& p)
 {
 	for (auto itr : enemys)
 	{
-		itr->HitPlayer(player->GetRect());
 		for (auto wall : walls)
 		{
+			if (itr->HitPlayer(player->GetRect(), wall->GetRect(), p))
+			{
+				player->StepBubble();
+			}
+
 			if (itr->HitWall(wall->GetRect()))
 			{
 				break;
 			}
+			
 			itr->DieControl(wall->GetRect());
 		}
 
@@ -194,7 +199,7 @@ void GameManager::Update(const Input & p)
 	}
 
 	PlayerCollision();
-	EnemyCollision();
+	EnemyCollision(p);
 	BubbleCollision(p);
 
 	player->Update(p);

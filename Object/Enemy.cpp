@@ -1,9 +1,10 @@
 #include <DxLib.h>
 #include "Enemy.h"
 #include "../Game.h"
+#include "../Input.h"
 #include "../CollisionDetector.h"
 
-Enemy::Enemy() : fallAccel(0.5f)
+Enemy::Enemy() : fallAccel(0.3f)
 {
 	Run();
 	nowCutIdx = 0;
@@ -14,7 +15,7 @@ Enemy::Enemy() : fallAccel(0.5f)
 	size = Vector2(0,0);
 }
 
-Enemy::Enemy(int groundLine) : fallAccel(0.5f)
+Enemy::Enemy(int groundLine) : fallAccel(0.3f)
 {
 	Run();
 	nowCutIdx = 0;
@@ -47,38 +48,10 @@ const bool & Enemy::GetDieFlag()
 	return dieFlag;
 }
 
-bool Enemy::HitPlayer(const Rect & pRect)
+bool Enemy::HitPlayer(const Rect & pRect, const Rect& wRect, const Input& p)
 {
-	auto hitCheck  = CollisionDetector::CollCheck(GetRect(), pRect);
-	auto sideCheck = CollisionDetector::SideCollCheck(GetRect(), pRect);
-
-	if (updater == &Enemy::BubbleUpdate && hitCheck)
-	{
-		if (!sideCheck)
-		{
-			/// ‚Ğ‚Æ‚Ü‚¸’u‚¢‚Æ‚­
-		}
-
-		if (pRect.Right() > GetRect().Left() && 
-			pRect.Right() < GetRect().center.x)
-		{
-			vel.x = charSpeed;
-			vel.y = -12.f;
-		}
-		else if (pRect.Left() < GetRect().Right() &&
-				 pRect.Left() > GetRect().center.x)
-		{
-			vel.x = -charSpeed;
-			vel.y = -12.f;
-		}
-		else
-		{
-
-		}
-		Die();
-	}
-	
-	return false;
+	SideCheck(pRect, wRect);
+	return UnderCheck(pRect, p);
 }
 
 bool Enemy::HitBubble(const Rect & bRect)
@@ -96,12 +69,12 @@ bool Enemy::HitBubble(const Rect & bRect)
 
 bool Enemy::HitWall(const Rect & wRect)
 {
-	auto hitCheck = CollisionDetector::SideCollCheck(GetRect(), wRect);
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), wRect);
 	if (hitCheck && updater != &Enemy::DieUpdate)
 	{
 		/// •Ç‚É“–‚½‚Á‚½‚çA•ûŒü“]Š·‚·‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é
 		turnFlag = !turnFlag;
-		pos.x	 = (turnFlag ? wRect.Right() : wRect.Left() - size.x);
+		vel.x = (vel.x == charSpeed ? -charSpeed : charSpeed);
 		return true;
 	}
 
@@ -158,9 +131,10 @@ void Enemy::DieControl(const Rect& objRect)
 			return;
 		}
 
-		/// •Ç‚É“–‚½‚ç‚È‚¢‚Æ‚«‚ª‚ ‚é‚â‚ñ‚¯
 		if (selHitCheck(objRect) && sizeCheck)
 		{
+			/// •Ç‚É“–‚½‚Á‚½‚É“G‚ª’µ‚Ë•Ô‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é
+			pos.x = (vel.x == charSpeed ? objRect.Left() - size.x : objRect.Right());	
 			vel.x = (vel.x == charSpeed ? -charSpeed : charSpeed);
 		}
 	}
@@ -223,7 +197,6 @@ void Enemy::RunUpdate()
 		vel.x = -charSpeed;
 	}
 
-
 	ProceedAnimFile();
 }
 
@@ -244,7 +217,7 @@ void Enemy::DieUpdate()
 	{
 		if (vel.y < charSpeed)
 		{
-			vel.y += 0.5f;
+			vel.y += fallAccel;
 		}
 		else
 		{
@@ -255,6 +228,148 @@ void Enemy::DieUpdate()
 	}
 	
 	ProceedAnimFile();
+}
+
+void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
+{
+	auto hitCheck = CollisionDetector::CollCheck(GetRect(), pRect);
+	auto wSideCheck = CollisionDetector::SideCollCheck(GetRect(), wRect);
+
+	if (updater == &Enemy::BubbleUpdate &&
+		updater != &Enemy::DieUpdate &&
+		hitCheck)
+	{
+		if (wSideCheck)
+		{
+			if (wRect.Right() > GetRect().Left())
+			{
+				Die();
+				turnFlag = true;
+				vel.x = charSpeed;
+				vel.y = -12.f;
+			}
+			else if (wRect.Left() < GetRect().Right())
+			{
+				Die();
+				turnFlag = false;
+				vel.x = -charSpeed;
+				vel.y = -12.f;
+			}
+			else {}
+		}
+		if (pRect.Right() > GetRect().Left() &&
+			pRect.Right() < GetRect().center.x)
+		{
+			vel.x = charSpeed;
+		}
+		else if (pRect.Left() < GetRect().Right() &&
+				 pRect.Left() > GetRect().center.x)
+		{
+			vel.x = -charSpeed;
+		}
+		else {}
+
+		/*	if (pRect.Bottom() > GetRect().Top() ||
+				pRect.Top() < GetRect().Bottom())
+			{
+				if (pRect.Right() < GetRect().center.x)
+				{
+					Die();
+					turnFlag = true;
+					vel.x = charSpeed;
+					vel.y = -12.f;
+				}
+				else if (pRect.Left() > GetRect().center.x)
+				{
+					Die();
+					turnFlag = false;
+					vel.x = -charSpeed;
+					vel.y = -12.f;
+				}
+			}*/
+	}
+	else
+	{
+		if (updater != &Enemy::DieUpdate) { vel.x = 0.f; }
+	}
+}
+
+bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
+{
+	auto blowDir = [=](const Rect& pRect)
+	{
+		if (pRect.Right() < GetRect().center.x)
+		{
+			return true;
+			
+		}
+		else if (pRect.Left() > GetRect().center.x)
+		{
+			return false;
+			
+		}
+		else {}
+	};
+
+	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
+	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+	auto underPlayer = (CollisionDetector::UnderCollCheck(pRect, GetRect()));		// ÌßÚ²Ô°‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
+
+	if (hitCheck && updater == &Enemy::BubbleUpdate)
+	{
+		if (p.IsPressing(PAD_INPUT_1))
+		{
+			/// ’nã‚ÅÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚É–A‚É“–‚½‚é‚ÆA–A‚ªŠ„‚ê‚é
+			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
+			{
+				if (blowDir(pRect))
+				{
+					Die();
+					turnFlag = true;
+					vel.x = charSpeed;
+					vel.y = -12.f;
+				}
+				else
+				{
+					Die();
+					turnFlag = false;
+					vel.x = -charSpeed;
+					vel.y = -12.f;
+				}
+				Die();
+				return false;
+			}
+			/// ÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ğ”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
+			if (underPlayer)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (underPlayer)
+			{
+				if (blowDir(pRect))
+				{
+					Die();
+					turnFlag = true;
+					vel.x = charSpeed;
+					vel.y = -12.f;
+				}
+				else
+				{
+					Die();
+					turnFlag = false;
+					vel.x = -charSpeed;
+					vel.y = -12.f;
+				}
+				Die();
+				return false;
+			}
+		}
+
+	}
+	return false;return false;
 }
 
 bool Enemy::OnGround()

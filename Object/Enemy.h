@@ -10,7 +10,7 @@ public:
 	Enemy();
 	Enemy(int groundLine);
 	~Enemy();
-	bool HitPlayer(const Rect& pRect);
+	bool HitPlayer(const Rect& pRect, const Rect& wRect, const Input& p);
 	bool HitBubble(const Rect& bblRect);
 	bool HitWall(const Rect& wRect);						// ï«Ç∆ìñÇΩÇ¡ÇΩÇ©ÇÃîªíË
 	bool HitGround(const Rect& bRect);						// ºﬁ¨›ÃﬂíÜÅAÃﬁ€Ø∏Ç…èÊÇ¡ÇΩÇ©ÇÃîªíË
@@ -34,6 +34,8 @@ private:
 	void BubbleUpdate();
 	void DieUpdate();
 
+	void SideCheck(const Rect& pRect, const Rect& wRect);
+	bool UnderCheck(const Rect& pRect, const Input& p);
 	bool OnGround();
 
 	void DebugDraw();

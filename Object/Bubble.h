@@ -41,7 +41,7 @@ private:
 	void PopUpdate();
 
 	void SideCheck(const Rect & pRect, const Rect& wRect);
-	bool GroundCheck(const Rect& bRect, const Input& p);
+	bool GroundCheck(const Rect& pRect, const Input& p);
 	
 	void DebugDraw();
 
