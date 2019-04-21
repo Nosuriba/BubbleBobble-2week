@@ -3,6 +3,7 @@
 #include "../Game.h"
 #include "../Input.h"
 #include "../CollisionDetector.h"
+#include "../AudioMng.h"
 
 Enemy::Enemy() : fallAccel(0.3f)
 {
@@ -243,6 +244,7 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 		{
 			if (wRect.Right() > GetRect().Left())
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = true;
 				vel.x = charSpeed;
@@ -250,6 +252,7 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 			}
 			else if (wRect.Left() < GetRect().Right())
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = false;
 				vel.x = -charSpeed;
@@ -324,6 +327,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 			{
 				if (blowDir(pRect))
 				{
+					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = true;
 					vel.x = charSpeed;
@@ -331,6 +335,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 				}
 				else
 				{
+					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = false;
 					vel.x = -charSpeed;
@@ -342,6 +347,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 			/// ÎÞÀÝ‚ð‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ð”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
 			if (underPlayer)
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 				return true;
 			}
 		}
@@ -351,6 +357,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 			{
 				if (blowDir(pRect))
 				{
+					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = true;
 					vel.x = charSpeed;
@@ -358,12 +365,12 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 				}
 				else
 				{
+					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = false;
 					vel.x = -charSpeed;
 					vel.y = -12.f;
 				}
-				Die();
 				return false;
 			}
 		}

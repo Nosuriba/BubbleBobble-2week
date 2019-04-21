@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "../Input.h"
 #include "../Game.h"
+#include "../AudioMng.h"
 #include "../CollisionDetector.h"
 
 Player::Player() : shotFrame(5)
@@ -140,6 +141,7 @@ void Player::IdleUpdate(const Input & p)
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
+		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -187,6 +189,7 @@ void Player::RunUpdate(const Input & p)
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
+		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -226,6 +229,7 @@ void Player::JumpUpdate(const Input & p)
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
 		shotFlag = true;
+		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 

@@ -12,6 +12,10 @@ struct SoundName
 {
 	/// 効果音のパス
 	const std::string sampleSE = "resource/SE/sample.mp3";
+	const std::string shot	   = "resource/SE/shot.mp3";
+	const std::string bubble   = "resource/SE/bubble.mp3";
+	const std::string hit	   = "resource/SE/hit.mp3";
+	const std::string pop	   = "resource/SE/pop.mp3";
 	
 	/// 音楽のパス
 	const std::string mainBGM = "resource/BGM/main.mp3";

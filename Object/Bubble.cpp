@@ -2,6 +2,7 @@
 #include "../Game.h"
 #include "../CollisionDetector.h"
 #include "../Input.h"
+#include "../AudioMng.h"
 #include "Bubble.h"
 
 Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
@@ -174,7 +175,12 @@ bool Bubble::HitBubble(const Rect& bblRect)
 
 void Bubble::ChangePop()
 {
-	if (updater != &Bubble::PopUpdate) { Pop(); }
+
+	if (updater != &Bubble::PopUpdate)
+	{ 
+		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
+		Pop(); 
+	}
 }
 
 void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
@@ -187,6 +193,7 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 		/// 壁に当たった時、泡を割る
 		if (sideCheck)
 		{
+			AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
 			Pop();
 			return;
 		}
@@ -226,12 +233,14 @@ bool Bubble::GroundCheck(const Rect & pRect, const Input & p)
 			/// 地上でﾎﾞﾀﾝを押し続けている時に泡に当たると、泡が割れる
 			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
 				Pop();
 				return false;
 			}
 			/// ﾎﾞﾀﾝを押し続けていると、泡の上を飛ぶことができる
 			if (underPlayer)
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 				return true;
 			}
 		}
@@ -239,6 +248,7 @@ bool Bubble::GroundCheck(const Rect & pRect, const Input & p)
 		{
 			if (underPlayer)
 			{
+				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
 				Pop();
 				return false;
 			}
@@ -272,7 +282,7 @@ void Bubble::Shot()
 void Bubble::Floating()
 {
 	vel.x = 0;
-	vel.y = -0.5;					/// とりあえず、仮設定
+	vel.y = -0.5;					/// とりあえず、仮設定(気流用のクラス実装まで)
 	ChangeAction("floating");
 	updater = &Bubble::FloatingUpdate;
 }
