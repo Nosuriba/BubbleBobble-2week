@@ -217,7 +217,7 @@ void GameManager::Update(const Input & p)
 	}
 	
 
-	for (int i = 0; i < bubbles.size(); ++i)
+	for (unsigned int i = 0; i < bubbles.size(); ++i)
 	{
 		if (bubbles[i]->CheckDelete())
 		{

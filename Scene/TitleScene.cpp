@@ -17,8 +17,8 @@ TitleScene::~TitleScene()
 void TitleScene::Init()
 {
 	/// Y座標はとりあえず直地(後で直す！！！！！)
-	pos = Vector2f(Game::GetInstance().GetScreenSize().x / 7, -423.0f);
-	vel.y = 5.f;
+	pos	   = Vector2f(Game::GetInstance().GetScreenSize().x / 7, -423.0f);
+	vel.y  = 5.f;
 	invCnt = 30;
 }
 

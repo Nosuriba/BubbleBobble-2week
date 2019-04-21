@@ -40,8 +40,8 @@ private:
 	void FloatingUpdate();
 	void PopUpdate();
 
-	void SideCheck(const Rect & pRect, const Rect& wRect);
-	bool GroundCheck(const Rect& pRect, const Input& p);
+	void SideCheck(const Rect & pRect, const Rect& wRect);	
+	bool UnderCheck(const Rect& pRect, const Input& p);		
 	
 	void DebugDraw();
 

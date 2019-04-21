@@ -121,7 +121,7 @@ bool Bubble::HitPlayer(const Rect &pRect, const Input & p)
 {
 	if (updater == &Bubble::FloatingUpdate)
 	{
-		return GroundCheck(pRect, p);
+		return UnderCheck(pRect, p);
 	}
 	return false;
 }
@@ -220,7 +220,7 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 	}
 }
 
-bool Bubble::GroundCheck(const Rect & pRect, const Input & p)
+bool Bubble::UnderCheck(const Rect & pRect, const Input & p)
 {
 	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
 	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è

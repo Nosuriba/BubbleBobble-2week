@@ -117,6 +117,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 
 	if (updater == &Enemy::IdleUpdate && waitCnt < 0)
 	{
+		/// ‚±‚±‚Å“G‚ªã¸‚·‚é‚©‚Ì”»’è‚ðŽæ‚ê‚é‚æ‚¤‚É‚·‚é
 		if (riseFlag)
 		{
 			vel.y = -charSpeed;
@@ -125,6 +126,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 		}
 		else
 		{
+			/// “G‚ªÌÞÛ¯¸‚Ìã‚É‚È‚Á‚½ŽžAó‘Ô‚ð•Ï‚¦‚é(‚æ‚¤‚É‚È‚Á‚Ä‚é‚©‚çã¸”»’è‚Ç‚¤‚É‚©‚µ‚ë)
 			if ((int)GetRect().Bottom() <= groundLine)
 			{
 				vel.y = 0;
