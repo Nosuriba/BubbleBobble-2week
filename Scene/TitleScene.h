@@ -16,6 +16,8 @@ public:
 private:
 	std::vector<std::shared_ptr<Bubble>> bubbles;
 
+	Vector2f pos;
+	Vector2f vel;
 	int invCnt;
 };
 

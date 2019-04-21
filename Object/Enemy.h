@@ -34,6 +34,7 @@ private:
 	void BubbleUpdate();
 	void DieUpdate();
 
+	bool RiseCheck(const Rect& bRect);
 	void SideCheck(const Rect& pRect, const Rect& wRect);
 	bool UnderCheck(const Rect& pRect, const Input& p);
 	bool OnGround();
@@ -42,8 +43,11 @@ private:
 
 	void(Enemy::*updater)();
 
+	int groundLine;
 	int enemyImg;
 	int waitCnt;		/// “G‚Ì‘Ò‹@ŽžŠÔ—p
+
+	bool riseFlag;
 
 	const float fallAccel;
 };

@@ -25,8 +25,9 @@ Enemy::Enemy(int groundLine) : fallAccel(0.3f)
 
 	this->groundLine = groundLine;
 	pos  = vel = Vector2f(0, 0);
-	jumpFlag = dieFlag = turnFlag = false;
+	jumpFlag = dieFlag = turnFlag = riseFlag = false;
 	size = Vector2(0, 0);
+
 
 	updater = &Enemy::RunUpdate;
 }
@@ -102,6 +103,36 @@ bool Enemy::HitGround(const Rect & bRect)
 
 bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
+	if (updater == &Enemy::RunUpdate)
+	{
+		if (pos.y > pRect.Bottom() &&
+		   (int)pos.x == (int)bRect.center.x)
+		{
+			groundLine = 0;
+			riseFlag = true;
+			Idle();
+		}
+		return false;
+	}
+
+	if (updater == &Enemy::IdleUpdate && waitCnt < 0)
+	{
+		if (riseFlag)
+		{
+			vel.y = -charSpeed;
+			RiseCheck(bRect);
+			return true;
+		}
+		else
+		{
+			if ((int)GetRect().Bottom() <= groundLine)
+			{
+				vel.y = 0;
+				Run();
+			}
+		}
+		
+	}
 	return false;
 }
 
@@ -127,8 +158,9 @@ void Enemy::DieControl(const Rect& objRect)
 	{
 		if (selHitCheck(objRect) && !sizeCheck && vel.y == charSpeed)
 		{
-			/*vel		= Vector2f(0, 0);
-			dieFlag = true;*/
+			/// °‚É“–‚½‚Á‚½ŽžAŽ€–Só‘Ô‚É‚·‚é(Œã‚ÅA“G‚ªÁ‚¦‚é‚æ‚¤‚É‚·‚é)
+			vel		= Vector2f(0, 0);
+			dieFlag = true;
 			return;
 		}
 
@@ -144,6 +176,7 @@ void Enemy::DieControl(const Rect& objRect)
 void Enemy::Idle()
 {
 	if (nowActionName != "run") { ChangeAction("run"); }
+	waitCnt = 60;
 	vel = Vector2f(0, 0);
 	updater = &Enemy::IdleUpdate;
 }
@@ -178,7 +211,7 @@ void Enemy::IdleUpdate()
 	waitCnt--;
 	if (waitCnt < 0)
 	{
-		Jump();
+		//Jump();
 		return;
 	}
 	auto changeTurn = ((waitCnt / 20) % 2 ? true : false);
@@ -214,21 +247,29 @@ void Enemy::BubbleUpdate()
 
 void Enemy::DieUpdate()
 {
-	if (!dieFlag)	/// Œã‚ÅŠO‚·
+	if (vel.y < charSpeed)
 	{
-		if (vel.y < charSpeed)
-		{
-			vel.y += fallAccel;
-		}
-		else
-		{
-			vel.x = 0;
-			vel.y = charSpeed;
-		}
-
+		vel.y += fallAccel;
+	}
+	else
+	{
+		vel.x = 0;
+		vel.y = charSpeed;
 	}
 	
 	ProceedAnimFile();
+}
+
+bool Enemy::RiseCheck(const Rect& bRect)
+{
+	auto underBlock = CollisionDetector::UnderCollCheck(bRect, GetRect());
+	if (underBlock)
+	{
+		groundLine = bRect.Top() - (size.y + bRect.size.height);
+		riseFlag = false;
+		return true;
+	}
+	return false;
 }
 
 void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
@@ -271,25 +312,6 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 			vel.x = -charSpeed;
 		}
 		else {}
-
-		/*	if (pRect.Bottom() > GetRect().Top() ||
-				pRect.Top() < GetRect().Bottom())
-			{
-				if (pRect.Right() < GetRect().center.x)
-				{
-					Die();
-					turnFlag = true;
-					vel.x = charSpeed;
-					vel.y = -12.f;
-				}
-				else if (pRect.Left() > GetRect().center.x)
-				{
-					Die();
-					turnFlag = false;
-					vel.x = -charSpeed;
-					vel.y = -12.f;
-				}
-			}*/
 	}
 	else
 	{
