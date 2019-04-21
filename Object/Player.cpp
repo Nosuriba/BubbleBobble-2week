@@ -170,12 +170,12 @@ void Player::RunUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 5.0f;
+			vel.x = charSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -5.0f;
+			vel.x = -charSpeed;
 		}
 		else
 		{
@@ -234,12 +234,12 @@ void Player::JumpUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 5.0f;
+			vel.x = charSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -5.0f;
+			vel.x = -charSpeed;
 		}
 		else
 		{
@@ -269,12 +269,12 @@ void Player::ShotUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = 5.0f;
+			vel.x = charSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -5.0f;
+			vel.x = -charSpeed;
 		}
 		else
 		{

@@ -46,4 +46,6 @@ protected:
 	bool jumpFlag;		// true:¼Ş¬İÌß’†, false:¼Ş¬İÌß‚µ‚Ä‚¢‚È‚¢
 	bool turnFlag;		// true:¶Œü‚«, false:‰EŒü‚«
 	bool dieFlag;		// true:€–S, false:¶‘¶
+
+	const float charSpeed;
 };

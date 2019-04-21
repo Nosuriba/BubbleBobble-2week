@@ -19,7 +19,7 @@ Stage::Stage()
 	DxLib::FileRead_close(h);
 
 	/// ステージの大きさと中心を設定している
-	stageRange.size.width  = fmfData.mapWidth    * fmfData.chipW;			/// ステージサイズは2倍にしなくていいのでは...
+	stageRange.size.width  = fmfData.mapWidth    * fmfData.chipW;
 	stageRange.size.height = fmfData.mapHeight   * fmfData.chipH;
 	stageRange.center.x	   = stageRange.size.width  / 2;
 	stageRange.center.y    = stageRange.size.height / 2;

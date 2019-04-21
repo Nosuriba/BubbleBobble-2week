@@ -8,13 +8,12 @@ Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
 {
 	///	‰¼‚Ì‰Šú‰»
 	Floating();
-	nowCutIdx = 0;
+	nowCutIdx   = 0;
 	ReadActionFile("Action/bubble.act");		// –¼‘O‚Í‚±‚¤‚·‚é—\’è
 	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
-	gameFlag = deleteFlag = false;
-
-	vel.y = -(0.4f * (GetRand(6) + 1));
-	invCnt  = spitFrame;
+	gameFlag    = deleteFlag = false;
+	vel.y	    = -(0.4f * (GetRand(6) + 1));
+	invCnt      = spitFrame;
 }
 
 Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
@@ -26,9 +25,9 @@ Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(
 	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
 	this->bubbleDir = bubbleDir;
-	gameFlag = true;
-	deleteFlag = false;
-	invCnt  = spitFrame;
+	gameFlag	= true;
+	deleteFlag  = false;
+	invCnt		= spitFrame;
 }
 
 Bubble::~Bubble()
@@ -115,7 +114,6 @@ void Bubble::MoveContact(const Rect & bblRect)
 			vel.y = -defSpeed;
 		}
 	}
-	
 }
 
 bool Bubble::HitPlayer(const Rect &pRect, const Input & p)
@@ -198,13 +196,13 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 				GetRect().center.x + (size.x / 2) < pRect.center.x)
 			{
 				/// ÌßÚ²Ô°‚Ì¶‘¤‚Æ“–‚½‚Á‚½Žž‚Ì‹““®
-				vel.x = -defSpeed * 2;
+				vel.x = -charSpeed;
 			}
 			else if (GetRect().center.x - (size.x / 2) < pRect.center.x + (pRect.size.width / 2) &&
 					 GetRect().center.x - (size.x / 2) > pRect.center.x)
 			{
 				/// ÌßÚ²Ô°‚Ì‰E‘¤‚Æ“–‚½‚Á‚½Žž‚Ì‹““®
-				vel.x = defSpeed * 2;
+				vel.x = charSpeed;
 			}
 			else {}
 		}

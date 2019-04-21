@@ -106,12 +106,14 @@ void GameManager::EnemyCollision()
 {
 	for (auto itr : enemys)
 	{
+		itr->HitPlayer(player->GetRect());
 		for (auto wall : walls)
 		{
 			if (itr->HitWall(wall->GetRect()))
 			{
 				break;
 			}
+			itr->DieControl(wall->GetRect());
 		}
 
 		for (auto block : blocks)
@@ -120,6 +122,7 @@ void GameManager::EnemyCollision()
 			{
 				break;
 			}
+			itr->DieControl(block->GetRect());
 		}
 
 		for (auto bubble = bubbles.begin(); bubble != bubbles.end(); bubble++)

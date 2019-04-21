@@ -15,7 +15,7 @@ TitleScene::~TitleScene()
 
 void TitleScene::Init()
 {
-	invCnt = 20;
+	invCnt = 30;
 }
 
 void TitleScene::Update(const Input & p)
@@ -34,7 +34,7 @@ void TitleScene::Update(const Input & p)
 		bubbles.push_back(std::make_shared<Bubble>());
 		bubbles[bubbles.size() - 1]->Init("floating", Vector2f(48 * GetRand(17), Game::GetInstance().GetScreenSize().y),
 													  Vector2(48, 48));
-		invCnt = 20;
+		invCnt = 30;
 	}
 	for (unsigned int i = 0; i < bubbles.size(); ++i)
 	{
