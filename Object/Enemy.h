@@ -10,10 +10,10 @@ public:
 	Enemy();
 	Enemy(int groundLine);
 	~Enemy();
-	bool HitBubble(const Rect& bubble);
-	bool HitWall(const Rect& wall);							// •Ç‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
-	bool HitGround(const Rect& block);						// ¼Ş¬İÌß’†AÌŞÛ¯¸‚Éæ‚Á‚½‚©‚Ì”»’è
-	bool UpperCheck(const Rect& player, const Rect& block);	// ÌßÚ²Ô°‚ªã‚É‚¢‚é‚©‚Ì”»’è	
+	bool HitBubble(const Rect& bblRect);
+	bool HitWall(const Rect& wRect);							// •Ç‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
+	bool HitGround(const Rect& bRect);						// ¼Ş¬İÌß’†AÌŞÛ¯¸‚Éæ‚Á‚½‚©‚Ì”»’è
+	bool UpperCheck(const Rect& pRect, const Rect& bRect);	// ÌßÚ²Ô°‚ªã‚É‚¢‚é‚©‚Ì”»’è	
 
 	void Update();
 	void Draw();

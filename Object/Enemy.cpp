@@ -75,7 +75,7 @@ bool Enemy::HitGround(const Rect & bRect)
 	return underCheck;
 }
 
-bool Enemy::UpperCheck(const Rect& player, const Rect & block)
+bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
 	return false;
 }
@@ -123,7 +123,16 @@ void Enemy::Die()
 
 void Enemy::IdleUpdate()
 {
-
+	waitCnt--;
+	if (waitCnt < 0)
+	{
+		Jump();
+		return;
+	}
+	auto changeTurn = ((waitCnt / 20) % 2 ? true : false);
+	turnFlag = changeTurn;
+	
+	ProceedAnimFile();
 }
 
 void Enemy::RunUpdate()
@@ -144,14 +153,19 @@ void Enemy::RunUpdate()
 void Enemy::JumpUpdate()
 {
 	
+	ProceedAnimFile();
 }
 
 void Enemy::BubbleUpdate()
 {
+	vel.y = -0.5;		/// ‚Æ‚è‚ ‚¦‚¸A‰¼Ý’è
+	ProceedAnimFile();
 }
 
 void Enemy::DieUpdate()
 {
+
+	ProceedAnimFile();
 }
 
 bool Enemy::OnGround()

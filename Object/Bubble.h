@@ -24,7 +24,6 @@ public:
 	bool HitBubble(const Rect& bblRect);
 
 	bool CeilCheck();
-	bool CheckFloating();
 	bool CheckDelete();
 
 	void MoveContact(const Rect& bblRect);

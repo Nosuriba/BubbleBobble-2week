@@ -75,40 +75,45 @@ void Bubble::MoveContact(const Rect & bblRect)
 	auto hitCheck  = (CollisionDetector::CollCheck(GetRect(), bblRect));
 	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), bblRect));
 
-	/// ñAìØémÇ™ìñÇΩÇ¡ÇΩéûÇÃãììÆ(â°à⁄ìÆ)
-	if (GetRect().Right() - (size.x / 3) > bblRect.Left() &&
-	    GetRect().Right() - (size.x / 3) < bblRect.center.x &&
-		sideCheck)
+	if (updater == &Bubble::FloatingUpdate)
 	{
-		vel.x = -defSpeed / 2;
-	}
-	else if (GetRect().Left() + (size.x / 3) < bblRect.Right() &&
-			 GetRect().Left() + (size.x / 3) > bblRect.center.x &&
-			 sideCheck)
-	{
-		vel.x = defSpeed / 2;
-	}
-	else
-	{
-		vel.x = 0;
-	}
+		/// ñAìØémÇ™ìñÇΩÇ¡ÇΩéûÇÃãììÆ(â°à⁄ìÆ)
+		if (GetRect().Right() - (size.x / 3) > bblRect.Left() &&
+			GetRect().Right() - (size.x / 3) < bblRect.center.x &&
+			sideCheck)
+		{
+			vel.x = -defSpeed;
+		}
+		else if (GetRect().Left() + (size.x / 3) < bblRect.Right() &&
+				 GetRect().Left() + (size.x / 3) > bblRect.center.x &&
+				 sideCheck)
+		{
+			vel.x = defSpeed;
+		}
+		else
+		{
+			vel.x = 0;
+		}
 
-	/// ñAìØémÇ™ìñÇΩÇ¡ÇΩéûÇÃãììÆ(ècà⁄ìÆ)
-	if (GetRect().Bottom() > bblRect.center.y &&
-		GetRect().Bottom() < bblRect.center.y + (size.y / 2) &&
-		hitCheck)
-	{
-		vel.y = -defSpeed * 2;
-	}
-	else if (GetRect().Top() < bblRect.center.y &&
-			 GetRect().Top() > bblRect.center.y - (size.y / 2) &&
-			 hitCheck)
-	{
-		vel.y = defSpeed / 2;
-	}
-	else
-	{
-		vel.y = -defSpeed;
+		/// ñAìØémÇ™ìñÇΩÇ¡ÇΩéûÇÃãììÆ(ècà⁄ìÆ)
+		if (GetRect().Bottom() > bblRect.center.y &&
+			GetRect().Bottom() < bblRect.center.y + (size.y / 3) &&
+			hitCheck)
+		{
+			vel.y = -defSpeed * 2;
+			return;
+		}
+		else if (GetRect().Top() < bblRect.center.y &&
+				 GetRect().Top() > bblRect.center.y - (size.y / 3) &&
+				 hitCheck)
+		{
+			vel.y = defSpeed;
+			return;
+		}
+		else
+		{
+			vel.y = -defSpeed;
+		}
 	}
 	
 }
@@ -169,42 +174,39 @@ bool Bubble::HitBubble(const Rect& bblRect)
 	return false;
 }
 
-bool Bubble::CheckFloating()
-{
-	return (updater == &Bubble::FloatingUpdate);
-}
 void Bubble::ChangePop()
 {
 	if (updater != &Bubble::PopUpdate) { Pop(); }
 }
 
-void Bubble::SideCheck(const Rect & player, const Rect& wall)
+void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 {
-	auto hitPlayer = (CollisionDetector::CollCheck(GetRect(), player));
+	auto hitCheck  = (CollisionDetector::CollCheck(GetRect(), pRect));
+	auto sideCheck = (CollisionDetector::SideCollCheck(GetRect(), wRect));
 	
-	if (hitPlayer)
+	if (hitCheck)
 	{
 		/// ï«Ç…ìñÇΩÇ¡ÇΩéûÅAñAÇäÑÇÈ
-		if (CollisionDetector::SideCollCheck(GetRect(), wall))
+		if (sideCheck)
 		{
 			Pop();
 			return;
 		}
 		else
 		{
-			if (GetRect().center.x + (size.x / 2) > player.center.x - (player.size.width / 2) && 
-				GetRect().center.x + (size.x / 2) < player.center.x)
+			if (GetRect().center.x + (size.x / 2) > pRect.center.x - (pRect.size.width / 2) &&
+				GetRect().center.x + (size.x / 2) < pRect.center.x)
 			{
 				/// Ãﬂ⁄≤‘∞ÇÃç∂ë§Ç∆ìñÇΩÇ¡ÇΩéûÇÃãììÆ
 				vel.x = -defSpeed * 2;
 			}
-			else if (GetRect().center.x - (size.x / 2) < player.center.x + (player.size.width / 2) && 
-					 GetRect().center.x - (size.x / 2) > player.center.x)
+			else if (GetRect().center.x - (size.x / 2) < pRect.center.x + (pRect.size.width / 2) &&
+					 GetRect().center.x - (size.x / 2) > pRect.center.x)
 			{
 				/// Ãﬂ⁄≤‘∞ÇÃâEë§Ç∆ìñÇΩÇ¡ÇΩéûÇÃãììÆ
 				vel.x = defSpeed * 2;
 			}
-			else{}
+			else {}
 		}
 	}
 	else
@@ -273,7 +275,7 @@ void Bubble::Shot()
 void Bubble::Floating()
 {
 	vel.x = 0;
-	vel.y = -0.5;
+	vel.y = -0.5;					/// Ç∆ÇËÇ†Ç¶Ç∏ÅAâºê›íË
 	ChangeAction("floating");
 	updater = &Bubble::FloatingUpdate;
 }
@@ -290,7 +292,6 @@ void Bubble::ShotUpdate()
 	if (invCnt < 0)
 	{
 		Floating();
-		vel.x = 0;
 	}
 	else
 	{
@@ -319,7 +320,6 @@ void Bubble::PopUpdate()
 void Bubble::Update()
 {
 	(this->*updater)();
-
 	pos += vel;
 }
 

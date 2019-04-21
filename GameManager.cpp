@@ -150,14 +150,12 @@ void GameManager::BubbleCollision(const Input& p)
 			///	–A‚ªŠ„‚ê‚é‚©‚Ì”»’è‚ð‚µ‚Ä‚¢‚é
 			if ((*itr)->HitBubble((*bubble)->GetRect())) 
 			{
-				(*itr)->ChangePop();
+				(*bubble)->ChangePop();
 			}
 
-			/// –A“¯Žm‚ª“–‚½‚Á‚½Žž‚ÌˆÚ“®
-			auto floatState = !((*itr)->CheckFloating() && (*bubble)->CheckFloating());
-			if (itr != bubble && floatState)
+			if (itr != bubble)
 			{
-				(*itr)->MoveContact((*bubble)->GetRect());
+				(*bubble)->MoveContact((*itr)->GetRect());
 			}
 		}
 
