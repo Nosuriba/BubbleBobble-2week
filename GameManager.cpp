@@ -142,8 +142,6 @@ void GameManager::EnemyCollision(const Input& p)
 				break;
 			}
 		}
-
-		
 	}
 }
 
@@ -151,14 +149,12 @@ void GameManager::BubbleCollision(const Input& p)
 {
 	for (auto itr = bubbles.begin(); itr != bubbles.end(); ++itr)
 	{
-		/// ÌßÚ²Ô°‚Æ‚Ì“–‚½‚è”»’è
 		if ((*itr)->HitPlayer(player->GetRect(), p))
 		{
 			auto debug = (*itr)->HitPlayer(player->GetRect(), p);
 			player->StepBubble();
 		}
 		
-		/// –A“¯Žm‚Ì“–‚½‚è”»’è
 		for (auto bubble = bubbles.begin(); bubble != bubbles.end(); ++bubble)
 		{
 			///	–A‚ªŠ„‚ê‚é‚©‚Ì”»’è‚ð‚µ‚Ä‚¢‚é
@@ -167,13 +163,13 @@ void GameManager::BubbleCollision(const Input& p)
 				(*bubble)->ChangePop();
 			}
 
+			/// •‚‚¢‚Ä‚¢‚é–A“¯Žm‚ª“–‚½‚Á‚½Žž‚Ç‚¤“®‚­‚©‚Ìˆ—
 			if (itr != bubble)
 			{
-				(*bubble)->MoveContact((*itr)->GetRect());
+				(*itr)->MoveContact((*bubble)->GetRect());
 			}
 		}
 
-		/// •Ç‚Æ‚Ì“–‚½‚è”»’è
 		for (auto wall : walls)
 		{
 			(*itr)->HitAcross(player->GetRect(), wall->GetRect());
@@ -182,7 +178,7 @@ void GameManager::BubbleCollision(const Input& p)
 				return;
 			}
 		}
-		/// ÌÞÛ¯¸‚Æ‚Ì“–‚½‚è”»’è
+
 		for (auto block : blocks)
 		{
 			if ((*itr)->HitObject(block->GetRect()))

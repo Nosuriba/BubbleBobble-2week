@@ -7,13 +7,6 @@
 
 Enemy::Enemy() : fallAccel(0.3f)
 {
-	Run();
-	nowCutIdx = 0;
-	ReadActionFile("Action/enemy.act");
-	enemyImg = DxLib::LoadGraph(actionData.imgFilePath.c_str());
-
-	pos  = vel = Vector2f(0, 0);
-	size = Vector2(0,0);
 }
 
 Enemy::Enemy(int groundLine) : fallAccel(0.3f)
@@ -60,6 +53,7 @@ bool Enemy::HitBubble(const Rect & bRect, const bool& bblCheck)
 {
 	auto hitCheck = CollisionDetector::CollCheck(GetRect(), bRect);
 
+	/// ｼｮｯﾄの状態の泡に当たった時、敵が泡状態になる
 	if (updater != &Enemy::BubbleUpdate && 
 		updater != &Enemy::DieUpdate	&& 
 		hitCheck && bblCheck)
@@ -77,7 +71,7 @@ bool Enemy::HitWall(const Rect & wRect)
 	{
 		/// 壁に当たったら、方向転換するようにしている
 		turnFlag = !turnFlag;
-		vel.x = (vel.x == charSpeed ? -charSpeed : charSpeed);
+		vel.x	 = (vel.x == charSpeed ? -charSpeed : charSpeed);
 		return true;
 	}
 
@@ -90,7 +84,6 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 	
 	if (updater != &Enemy::DieUpdate)
 	{
-
 		if (!riseFlag && updater != &Enemy::IdleUpdate)
 		{
 			/// 落下中にブロックの上に乗った時の処理
@@ -100,18 +93,9 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 				groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
 				return true;
 			}
-			else
-			{
-				if (!jumpFlag)
-				{
-					jumpFlag = true;
-				}
-			}
 			vel.y = 5.0f;
 			groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
-		
 		}
-		
 	}
 	return false;
 }
@@ -119,19 +103,22 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
 	auto rtnFlag = false;
+
+	/// ﾌﾟﾚｲﾔｰが敵より上にいて、頭上にブロックがあった時にﾌﾟﾚｲﾔｰを探す挙動にする
 	if (updater == &Enemy::RunUpdate)
 	{
 		if (pos.y > pRect.Bottom() &&
-	   (int)pos.x == (int)bRect.center.x)
+	   (int)pos.x == (int)bRect.center.x)		//// まだ上昇する処理が完全にできていない
 		{
 			turnFlag   = (GetRect().center.x < pRect.center.x ? true : false);
-			groundLine = 0;			///地面の初期化をしている
+			groundLine = 0;
 			riseFlag   = true;
 			Idle();
 		}
 		return false;
 	}
 
+	/// ﾌﾟﾚｲﾔｰを一定時間探してから上昇するようにしている
 	if (updater == &Enemy::IdleUpdate && waitCnt < 0)
 	{
 		if (riseFlag)
@@ -140,10 +127,10 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 			if (RiseCheck(bRect))
 			{
 				/// 上昇中に当たったﾌﾞﾛｯｸの上側を地面にしている
-				turnFlag = (GetRect().center.x > pRect.center.x ? false : true);
-				groundLine = bRect.Top() + 1;
-				riseFlag   = false;
-				rtnFlag = true;
+				turnFlag	= (GetRect().center.x > pRect.center.x ? false : true);
+				groundLine  = bRect.Top() + 1;
+				riseFlag    = false;
+				rtnFlag		= true;
 			}
 		}
 		else
