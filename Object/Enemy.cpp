@@ -56,12 +56,13 @@ bool Enemy::HitPlayer(const Rect & pRect, const Rect& wRect, const Input& p)
 	return UnderCheck(pRect, p);
 }
 
-bool Enemy::HitBubble(const Rect & bRect)
+bool Enemy::HitBubble(const Rect & bRect, const bool& bblCheck)
 {
 	auto hitCheck = CollisionDetector::CollCheck(GetRect(), bRect);
 
 	if (updater != &Enemy::BubbleUpdate && 
-		updater != &Enemy::DieUpdate	&& hitCheck)
+		updater != &Enemy::DieUpdate	&& 
+		hitCheck && bblCheck)
 	{
 		Bubble();
 		return true;
@@ -93,11 +94,18 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 		if (!riseFlag && updater != &Enemy::IdleUpdate)
 		{
 			/// 落下中にブロックの上に乗った時の処理
-			if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
+			if (underCheck && GetRect().Bottom() > (size.y + bRect.size.height))
 			{
 				vel.y = 0;
 				groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
 				return true;
+			}
+			else
+			{
+				if (!jumpFlag)
+				{
+					jumpFlag = true;
+				}
 			}
 			vel.y = 5.0f;
 			groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);

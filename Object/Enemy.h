@@ -11,11 +11,11 @@ public:
 	Enemy(int groundLine);
 	~Enemy();
 	bool HitPlayer(const Rect& pRect, const Rect& wRect, const Input& p);
-	bool HitBubble(const Rect& bblRect);
-	bool HitWall(const Rect& wRect);						// 壁と当たったかの判定
-	bool HitGround(const Rect& pRect, const Rect& bRect);						// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
-	bool UpperCheck(const Rect& pRect, const Rect& bRect);	// ﾌﾟﾚｲﾔｰが上にいるかの判定	
-	void DieControl(const Rect& objRect);	// 死亡時の制御用
+	bool HitBubble(const Rect& bblRect, const bool& bblCheck);
+	bool HitWall(const Rect& wRect);							// 壁と当たったかの判定
+	bool HitGround(const Rect& pRect, const Rect& bRect);		// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
+	bool UpperCheck(const Rect& pRect, const Rect& bRect);		// ﾌﾟﾚｲﾔｰが上にいるかの判定	
+	void DieControl(const Rect& objRect);						// 死亡時の制御用
 	
 	const bool& GetDieFlag();
 	void Update();

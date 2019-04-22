@@ -136,7 +136,7 @@ void GameManager::EnemyCollision(const Input& p)
 
 		for (auto bubble = bubbles.begin(); bubble != bubbles.end(); bubble++)
 		{
-			if (itr->HitBubble((*bubble)->GetRect()))
+			if (itr->HitBubble((*bubble)->GetRect(), (*bubble)->HitEnemy(itr->GetRect())))
 			{
 				bubbles.erase(bubble);
 				break;

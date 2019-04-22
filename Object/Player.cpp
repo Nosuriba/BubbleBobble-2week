@@ -144,6 +144,7 @@ void Player::IdleUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -193,6 +194,7 @@ void Player::RunUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -234,6 +236,7 @@ void Player::JumpUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50,AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
