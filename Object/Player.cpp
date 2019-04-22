@@ -71,7 +71,7 @@ bool Player::HitGround(const Rect& bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
+	if (underCheck && vel.y >= 0.f)
 	{
  		this->vel.y		 = 0;
 		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。

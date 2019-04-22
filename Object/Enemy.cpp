@@ -82,15 +82,15 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	
-	if (updater != &Enemy::DieUpdate)
+	if (updater == &Enemy::RunUpdate)
 	{
-		if (!riseFlag && updater != &Enemy::IdleUpdate)
+		if (!riseFlag)
 		{
 			/// 落下中にブロックの上に乗った時の処理
-			if (underCheck && GetRect().Bottom() > (size.y + bRect.size.height))
+			if (underCheck)
 			{
 				vel.y = 0;
-				groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
+				groundLine = bRect.Top() + 1;		
 				return true;
 			}
 			vel.y = 5.0f;
