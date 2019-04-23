@@ -71,7 +71,7 @@ bool Player::HitGround(const Rect& bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.f && GetRect().Bottom() > (size.y + bRect.size.height))
+	if (underCheck && vel.y >= 0.f)
 	{
  		this->vel.y		 = 0;
 		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
@@ -144,6 +144,7 @@ void Player::IdleUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -193,6 +194,7 @@ void Player::RunUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
@@ -234,6 +236,7 @@ void Player::JumpUpdate(const Input & p)
 	{
 		shotFlag = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
+		AudioMng::GetInstance().ChangeVolume(50,AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
