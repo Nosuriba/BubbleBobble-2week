@@ -34,7 +34,7 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Stage>  stage;
 
-	std::vector<std::shared_ptr<Enemy>>  enemys;
+	std::vector<std::shared_ptr<Enemy>>  enemies;
 	std::vector<std::shared_ptr<Wall>>   walls;
 	std::vector<std::shared_ptr<Block>>  blocks;
 	std::vector<std::shared_ptr<Bubble>> bubbles;

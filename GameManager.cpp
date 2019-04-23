@@ -27,8 +27,8 @@ void GameManager::Init()
 	player->Init("idle", Vector2f(charSize * 2, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 
 	/// ìGÇÃê∂ê¨(âºê›íË)
-	enemys.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
-	enemys[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
+	enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
+	enemies[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 	CreateStage();
 }
 
@@ -104,7 +104,7 @@ void GameManager::PlayerCollision()
 
 void GameManager::EnemyCollision(const Input& p)
 {
-	for (auto itr : enemys)
+	for (auto itr : enemies)
 	{
 		for (auto wall : walls)
 		{
@@ -210,7 +210,7 @@ void GameManager::Update(const Input & p)
 
 	player->Update(p);
 	player->Draw();
-	for (auto enemy : enemys)
+	for (auto enemy : enemies)
 	{
 		enemy->Update();
 		enemy->Draw();
