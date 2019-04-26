@@ -139,7 +139,7 @@ bool Bubble::HitEnemy(const Rect& eRect)
 
 bool Bubble::HitObject(const Rect& objRect)
 {
-	auto selHitCheck = [=](const Rect& objRect)		
+	auto selHitCheck = [&](const Rect& objRect)		
 	{
 		if (objRect.size.height == size.y)
 		{

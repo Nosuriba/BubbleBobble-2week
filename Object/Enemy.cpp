@@ -149,7 +149,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 
 void Enemy::DieControl(const Rect& objRect)
 {
-	auto selHitCheck = [=](const Rect& objRect)
+	auto selHitCheck = [&](const Rect& objRect)
 	{
 		if (objRect.size.height == size.y)
 		{
@@ -338,7 +338,7 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 
 bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 {
-	auto blowDir = [=](const Rect& pRect)
+	auto blowDir = [&](const Rect& pRect)
 	{
 		if (pRect.Right() < GetRect().center.x)
 		{
