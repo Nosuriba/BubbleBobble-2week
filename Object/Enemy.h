@@ -17,7 +17,7 @@ public:
 	bool UpperCheck(const Rect& pRect, const Rect& bRect);		// ÌßÚ²Ô°‚ªã‚É‚¢‚é‚©‚Ì”»’è	
 	void DieControl(const Rect& objRect);						// €–S‚Ì§Œä—p
 	
-	const bool& GetDieFlag();
+	bool CheckAlive();
 	void Update();
 	void Draw();
 	Rect GetRect();

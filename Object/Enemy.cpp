@@ -37,16 +37,16 @@ Rect Enemy::GetRect()
 
 	return Rect(center, rectSize);
 }
-
-const bool & Enemy::GetDieFlag()
+bool Enemy::CheckAlive()
 {
-	return dieFlag;
+	/// “G‚ª¶‘¶ó‘Ô‚©‚Ì”»’è—p
+	return (updater != &Enemy::BubbleUpdate && updater != &Enemy::DieUpdate);
 }
 
 bool Enemy::HitPlayer(const Rect & pRect, const Rect& wRect, const Input& p)
 {
-	SideCheck(pRect, wRect);
-	return UnderCheck(pRect, p);
+	SideCheck(pRect, wRect);		// “G‚Ì‰¡‘¤‚É“–‚½‚Á‚½‚©’²‚×‚Ä‚¢‚é
+	return UnderCheck(pRect, p);	// 
 }
 
 bool Enemy::HitBubble(const Rect & bRect, const bool& bblCheck)
@@ -338,33 +338,20 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 
 bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 {
-	auto blowDir = [&](const Rect& pRect)
-	{
-		if (pRect.Right() < GetRect().center.x)
-		{
-			return true;
-			
-		}
-		else if (pRect.Left() > GetRect().center.x)
-		{
-			return false;
-			
-		}
-		else {}
-	};
-
+	auto hitDir		 = (pRect.Right() < GetRect().center.x);						// ÌßÚ²Ô°‚Ì“–‚½‚Á‚½•ûŒü
 	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
 	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// –A‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
 	auto underPlayer = (CollisionDetector::UnderCollCheck(pRect, GetRect()));		// ÌßÚ²Ô°‚Ì‰º‘¤‚Æ‚Ì“–‚½‚è”»’è
 
 	if (hitCheck && updater == &Enemy::BubbleUpdate)
 	{
+		/// ¼Ş¬İÌßÎŞÀİ‚ğ‰Ÿ‚µ‚Á‚Ï‚È‚µ‚Ì
 		if (p.IsPressing(PAD_INPUT_1))
 		{
-			/// ’nã‚ÅÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚É–A‚É“–‚½‚é‚ÆA–A‚ªŠ„‚ê‚é
+			/// ÌßÚ²Ô°‚ª’nã‚Å–Aó‘Ô‚Ì“G‚É“–‚½‚é‚ÆB–A‚ªŠ„‚ê‚é
 			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
 			{
-				if (blowDir(pRect))
+				if (hitDir)
 				{
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
@@ -380,7 +367,6 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 					vel.x = -charSpeed;
 					vel.y = -12.f;
 				}
-				Die();
 				return false;
 			}
 			/// ÎŞÀİ‚ğ‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚ÆA–A‚Ìã‚ğ”ò‚Ô‚±‚Æ‚ª‚Å‚«‚é
@@ -391,9 +377,10 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 		}
 		else
 		{
+			/// ¼Ş¬İÌßÎŞÀİ‚ğ‰Ÿ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚Ì
 			if (underPlayer)
 			{
-				if (blowDir(pRect))
+				if (hitDir)
 				{
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
@@ -412,9 +399,8 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 				return false;
 			}
 		}
-
 	}
-	return false;return false;
+	return false;
 }
 
 bool Enemy::OnGround()

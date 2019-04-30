@@ -17,7 +17,7 @@ Player::Player(int groundLine) : shotFrame(5)
 	ReadActionFile("Action/player.act");
 	playerImg	  = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
-	this->groundLine = groundLine + 1;		/// 床にめり込むように補正している。
+	this->groundLine = startPos = groundLine + 1;		/// 床にめり込むように補正している。
 	pos	 = vel = Vector2f(0, 0);
 	size = Vector2(0, 0);
 	jumpFlag = dieFlag = hitFlag = turnFlag = shotFlag = false;
@@ -47,9 +47,15 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-bool Player::HitEnemy(const Rect & eRect)
+bool Player::HitEnemy(const Rect & eRect, bool eAlive)
 {
 	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
+
+	if (updater != &Player::DieUpdate && hitCheck && eAlive)
+	{
+		Die();
+		return true;
+	}
 
 	return false;
 }
@@ -78,6 +84,7 @@ bool Player::HitGround(const Rect& bRect)
 	}
 	else
 	{
+		//// 天井に乗ってしまうので、すぐに直すようにする
 		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
 	}
 	return underCheck;
@@ -129,6 +136,9 @@ void Player::Shot()
 
 void Player::Die()
 {
+	ChangeAction("die");
+	vel.x = 0;
+	updater = &Player::DieUpdate;
 }
 
 void Player::IdleUpdate(const Input & p)
@@ -301,6 +311,26 @@ void Player::ShotUpdate(const Input & p)
 
 void Player::DieUpdate(const Input & p)
 {
+	/// 地面についているかの判定
+	if (OnGround())
+	{
+		vel.y = 0;
+		pos.y = groundLine - size.y;
+	}
+	else
+	{
+		///	落下処理
+		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
+	}
+
+	/// 死亡時のｱﾆﾒｰｼｮﾝが終わった時、待機状態にする
+	if (ProceedAnimFile())
+	{
+		/// ここにﾌﾟﾚｲﾔｰの残機などの処理を追加するといい
+		Idle();
+		vel = Vector2f(0, 0);
+		pos = Vector2f(size.x * 2, startPos - size.y);
+	}
 }
 
 bool Player::OnGround()

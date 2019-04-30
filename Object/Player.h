@@ -11,7 +11,7 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	bool HitEnemy(const Rect& eRect);	// “G‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
+	bool HitEnemy(const Rect& eRect, bool eAlive);	// “G‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
 	bool HitWall(const Rect& wRect);		// •Ç‚Æ“–‚½‚Á‚½‚©‚Ì”»’è
 	bool HitGround(const Rect& bRect);	// ¼Ş¬İÌß’†AÌŞÛ¯¸‚Éæ‚Á‚½‚©‚Ì”»’è
 	void StepBubble();					// –A‚ğ“¥‚ñ‚¾‚©‚Ì”»’è
@@ -44,6 +44,7 @@ private:
 
 	int playerImg;
 	int invCnt;			// ƒVƒ‡ƒbƒg‚ª‘Å‚Ä‚é‚Ü‚Å‚ÌŠÔŠu
+	int startPos;
 
 	bool hitFlag;
 	bool shotFlag;

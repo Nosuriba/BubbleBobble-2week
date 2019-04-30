@@ -100,6 +100,14 @@ void GameManager::PlayerCollision()
 			break;
 		}
 	}
+
+	for (auto itr : enemies)
+	{
+		if (player->HitEnemy(itr->GetRect(), itr->CheckAlive()))
+		{
+			break;
+		}
+	}
 }
 
 void GameManager::EnemyCollision(const Input& p)
