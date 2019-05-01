@@ -96,7 +96,11 @@ void Player::StepBubble()
 {
 	AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 	AudioMng::GetInstance().ChangeVolume(80, AudioMng::GetInstance().GetSound().bubble);
-	vel.y = -12.0f;
+
+	if (updater != &Player::DieUpdate)
+	{
+		vel.y = -12.0f;
+	}	
 }
 
 bool Player::ShotCheck()

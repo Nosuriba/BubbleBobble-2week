@@ -12,17 +12,17 @@ public:
 	Player(int groundLine);
 	~Player();
 	bool HitEnemy(const Rect& eRect, bool eAlive);	// 敵と当たったかの判定
-	bool HitWall(const Rect& wRect);		// 壁と当たったかの判定
-	bool HitGround(const Rect& bRect);	// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
-	void StepBubble();					// 泡を踏んだかの判定
-	bool ShotCheck();					// ｼｮｯﾄが打てるかの判定用
+	bool HitWall(const Rect& wRect);				// 壁と当たったかの判定
+	bool HitGround(const Rect& bRect);				// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
+	void StepBubble();								// 泡を踏んだかの判定
+	bool ShotCheck();								// ｼｮｯﾄが打てるかの判定用
 
 	void Update(const Input & p);
 	void Draw();
 
 	bool GetTurnFlag();
 	const Vector2f& GetPos(); 
-	Rect GetRect();									   // 矩形取得用
+	Rect GetRect();								// 矩形取得用
 private:
 	void Idle();
 	void Run();
@@ -36,7 +36,7 @@ private:
 	void ShotUpdate(const Input & p);
 	void DieUpdate(const Input & p);
 
-	bool OnGround();						// 地面についているかの判定用
+	bool OnGround();							// 地面についているかの判定用
 
 	void DebugDraw();
 
