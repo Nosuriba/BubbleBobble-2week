@@ -43,12 +43,11 @@ private:
 	void (Player::*updater)(const Input & p);
 
 	int playerImg;
-	int invCnt;			// ƒVƒ‡ƒbƒg‚ª‘Å‚Ä‚é‚Ü‚Å‚ÌŠÔŠu
+	int inviciCnt;
 	int startPos;
 
 	bool hitFlag;
 	bool shotFlag;
 	
-	const int shotFrame;
 };
 

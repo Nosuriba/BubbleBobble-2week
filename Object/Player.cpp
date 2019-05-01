@@ -6,11 +6,13 @@
 #include "../AudioMng.h"
 #include "../CollisionDetector.h"
 
-Player::Player() : shotFrame(5)
+const int shotFrame	  = 5;
+const int inviciFrame = 90;
+Player::Player()
 {
 }
 
-Player::Player(int groundLine) : shotFrame(5)
+Player::Player(int groundLine)
 {
 	Idle();
 	nowCutIdx	  = 0;
@@ -51,7 +53,8 @@ bool Player::HitEnemy(const Rect & eRect, bool eAlive)
 {
 	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
 
-	if (updater != &Player::DieUpdate && hitCheck && eAlive)
+	if (updater != &Player::DieUpdate && 
+		hitCheck && eAlive && inviciCnt < 0)
 	{
 		Die();
 		return true;
@@ -77,14 +80,13 @@ bool Player::HitGround(const Rect& bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
-	if (underCheck && vel.y >= 0.f)
+	if (underCheck && vel.y >= 0.f && pos.y > size.y * 2)
 	{
  		this->vel.y		 = 0;
 		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
 	}
 	else
 	{
-		//// 天井に乗ってしまうので、すぐに直すようにする
 		this->groundLine = Game::GetInstance().GetScreenSize().y + (size.y * 2);
 	}
 	return underCheck;
@@ -101,7 +103,6 @@ bool Player::ShotCheck()
 {
 	if (shotFlag)
 	{
-		invCnt = shotFrame;
 		shotFlag = false;
 		return true;
 	}
@@ -285,6 +286,7 @@ void Player::ShotUpdate(const Input & p)
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
+	/// 壁に当たっていない時
 	if (!hitFlag)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
@@ -328,6 +330,7 @@ void Player::DieUpdate(const Input & p)
 	{
 		/// ここにﾌﾟﾚｲﾔｰの残機などの処理を追加するといい
 		Idle();
+		inviciCnt = inviciFrame;
 		vel = Vector2f(0, 0);
 		pos = Vector2f(size.x * 2, startPos - size.y);
 	}
@@ -347,20 +350,28 @@ void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
 
-	invCnt = (invCnt < 0 ? invCnt = 0  :  invCnt -= 1);
-
 	if (pos.y > Game::GetInstance().GetScreenSize().y)
 	{
 		pos.y = -(size.y);
 	}
 	
+	inviciCnt--;
 	pos += vel;
 }
 
 void Player::Draw()
 {
-	CharactorObject::Draw(playerImg);
-
+	if (inviciCnt > 0)
+	{
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		CharactorObject::Draw(playerImg);
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
+	else
+	{
+		CharactorObject::Draw(playerImg);
+	}
+	
 #ifdef _DEBUG
 	DebugDraw();
 #endif 
