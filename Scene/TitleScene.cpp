@@ -26,7 +26,6 @@ void TitleScene::Update(const Input & p)
 {
 	if ((int)pos.y >= 0)
 	{
-
 		invCnt--;
 		if (p.IsTrigger(PAD_INPUT_8))
 		{

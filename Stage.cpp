@@ -2,8 +2,6 @@
 #include "stdio.h"
 #include "Stage.h"
 
-
-
 Stage::Stage()
 {
 	/// 読み込むステージファイルの指定
