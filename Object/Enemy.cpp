@@ -108,7 +108,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 	if (updater == &Enemy::RunUpdate)
 	{
 		if (pos.y > pRect.Bottom() &&
-	   (int)pos.x == (int)bRect.center.x)		//// ‚Ü‚¾ã¸‚·‚éˆ—‚ªŠ®‘S‚É‚Å‚«‚Ä‚¢‚È‚¢
+	   (int)pos.x == (int)bRect.center.x)		/// ‚Ü‚¾ã¸‚·‚éˆ—‚ªŠ®‘S‚É‚Å‚«‚Ä‚¢‚È‚¢
 		{
 			turnFlag   = (GetRect().center.x < pRect.center.x ? true : false);
 			groundLine = 0;

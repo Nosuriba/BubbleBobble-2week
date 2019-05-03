@@ -25,6 +25,7 @@ void MainScene::Update(const Input & p)
 	if (p.IsTrigger(PAD_INPUT_8))
 	{
 		Game::GetInstance().ChangeScene(new ResultScene());
+		return;
 	}
 
 }

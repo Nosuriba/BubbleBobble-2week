@@ -56,6 +56,7 @@ bool Player::HitEnemy(const Rect & eRect, bool eAlive)
 	if (updater != &Player::DieUpdate && 
 		hitCheck && eAlive && inviciCnt < 0)
 	{
+		LpAudioMng.PlaySE(LpAudioMng.GetSound().die);
 		Die();
 		return true;
 	}
