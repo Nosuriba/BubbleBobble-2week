@@ -62,7 +62,7 @@ void GameManager::WallInstance()
 void GameManager::BlockInstance()
 {
 	int blockCnt = 0;
-	int cnt = 0;
+	int cnt = 0;							/// ﾌﾞﾛｯｸの場所をｱｸｾｽするためのもの
 	std::string name[] = { "0" };			/// 特定のステージチップを読み込むようにしている(仮設定)
 	auto blockData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
 	auto mapSize = stage->GetStageRange();
@@ -79,6 +79,7 @@ void GameManager::BlockInstance()
 			blocks[cnt]->Init("resource/Image/block.png", pos, Vector2(2, 8), Vector2(0, 0), Vector2(blockSize, blockSize));
 			cnt++;
 		}
+	
 		blockCnt++;
 	}
 }
