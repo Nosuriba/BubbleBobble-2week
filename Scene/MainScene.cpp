@@ -22,7 +22,7 @@ void MainScene::Init()
 void MainScene::Update(const Input & p)
 {	
 	game->Update(p);
-	if (p.IsTrigger(PAD_INPUT_8))
+	if (p.IsTrigger(PAD_INPUT_10))
 	{
 		Game::GetInstance().ChangeScene(new ResultScene());
 		return;

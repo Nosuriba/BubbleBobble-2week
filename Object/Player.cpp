@@ -143,7 +143,7 @@ void Player::Shot()
 void Player::Die()
 {
 	ChangeAction("die");
-	vel.x = 0;
+	vel = Vector2f(0, 0);
 	updater = &Player::DieUpdate;
 }
 

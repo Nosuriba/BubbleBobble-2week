@@ -20,6 +20,7 @@ void TitleScene::Init()
 	pos	   = Vector2f(Game::GetInstance().GetScreenSize().x / 7, -423.0f);
 	vel.y  = 5.f;
 	invCnt = 30;
+	dispCnt = 0;
 }
 
 void TitleScene::Update(const Input & p)
@@ -27,7 +28,8 @@ void TitleScene::Update(const Input & p)
 	if ((int)pos.y >= 0)
 	{
 		invCnt--;
-		if (p.IsTrigger(PAD_INPUT_8))
+		dispCnt++;
+		if (p.IsTrigger(PAD_INPUT_10))
 		{
 			bubbles.clear();
 			Game::GetInstance().ChangeScene(new MainScene());
@@ -53,11 +55,14 @@ void TitleScene::Update(const Input & p)
 			bubbles[i]->Draw();
 
 		}
+
+		if ((dispCnt / 30) % 2)
+		DrawExtendString(210, 500, 2.0, 2.0, "PRESS SPACE START", 0xffffff);
 	}
 	else
 	{
 		pos += vel;
-		if (p.IsTrigger(PAD_INPUT_8))
+		if (p.IsTrigger(PAD_INPUT_10))
 		{
 			pos.y = 0;
 		}

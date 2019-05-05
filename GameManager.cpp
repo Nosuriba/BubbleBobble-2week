@@ -26,9 +26,15 @@ void GameManager::Init()
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
 	player->Init("idle", Vector2f(charSize * 2, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 
-	/// ìGÇÃê∂ê¨(âºê›íË)
-	enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
-	enemies[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
+	/// ìGÇÃê∂ê¨(âºê›íË)4
+	for (int i = 0; i < 3; ++i)
+	{
+		enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
+		enemies[i]->Init("run", Vector2f(400 + (i * charSize), 0),
+								Vector2(charSize, charSize));
+	}
+	/*enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
+	enemies[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));*/
 	CreateStage();
 }
 

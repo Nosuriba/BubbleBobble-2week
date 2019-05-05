@@ -87,7 +87,7 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 		if (!riseFlag)
 		{
 			/// 落下中にブロックの上に乗った時の処理
-			if (underCheck)
+			if (underCheck && GetRect().Bottom() > size.y * 3)
 			{
 				vel.y = 0;
 				groundLine = bRect.Top() + 1;		
@@ -102,15 +102,13 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 
 bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
-	auto rtnFlag = false;
-
 	/// ﾌﾟﾚｲﾔｰが敵より上にいて、頭上にブロックがあった時にﾌﾟﾚｲﾔｰを探す挙動にする
 	if (updater == &Enemy::RunUpdate)
 	{
 		if (pos.y > pRect.Bottom() &&
 	   (int)pos.x == (int)bRect.center.x &&
-			bRect.Bottom() > size.y * 3 &&
-			bRect.Bottom() < pos.y)		/// まだ上昇する処理が完全にできていない
+			bRect.Bottom() > size.y * 3 && 
+			bRect.Bottom() < pos.y)
 		{
 			turnFlag   = (GetRect().center.x < pRect.center.x ? true : false);
 			groundLine = 0;
@@ -132,7 +130,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 				turnFlag	= (GetRect().center.x > pRect.center.x ? false : true);
 				groundLine  = bRect.Top() + 1;
 				riseFlag    = false;
-				rtnFlag		= true;
+				return true;
 			}
 		}
 		else
@@ -146,7 +144,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 		}
 		
 	}
-	return rtnFlag;
+	return false;
 }
 
 void Enemy::DieControl(const Rect& objRect)
@@ -293,7 +291,7 @@ bool Enemy::RiseCheck(const Rect& bRect)
 
 void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 {
-	auto hitCheck = CollisionDetector::CollCheck(GetRect(), pRect);
+	auto hitCheck   = CollisionDetector::CollCheck(GetRect(), pRect);
 	auto wSideCheck = CollisionDetector::SideCollCheck(GetRect(), wRect);
 
 	if (updater == &Enemy::BubbleUpdate &&

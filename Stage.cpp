@@ -32,10 +32,8 @@ Stage::Stage()
 			enemyData[x * fmfData.mapHeight + y] = tmp[y * fmfData.mapWidth + x];
 		}
 	}
-
 	readX = 0;
 }
-
 
 Stage::~Stage()
 {

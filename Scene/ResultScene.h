@@ -10,5 +10,7 @@ public:
 
 	void Init();
 	void Update(const Input & p);
+private:
+	int dispCnt;
 };
 

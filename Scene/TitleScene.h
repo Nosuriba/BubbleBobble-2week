@@ -18,6 +18,7 @@ private:
 
 	Vector2f pos;
 	Vector2f vel;
-	int invCnt;
+	int invCnt;			// –A‚ğo‚·ŠÔ‚ÌŠÔŠu
+	int dispCnt;
 };
 
