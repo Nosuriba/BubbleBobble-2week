@@ -2,12 +2,12 @@
 #include <cassert>
 #include "CharactorObject.h"
 
-CharactorObject::CharactorObject() : charSpeed(5.0f)
+CharactorObject::CharactorObject() : defSpeed(5.0f)
 {
 
 }
 
-CharactorObject::CharactorObject(int groundLine) : charSpeed(5.0f)
+CharactorObject::CharactorObject(int groundLine) : defSpeed(5.0f)
 {
 }
 

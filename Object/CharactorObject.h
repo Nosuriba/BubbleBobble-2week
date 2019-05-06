@@ -47,5 +47,5 @@ protected:
 	bool turnFlag;		// true:¶Œü‚«, false:‰EŒü‚«
 	bool dieFlag;		// true:€–S, false:¶‘¶
 
-	const float charSpeed;
+	const float defSpeed;
 };

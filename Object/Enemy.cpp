@@ -5,11 +5,13 @@
 #include "../CollisionDetector.h"
 #include "../AudioMng.h"
 
-Enemy::Enemy() : fallAccel(0.3f)
+const float fallAccel = 0.3f;
+
+Enemy::Enemy()
 {
 }
 
-Enemy::Enemy(int groundLine) : fallAccel(0.3f)
+Enemy::Enemy(int groundLine)
 {
 	Run();
 	nowCutIdx = 0;
@@ -20,7 +22,6 @@ Enemy::Enemy(int groundLine) : fallAccel(0.3f)
 	pos  = vel = Vector2f(0, 0);
 	jumpFlag = dieFlag = turnFlag = riseFlag = false;
 	size = Vector2(0, 0);
-
 
 	updater = &Enemy::RunUpdate;
 }
@@ -71,7 +72,7 @@ bool Enemy::HitWall(const Rect & wRect)
 	{
 		/// ï«Ç…ìñÇΩÇ¡ÇΩÇÁÅAï˚å¸ì]ä∑Ç∑ÇÈÇÊÇ§Ç…ÇµÇƒÇ¢ÇÈ
 		turnFlag = !turnFlag;
-		vel.x	 = (vel.x == charSpeed ? -charSpeed : charSpeed);
+		vel.x	 = (vel.x == defSpeed ? -defSpeed : defSpeed);
 		return true;
 	}
 
@@ -123,7 +124,7 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 	{
 		if (riseFlag)
 		{
-			vel.y = -charSpeed;
+			vel.y = -defSpeed;
 			if (RiseCheck(bRect))
 			{
 				/// è„è∏íÜÇ…ìñÇΩÇ¡ÇΩÃﬁ€Ø∏ÇÃè„ë§Çínñ Ç…ÇµÇƒÇ¢ÇÈ
@@ -167,7 +168,7 @@ void Enemy::DieControl(const Rect& objRect)
 
 	if (updater == &Enemy::DieUpdate)
 	{
-		if (selHitCheck(objRect) && !sizeCheck && vel.y == charSpeed)
+		if (selHitCheck(objRect) && !sizeCheck && vel.y == defSpeed)
 		{
 			/// è∞Ç…ìñÇΩÇ¡ÇΩéûÅAéÄñSèÛë‘Ç…Ç∑ÇÈ(å„Ç≈ÅAìGÇ™è¡Ç¶ÇÈÇÊÇ§Ç…Ç∑ÇÈ)
 			vel		= Vector2f(0, 0);
@@ -178,8 +179,8 @@ void Enemy::DieControl(const Rect& objRect)
 		if (selHitCheck(objRect) && sizeCheck)
 		{
 			/// ï«Ç…ìñÇΩÇ¡ÇΩéûÇ…ìGÇ™íµÇÀï‘ÇÈÇÊÇ§Ç…ÇµÇƒÇ¢ÇÈ
-			pos.x = (vel.x == charSpeed ? objRect.Left() - size.x : objRect.Right());	
-			vel.x = (vel.x == charSpeed ? -charSpeed : charSpeed);
+			pos.x = (vel.x == defSpeed ? objRect.Left() - size.x : objRect.Right());	
+			vel.x = (vel.x == defSpeed ? -defSpeed : defSpeed);
 		}
 	}
 }
@@ -237,11 +238,11 @@ void Enemy::RunUpdate()
 	{
 		if (turnFlag)
 		{
-			vel.x = charSpeed;
+			vel.x = defSpeed;
 		}
 		else
 		{
-			vel.x = -charSpeed;
+			vel.x = -defSpeed;
 		}
 	}
 	
@@ -264,14 +265,14 @@ void Enemy::DieUpdate()
 {
 	if (!dieFlag)
 	{
-		if (vel.y < charSpeed)
+		if (vel.y < defSpeed)
 		{
 			vel.y += fallAccel;
 		}
 		else
 		{
 			vel.x = 0;
-			vel.y = charSpeed;
+			vel.y = defSpeed;
 		}
 	}
 	
@@ -305,30 +306,19 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = true;
-				vel.x = charSpeed;
-				vel.y = -12.f;
+				vel.x = defSpeed;
+				vel.y = -(defSpeed * 2);
 			}
 			else if (wRect.Left() < GetRect().Right())
 			{
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = false;
-				vel.x = -charSpeed;
-				vel.y = -12.f;
+				vel.x = -defSpeed;
+				vel.y = -(defSpeed * 2);
 			}
 			else {}
 		}
-		if (pRect.Right() > GetRect().Left() &&
-			pRect.Right() < GetRect().center.x)
-		{
-			vel.x = charSpeed;
-		}
-		else if (pRect.Left() < GetRect().Right() &&
-				 pRect.Left() > GetRect().center.x)
-		{
-			vel.x = -charSpeed;
-		}
-		else {}
 	}
 	else
 	{
@@ -338,7 +328,7 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 
 bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 {
-	auto hitDir		 = (pRect.Right() < GetRect().center.x);						// Ãﬂ⁄≤‘∞ÇÃìñÇΩÇ¡ÇΩï˚å¸
+	auto hitDir		 = (pRect.Right() < GetRect().center.x);						// true:âEÇ…ìñÇΩÇ¡ÇΩ, false:ç∂Ç…ìñÇΩÇ¡ÇΩ
 	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
 	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// ñAÇÃâ∫ë§Ç∆ÇÃìñÇΩÇËîªíË
 	auto underPlayer = (CollisionDetector::UnderCollCheck(pRect, GetRect()));		// Ãﬂ⁄≤‘∞ÇÃâ∫ë§Ç∆ÇÃìñÇΩÇËîªíË
@@ -356,16 +346,16 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = true;
-					vel.x = charSpeed;
-					vel.y = -12.f;
+					vel.x = defSpeed;
+					vel.y = -(defSpeed * 2);
 				}
 				else
 				{
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = false;
-					vel.x = -charSpeed;
-					vel.y = -12.f;
+					vel.x = -defSpeed;
+					vel.y = -(defSpeed * 2);
 				}
 				return false;
 			}
@@ -385,16 +375,16 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = true;
-					vel.x = charSpeed;
-					vel.y = -12.f;
+					vel.x = defSpeed;
+					vel.y = -(defSpeed * 2);
 				}
 				else
 				{
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = false;
-					vel.x = -charSpeed;
-					vel.y = -12.f;
+					vel.x = -defSpeed;
+					vel.y = -(defSpeed * 2);
 				}
 				return false;
 			}

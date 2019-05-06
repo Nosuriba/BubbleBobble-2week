@@ -5,24 +5,26 @@
 #include "../AudioMng.h"
 #include "Bubble.h"
 
-Bubble::Bubble() : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
+const int spitFrame  = 10;
+const float defSpeed = 0.5f;
+const float colSpeed = 1.5f;
+
+Bubble::Bubble()
 {
-	///	仮の初期化
 	Floating();
 	nowCutIdx   = 0;
-	ReadActionFile("Action/bubble.act");		// 名前はこうする予定
+	ReadActionFile("Action/bubble.act");		
 	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 	gameFlag    = deleteFlag = false;
 	vel.y	    = -(0.4f * (GetRand(6) + 1));
 	invCnt      = spitFrame;
 }
 
-Bubble::Bubble(const bool& bubbleDir) : spitFrame(10), defSpeed(0.5f), colSpeed(1.5f)
+Bubble::Bubble(const bool& bubbleDir)
 {
-	///	仮の初期化
 	Shot();
 	nowCutIdx = 0;
-	ReadActionFile("Action/bubble.act");		// 名前はこうする予定
+	ReadActionFile("Action/bubble.act");
 	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
 	this->bubbleDir = bubbleDir;
@@ -175,7 +177,6 @@ bool Bubble::HitBubble(const Rect& bblRect)
 
 void Bubble::ChangePop()
 {
-
 	if (updater != &Bubble::PopUpdate)
 	{ 
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().pop);
@@ -206,13 +207,13 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 				GetRect().center.x + (size.x / 2) < pRect.center.x)
 			{
 				/// ﾌﾟﾚｲﾔｰの左側と当たった時の挙動
-				vel.x = -charSpeed;
+				vel.x = -defSpeed;
 			}
 			else if (GetRect().center.x - (size.x / 2) < pRect.center.x + (pRect.size.width / 2) &&
 					 GetRect().center.x - (size.x / 2) > pRect.center.x)
 			{
 				/// ﾌﾟﾚｲﾔｰの右側と当たった時の挙動
-				vel.x = charSpeed;
+				vel.x = defSpeed;
 			}
 			else {}
 		}
@@ -286,7 +287,7 @@ void Bubble::Shot()
 void Bubble::Floating()
 {
 	vel.x = 0;
-	vel.y = -0.5;					/// とりあえず、仮設定(気流用のクラス実装まで)
+	vel.y = -0.5;					
 	ChangeAction("floating");
 	updater = &Bubble::FloatingUpdate;
 }
@@ -295,7 +296,7 @@ void Bubble::Pop()
 {
 	ChangeAction("pop");
 	turnFlag = false;				/// ｴﾌｪｸﾄの描画反転を防いている
-	updater = &Bubble::PopUpdate;
+	updater  = &Bubble::PopUpdate;
 }
 
 void Bubble::ShotUpdate()
@@ -340,7 +341,6 @@ void Bubble::Draw()
 	if (gameFlag)
 	DebugDraw();
 #endif
-
 	CharactorObject::Draw(bubbleImage);
 }
 

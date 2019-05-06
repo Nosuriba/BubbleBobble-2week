@@ -9,9 +9,14 @@
 #include "StageObject/Block.h"
 #include "StageObject/Wall.h"
 
-GameManager::GameManager() :
-	blockMax(28, 26), blockSize(24), charSize(48), bubbleSize(48),
-	wallMax(26), wallSize(48)
+const Vector2 blockMax = Vector2(28,26);
+const int blockSize	   = 24;
+const int charSize	   = 48;
+const int bubbleSize   = 48;
+const int wallSize     = 48;
+const int wallMax	   = 26;
+
+GameManager::GameManager()
 {
 }
 
@@ -26,15 +31,13 @@ void GameManager::Init()
 	player = std::make_shared<Player>(Game::GetInstance().GetScreenSize().y - blockSize);
 	player->Init("idle", Vector2f(charSize * 2, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));
 
-	/// 敵の生成(仮設定)4
+	/// 敵の生成
 	for (int i = 0; i < 3; ++i)
 	{
 		enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
-		enemies[i]->Init("run", Vector2f(400 + (i * charSize), 0),
+		enemies[i]->Init("run", Vector2f(Game::GetInstance().GetScreenSize().x / 2 - blockSize, (i * charSize) - (charSize * 3)),
 								Vector2(charSize, charSize));
 	}
-	/*enemies.push_back(std::make_shared<Enemy>(Game::GetInstance().GetScreenSize().y - blockSize));
-	enemies[0]->Init("run", Vector2f(400, Game::GetInstance().GetScreenSize().y - (charSize + blockSize - 1)), Vector2(charSize, charSize));*/
 	CreateStage();
 }
 
@@ -68,8 +71,8 @@ void GameManager::WallInstance()
 void GameManager::BlockInstance()
 {
 	int blockCnt = 0;
-	int cnt = 0;							/// ﾌﾞﾛｯｸの場所をｱｸｾｽするためのもの
-	std::string name[] = { "0" };			/// 特定のステージチップを読み込むようにしている(仮設定)
+	int cnt = 0;								/// ﾌﾞﾛｯｸの場所をｱｸｾｽするためのもの
+	std::string name[] = { "0", "2" };			/// 特定のステージチップを読み込むようにしている(仮設定)
 	auto blockData = stage->GetEnemyData(0, (stage->GetStageRange().Width() * stage->GetStageRange().Height()));
 	auto mapSize = stage->GetStageRange();
 
@@ -85,7 +88,6 @@ void GameManager::BlockInstance()
 			blocks[cnt]->Init("resource/Image/block.png", pos, Vector2(2, 8), Vector2(0, 0), Vector2(blockSize, blockSize));
 			cnt++;
 		}
-	
 		blockCnt++;
 	}
 }

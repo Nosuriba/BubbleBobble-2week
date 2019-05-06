@@ -8,6 +8,7 @@
 
 const int shotFrame	  = 5;
 const int inviciFrame = 90;
+	
 Player::Player()
 {
 }
@@ -22,7 +23,8 @@ Player::Player(int groundLine)
 	this->groundLine = startPos = groundLine + 1;		/// è∞Ç…ÇﬂÇËçûÇﬁÇÊÇ§Ç…ï‚ê≥ÇµÇƒÇ¢ÇÈÅB
 	pos	 = vel = Vector2f(0, 0);
 	size = Vector2(0, 0);
-	jumpFlag = dieFlag = hitFlag = turnFlag = shotFlag = false;
+	inviciCnt = 0;
+	jumpFlag  = dieFlag = hitFlag = turnFlag = shotFlag = false;
 	
 }
 
@@ -192,12 +194,12 @@ void Player::RunUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = charSpeed;
+			vel.x = defSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -charSpeed;
+			vel.x = -defSpeed;
 		}
 		else
 		{
@@ -261,12 +263,12 @@ void Player::JumpUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = charSpeed;
+			vel.x = defSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -charSpeed;
+			vel.x = -defSpeed;
 		}
 		else
 		{
@@ -297,12 +299,12 @@ void Player::ShotUpdate(const Input & p)
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
 			turnFlag = false;
-			vel.x = charSpeed;
+			vel.x = defSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
 			turnFlag = true;
-			vel.x = -charSpeed;
+			vel.x = -defSpeed;
 		}
 		else
 		{

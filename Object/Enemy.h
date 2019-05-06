@@ -48,7 +48,5 @@ private:
 	int waitCnt;		/// “G‚Ì‘Ò‹@ŽžŠÔ—p
 
 	bool riseFlag;
-
-	const float fallAccel;
 };
 

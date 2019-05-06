@@ -48,6 +48,5 @@ private:
 
 	bool hitFlag;
 	bool shotFlag;
-	
 };
 

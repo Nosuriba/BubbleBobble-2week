@@ -12,7 +12,6 @@ class Bubble;
 class Wall;
 class Block;
 
-
 class GameManager
 {
 public:
@@ -39,11 +38,6 @@ private:
 	std::vector<std::shared_ptr<Block>>  blocks;
 	std::vector<std::shared_ptr<Bubble>> bubbles;
 	
-	const Vector2 blockMax;
-	const int blockSize;
-	const int charSize;
-	const int bubbleSize;
-	const int wallSize;
-	const int wallMax;
+	
 };
 
