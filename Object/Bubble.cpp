@@ -6,7 +6,7 @@
 #include "Bubble.h"
 
 const int spitFrame  = 10;
-const float defSpeed = 0.5f;
+const float floatSpeed = 0.5f;
 const float colSpeed = 1.5f;
 
 Bubble::Bubble()
@@ -102,19 +102,19 @@ void Bubble::MoveContact(const Rect & bblRect)
 			GetRect().Bottom() < bblRect.center.y + (size.y / 3) &&
 			hitCheck)
 		{
-			vel.y = -defSpeed * 2;
+			vel.y = -floatSpeed * 2;
 			return;
 		}
 		else if (GetRect().Top() < bblRect.center.y &&
 				 GetRect().Top() > bblRect.center.y - (size.y / 3) &&
 				 hitCheck)
 		{
-			vel.y = defSpeed;
+			vel.y = floatSpeed;
 			return;
 		}
 		else
 		{
-			vel.y = -defSpeed;
+			vel.y = -floatSpeed;
 		}
 	}
 }
