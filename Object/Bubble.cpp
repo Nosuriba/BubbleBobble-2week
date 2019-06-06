@@ -6,7 +6,7 @@
 #include "Bubble.h"
 
 const int spitFrame  = 10;
-const float defSpeed = 0.5f;
+const float bubbleSpeed = 0.5f;
 const float colSpeed = 1.5f;
 
 Bubble::Bubble()
@@ -84,13 +84,13 @@ void Bubble::MoveContact(const Rect & bblRect)
 			GetRect().Right() - (size.x / 3) < bblRect.center.x &&
 			sideCheck)
 		{
-			vel.x = -defSpeed;
+			vel.x = -bubbleSpeed;
 		}
 		else if (GetRect().Left() + (size.x / 3) < bblRect.Right() &&
 				 GetRect().Left() + (size.x / 3) > bblRect.center.x &&
 				 sideCheck)
 		{
-			vel.x = defSpeed;
+			vel.x = bubbleSpeed;
 		}
 		else
 		{
@@ -102,19 +102,19 @@ void Bubble::MoveContact(const Rect & bblRect)
 			GetRect().Bottom() < bblRect.center.y + (size.y / 3) &&
 			hitCheck)
 		{
-			vel.y = -defSpeed * 2;
+			vel.y = -bubbleSpeed * 2;
 			return;
 		}
 		else if (GetRect().Top() < bblRect.center.y &&
 				 GetRect().Top() > bblRect.center.y - (size.y / 3) &&
 				 hitCheck)
 		{
-			vel.y = defSpeed;
+			vel.y = bubbleSpeed;
 			return;
 		}
 		else
 		{
-			vel.y = -defSpeed;
+			vel.y = -bubbleSpeed;
 		}
 	}
 }
@@ -207,13 +207,13 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 				GetRect().center.x + (size.x / 2) < pRect.center.x)
 			{
 				/// ÌßÚ²Ô°‚Ì¶‘¤‚Æ“–‚½‚Á‚½Žž‚Ì‹““®
-				vel.x = -defSpeed;
+				vel.x = -bubbleSpeed;
 			}
 			else if (GetRect().center.x - (size.x / 2) < pRect.center.x + (pRect.size.width / 2) &&
 					 GetRect().center.x - (size.x / 2) > pRect.center.x)
 			{
 				/// ÌßÚ²Ô°‚Ì‰E‘¤‚Æ“–‚½‚Á‚½Žž‚Ì‹““®
-				vel.x = defSpeed;
+				vel.x = bubbleSpeed;
 			}
 			else {}
 		}
