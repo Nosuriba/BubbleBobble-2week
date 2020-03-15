@@ -18,7 +18,6 @@ struct ActRect
 	Rect     rc;	// ‹éŒ`‚Ì•‚Æ‚‚³
 };
 
-
 struct CutInfo
 {
 	Rect rect;			// Ø‚èæ‚è‹éŒ`
@@ -42,7 +41,13 @@ struct ObjectData
 class Object
 {
 public:
-	Object();
-	~Object();
+	Object()
+	{
+
+	}
+	~Object()
+	{
+
+	}
 };
 

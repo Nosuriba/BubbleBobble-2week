@@ -9,7 +9,7 @@ Stage::Stage()
 
 	DxLib::FileRead_read(&fmfData, sizeof(fmfData), h);
 
-	/// 縦横のﾏｯﾌﾟﾃﾞｰﾀを読み込んでいる
+	/// 縦横のマップデータを読み込んでいる
 	std::vector<char> tmp;
 	tmp.resize(fmfData.mapWidth * fmfData.mapHeight);
 	DxLib::FileRead_read(&tmp[0], tmp.size(), h);
@@ -22,7 +22,7 @@ Stage::Stage()
 	stageRange.center.x	   = stageRange.size.width  / 2;
 	stageRange.center.y    = stageRange.size.height / 2;
 
-	/// ﾏｯﾌﾟのｻｲｽﾞ分、敵のﾃﾞｰﾀｻｲｽﾞを確保している
+	/// マップのサイズ分、敵のデータサイズを確保している
 	enemyData.resize(fmfData.mapWidth * fmfData.mapHeight);
 
 	for (int y = 0; y < fmfData.mapHeight; y++)

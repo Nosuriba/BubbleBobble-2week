@@ -5,17 +5,18 @@
 #include "../AudioMng.h"
 #include "Bubble.h"
 
-const int spitFrame  = 10;
-const float bubbleSpeed = 0.5f;
-const float colSpeed = 1.5f;
+const int spitFrame		= 10;		// 泡を吐く間隔
+const float bubbleSpeed = 0.5f;		// 泡の速度
+const float colSpeed	= 1.5f;		// 泡同士が接触した時の速度
 
 Bubble::Bubble()
 {
 	Floating();
-	nowCutIdx   = 0;
-	ReadActionFile("Action/bubble.act");		
-	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
-	gameFlag    = deleteFlag = false;
+	nowCutIdx = 0;
+	ReadActionFile("Action/bubble.act");
+	bblImage	= DxLib::LoadGraph(actionData.imgFilePath.c_str());
+
+	isGame		= isDelete = false;
 	vel.y	    = -(0.4f * (GetRand(6) + 1));
 	invCnt      = spitFrame;
 }
@@ -25,17 +26,17 @@ Bubble::Bubble(const bool& bubbleDir)
 	Shot();
 	nowCutIdx = 0;
 	ReadActionFile("Action/bubble.act");
-	bubbleImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
+	bblImage = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
 	this->bubbleDir = bubbleDir;
-	gameFlag	= true;
-	deleteFlag  = false;
-	invCnt		= spitFrame;
+	isGame			= true;
+	isDelete		= false;
+	invCnt			= spitFrame;
 }
 
 Bubble::~Bubble()
 {
-	DxLib::DeleteGraph(bubbleImage);
+	DxLib::DeleteGraph(bblImage);
 }
 
 const Vector2f & Bubble::GetPos()
@@ -59,9 +60,9 @@ Rect Bubble::ShotGetRect()
 	return Rect(center, rectSize);
 }
 
-bool Bubble::CheckDelete()
+bool Bubble::IsDelete()
 {
-	return deleteFlag;
+	return isDelete;
 }
 
 void Bubble::HitAcross(const Rect & pRect, const Rect& wRect)
@@ -80,13 +81,13 @@ void Bubble::MoveContact(const Rect & bblRect)
 	if (updater == &Bubble::FloatingUpdate)
 	{
 		/// 泡同士が当たった時の挙動(横移動)
-		if (GetRect().Right() - (size.x / 3) > bblRect.Left() &&
+		if (GetRect().Right() - (size.x / 3) > bblRect.Left()	&&
 			GetRect().Right() - (size.x / 3) < bblRect.center.x &&
 			sideCheck)
 		{
 			vel.x = -bubbleSpeed;
 		}
-		else if (GetRect().Left() + (size.x / 3) < bblRect.Right() &&
+		else if (GetRect().Left() + (size.x / 3) < bblRect.Right()	&&
 				 GetRect().Left() + (size.x / 3) > bblRect.center.x &&
 				 sideCheck)
 		{
@@ -133,7 +134,7 @@ bool Bubble::HitEnemy(const Rect& eRect)
 	auto hitCheck = (CollisionDetector::CollCheck(GetRect(), eRect));
 	if (updater == &Bubble::ShotUpdate && hitCheck)
 	{
-		deleteFlag = false;
+		isDelete = false;
 		return true;
 	}
 	return false;
@@ -150,7 +151,7 @@ bool Bubble::HitObject(const Rect& objRect)
 		}
 		else
 		{
-			/// ﾌﾞﾛｯｸとの当たり判定
+			/// ブロックとの当たり判定
 			return CollisionDetector::SideCollCheck(ShotGetRect(), objRect);
 		}
 	};
@@ -169,6 +170,7 @@ bool Bubble::HitBubble(const Rect& bblRect)
 
 	if (updater == &Bubble::PopUpdate && hitCheck)
 	{
+		/// 泡が破裂している時に入る
 		vel = Vector2f(0, 0);
 		return true;
 	}
@@ -206,13 +208,13 @@ void Bubble::SideCheck(const Rect & pRect, const Rect& wRect)
 			if (GetRect().center.x + (size.x / 2) > pRect.center.x - (pRect.size.width / 2) &&
 				GetRect().center.x + (size.x / 2) < pRect.center.x)
 			{
-				/// ﾌﾟﾚｲﾔｰの左側と当たった時の挙動
+				/// プレイヤーの左側と当たった時の挙動
 				vel.x = -bubbleSpeed;
 			}
 			else if (GetRect().center.x - (size.x / 2) < pRect.center.x + (pRect.size.width / 2) &&
 					 GetRect().center.x - (size.x / 2) > pRect.center.x)
 			{
-				/// ﾌﾟﾚｲﾔｰの右側と当たった時の挙動
+				/// プレイヤーの右側と当たった時の挙動
 				vel.x = bubbleSpeed;
 			}
 			else {}
@@ -326,7 +328,7 @@ void Bubble::FloatingUpdate()
 void Bubble::PopUpdate()
 {
 	vel = Vector2f(0, 0);
-	deleteFlag = ProceedAnimFile();
+	isDelete = ProceedAnimFile();
 }
 
 void Bubble::Update()
@@ -341,7 +343,7 @@ void Bubble::Draw()
 	if (gameFlag)
 	DebugDraw();
 #endif
-	CharactorObject::Draw(bubbleImage);
+	CharactorObject::Draw(bblImage);
 }
 
 void Bubble::DebugDraw()

@@ -16,7 +16,6 @@ TitleScene::~TitleScene()
 
 void TitleScene::Init()
 {
-	/// Y座標はとりあえず直地(後で直す！！！！！)
 	pos	   = Vector2f(Game::GetInstance().GetScreenSize().x / 7, -423.0f);
 	vel.y  = 5.f;
 	invCnt = 30;
@@ -36,7 +35,7 @@ void TitleScene::Update(const Input & p)
 			return;
 		}
 
-		/// タイトルで泡を飛ばしてみた(スタートボタンのUIなどがまだできていない)
+		/// タイトルで泡を飛ばしてみた
 		if (invCnt < 0)
 		{
 			bubbles.push_back(std::make_shared<Bubble>());
@@ -67,5 +66,5 @@ void TitleScene::Update(const Input & p)
 			pos.y = 0;
 		}
 	}
-	DxLib::DrawGraph(pos.x, pos.y, ImageMng::GetInstance().ImgGetID("resource/Image/title.png")[0], true);
+	DxLib::DrawGraph(pos.x, pos.y, ImageMng::GetInstance().ImgGetID("resource/Image/title.png"), true);
 }

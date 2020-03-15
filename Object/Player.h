@@ -11,18 +11,19 @@ public:
 	Player();
 	Player(int groundLine);
 	~Player();
-	bool HitEnemy(const Rect& eRect, bool eAlive);	// 敵と当たったかの判定
-	bool HitWall(const Rect& wRect);				// 壁と当たったかの判定
-	bool HitGround(const Rect& bRect);				// ｼﾞｬﾝﾌﾟ中、ﾌﾞﾛｯｸに乗ったかの判定
-	void StepBubble();								// 泡を踏んだかの判定
-	bool ShotCheck();								// ｼｮｯﾄが打てるかの判定用
+	bool IsHitEnemy(const Rect& eRect, bool eAlive);	// 敵との当たり判定
+	bool IsHitWall(const Rect& wRect);					// 壁との当たり判定
+	bool isGround(const Rect& bRect);					// ジャンプ中、床に乗ったかの判定
+	void IsStepBubble();								// 泡を踏んだかの判定
+	bool IsShot();										// ショットを打てるかの判定
 
 	void Update(const Input & p);
 	void Draw();
 
-	bool GetTurnFlag();
+
+	bool GetTurnFlag();				// プレイヤーの方向取得用
 	const Vector2f& GetPos(); 
-	Rect GetRect();								// 矩形取得用
+	Rect GetRect();					// 矩形取得用
 private:
 	void Idle();
 	void Run();
@@ -30,23 +31,24 @@ private:
 	void Shot();
 	void Die();
 	
+	/// 関数ポインターで管理するもの
 	void IdleUpdate(const Input & p);
 	void RunUpdate(const Input & p);
 	void JumpUpdate(const Input & p);
 	void ShotUpdate(const Input & p);
 	void DieUpdate(const Input & p);
 
-	bool OnGround();							// 地面についているかの判定用
+	bool IsGround();	// 地面にいるかの判定取得用
 
 	void DebugDraw();
 
 	void (Player::*updater)(const Input & p);
 
-	int playerImg;
-	int inviciCnt;
-	int startPos;
+	int playerImg;		// プレイヤーの画像ID取得用
+	int invisiCnt;		// 無敵時間
+	int startPos;		// スタート時の座標
 
-	bool hitFlag;
-	bool shotFlag;
+	bool isHit;
+	bool isShot;
 };
 

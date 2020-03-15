@@ -16,7 +16,7 @@ public:
 	{
 		return *s_Instance;
 	}
-	const VEC_INT ImgGetID(std::string fileName);
+	const int ImgGetID(std::string fileName);
 	const VEC_INT ImgGetID(std::string fileName, Vector2 divCnt, Vector2 divSize);
 private:
 	struct ImageMngDeleter

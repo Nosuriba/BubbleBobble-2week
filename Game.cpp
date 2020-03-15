@@ -18,7 +18,7 @@ void Game::Init()
 {
 	DxLib::SetGraphMode(screenSize.x, screenSize.y, 32);
 	DxLib::ChangeWindowMode(true);
-	DxLib::SetWindowText("1701310_ñkêÏ èÅàÍ : Bubble Bobble");
+	DxLib::SetWindowText("Bubble Bobble");
 	if (DxLib_Init() == -1)
 	{
 		return;

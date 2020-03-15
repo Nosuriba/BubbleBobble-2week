@@ -2,8 +2,6 @@
 #include "Wall.h"
 #include "../ImageMng.h"
 
-
-
 Wall::Wall()
 {
 }

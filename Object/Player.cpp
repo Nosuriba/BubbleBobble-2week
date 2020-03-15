@@ -16,15 +16,17 @@ Player::Player()
 Player::Player(int groundLine)
 {
 	Idle();
+
+	/// 画像の初期化
 	nowCutIdx	  = 0;
 	ReadActionFile("Action/player.act");
 	playerImg	  = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
-	this->groundLine = startPos = groundLine + 1;		/// 床にめり込むように補正している。
-	pos	 = vel = Vector2f(0, 0);
-	size = Vector2(0, 0);
-	inviciCnt = 0;
-	jumpFlag  = dieFlag = hitFlag = turnFlag = shotFlag = false;
+	this->groundLine = startPos = groundLine + 1;		/// 床の初期化
+	pos		  = vel = Vector2f(0, 0);
+	size	  = Vector2(0, 0);
+	invisiCnt = 0;
+	jumpFlag  = dieFlag = isHit = turnFlag = isShot = false;
 	
 }
 
@@ -51,13 +53,14 @@ const Vector2f& Player::GetPos()
 	return pos;
 }
 
-bool Player::HitEnemy(const Rect & eRect, bool eAlive)
+bool Player::IsHitEnemy(const Rect & eRect, bool eAlive)
 {
-	auto hitCheck = CollisionDetector::CollCheck(GetRect(), eRect);
+	auto IsEnemy = CollisionDetector::CollCheck(GetRect(), eRect);
 
 	if (updater != &Player::DieUpdate && 
-		hitCheck && eAlive && inviciCnt < 0)
+		IsEnemy && eAlive && invisiCnt < 0)
 	{
+		// プレイヤーの死亡
 		LpAudioMng.PlaySE(LpAudioMng.GetSound().die);
 		Die();
 		return true;
@@ -66,27 +69,27 @@ bool Player::HitEnemy(const Rect & eRect, bool eAlive)
 	return false;
 }
 
-bool Player::HitWall(const Rect& wRect)
+bool Player::IsHitWall(const Rect& wRect)
 {
-	this->hitFlag = CollisionDetector::SideCollCheck(GetRect(), wRect);
-	if (hitFlag)
+	this->isHit = CollisionDetector::SideCollCheck(GetRect(), wRect);
+	if (isHit)
 	{
 		/// 壁の当たった場所によって、位置補正を行っている
 		vel.x = 0;
 		pos.x = (turnFlag ? wRect.Right() : wRect.Left() - size.x);
 	}
 
-	return this->hitFlag;
+	return this->isHit;
 }
 
-bool Player::HitGround(const Rect& bRect)
+bool Player::isGround(const Rect& bRect)
 {
 	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	/// 落下中にブロックの上に乗った時の処理
 	if (underCheck && vel.y >= 0.f && pos.y > size.y * 2)
 	{
  		this->vel.y		 = 0;
-		this->groundLine = bRect.Top() + 1;		/// 床に少しめり込むようにしている。
+		this->groundLine = bRect.Top() + 1;			/// 床の更新
 	}
 	else
 	{
@@ -95,7 +98,7 @@ bool Player::HitGround(const Rect& bRect)
 	return underCheck;
 }
 
-void Player::StepBubble()
+void Player::IsStepBubble()
 {
 	AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().bubble);
 	AudioMng::GetInstance().ChangeVolume(80, AudioMng::GetInstance().GetSound().bubble);
@@ -106,11 +109,11 @@ void Player::StepBubble()
 	}	
 }
 
-bool Player::ShotCheck()
+bool Player::IsShot()
 {
-	if (shotFlag)
+	if (isShot)
 	{
-		shotFlag = false;
+		isShot = false;
 		return true;
 	}
 	return false;
@@ -160,16 +163,17 @@ void Player::IdleUpdate(const Input & p)
 
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
-		shotFlag = true;
+		/// ショットを打つ
+		isShot = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
 	/// 地面についているかの判定
-	if (OnGround())
+	if (IsGround())
 	{
-		vel = Vector2f(0, 0);
+		vel	  = Vector2f(0, 0);
 		pos.y = groundLine - size.y;
 		if (p.IsTrigger(PAD_INPUT_1))
 		{
@@ -183,21 +187,22 @@ void Player::IdleUpdate(const Input & p)
 	{
 		Jump();
 	}
-
 	ProceedAnimFile();
 }
 
 void Player::RunUpdate(const Input & p)
 {
-	if (!hitFlag)
+	if (!isHit)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
+			/// 右移動
 			turnFlag = false;
 			vel.x = defSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
+			/// 左移動
 			turnFlag = true;
 			vel.x = -defSpeed;
 		}
@@ -210,18 +215,20 @@ void Player::RunUpdate(const Input & p)
 
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
-		shotFlag = true;
+		/// ショットを打つ
+		isShot = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		AudioMng::GetInstance().ChangeVolume(50, AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
 	/// 地面についているかの判定
-	if (OnGround())
+	if (IsGround())
 	{
 		vel.y = 0;
 		if (p.IsTrigger(PAD_INPUT_1))
 		{
+			/// ジャンプを行う
 			AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().jump);
 			vel.y -= 14.0f;
 			Jump();
@@ -229,6 +236,7 @@ void Player::RunUpdate(const Input & p)
 	}
 	else
 	{
+		/// 空中にいる状態にする
 		Jump();
 	}
 	ProceedAnimFile();
@@ -237,7 +245,7 @@ void Player::RunUpdate(const Input & p)
 void Player::JumpUpdate(const Input & p)
 {
 	/// 地面についているかの判定
-	if (OnGround())
+	if (IsGround())
 	{
 		vel.y = 0;
 		pos.y = groundLine - size.y;
@@ -252,37 +260,39 @@ void Player::JumpUpdate(const Input & p)
 
 	if (p.IsTrigger(PAD_INPUT_2))
 	{
-		shotFlag = true;
+		/// ショットを打つ
+		isShot = true;
 		AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().shot);
 		AudioMng::GetInstance().ChangeVolume(50,AudioMng::GetInstance().GetSound().shot);
 		Shot();
 	}
 
-	if (!hitFlag)
+	if (!isHit)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
+			/// 右移動
 			turnFlag = false;
-			vel.x = defSpeed;
+			vel.x	 = defSpeed;
 		}
 		else if (p.IsPressing(PAD_INPUT_LEFT))
 		{
+			/// 左移動
 			turnFlag = true;
-			vel.x = -defSpeed;
+			vel.x	 = -defSpeed;
 		}
 		else
 		{
 			vel.x = 0;
 		}
 	}
-	
 	ProceedAnimFile();
 }
 
 void Player::ShotUpdate(const Input & p)
 {
 	/// 地面についているかの判定
-	if (OnGround())
+	if (IsGround())
 	{
 		vel.y = 0;
 		pos.y = groundLine - size.y;
@@ -294,7 +304,7 @@ void Player::ShotUpdate(const Input & p)
 	}
 
 	/// 壁に当たっていない時
-	if (!hitFlag)
+	if (!isHit)
 	{
 		if (p.IsPressing(PAD_INPUT_RIGHT))
 		{
@@ -321,7 +331,7 @@ void Player::ShotUpdate(const Input & p)
 void Player::DieUpdate(const Input & p)
 {
 	/// 地面についているかの判定
-	if (OnGround())
+	if (IsGround())
 	{
 		vel.y = 0;
 		pos.y = groundLine - size.y;
@@ -332,18 +342,17 @@ void Player::DieUpdate(const Input & p)
 		vel.y = (vel.y < 0.5f ? vel.y += 0.7f : vel.y = 5.0);
 	}
 
-	/// 死亡時のｱﾆﾒｰｼｮﾝが終わった時、待機状態にする
+	/// 死亡時のアニメーションが終わった時、待機状態にする
 	if (ProceedAnimFile())
 	{
-		/// ここにﾌﾟﾚｲﾔｰの残機などの処理を追加するといい
 		Idle();
-		inviciCnt = inviciFrame;
+		invisiCnt = inviciFrame;
 		vel = Vector2f(0, 0);
 		pos = Vector2f(size.x * 2, startPos - size.y);
 	}
 }
 
-bool Player::OnGround()
+bool Player::IsGround()
 {
 	if (pos.y + size.y >= groundLine)
 	{
@@ -356,20 +365,20 @@ bool Player::OnGround()
 void Player::Update(const Input & p)
 {
 	(this->*updater)(p);
-
 	if (pos.y > Game::GetInstance().GetScreenSize().y)
 	{
 		pos.y = -(size.y);
 	}
 	
-	inviciCnt--;
+	invisiCnt--;
 	pos += vel;
 }
 
 void Player::Draw()
 {
-	if (inviciCnt > 0)
+	if (invisiCnt > 0)
 	{
+		/// 無敵時のプレイヤーの描画
 		DxLib::SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 		CharactorObject::Draw(playerImg);
 		DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -387,6 +396,5 @@ void Player::Draw()
 
 void Player::DebugDraw()
 {
-	// DrawString(0, 0, nowActionName.c_str(), 0xffffff);
 	DrawBox(GetRect().Left(), GetRect().Top(), GetRect().Right(), GetRect().Bottom(), 0xff0000, false);
 }

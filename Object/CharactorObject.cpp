@@ -40,7 +40,7 @@ bool CharactorObject::ProceedAnimFile()
 	else
 	{
 		frame = 0;
-		/// ｱﾆﾒｰｼｮﾝのｺﾏを進める処理
+		/// アニメーションの更新用
 		if (nowCutIdx < (signed)actionData.actionInfo[nowActionName].cuts.size() - 1)
 		{
 			nowCutIdx++;
@@ -49,7 +49,7 @@ bool CharactorObject::ProceedAnimFile()
 		{
 			nowCutIdx = 0;
 
-			/// ｱﾆﾒｰｼｮﾝのｺﾏを最初のｺﾏに戻すかの処理
+			/// アニメーションのリセット用
 			if (actionData.actionInfo[nowActionName].isLoop)
 			{
 				nowCutIdx = 0;
@@ -60,24 +60,22 @@ bool CharactorObject::ProceedAnimFile()
 			}
 		}
 	}
-
 	return false;
 }
 
 void CharactorObject::ReadActionFile(const char * actionPath)
 {
 	int h = DxLib::FileRead_open(actionPath, false);
-	int hData;			// ﾌｧｲﾙ内容を格納するための変数
+	int hData;										// ファイル内容を格納するための変数
 
 	float version = 0.f;
 	DxLib::FileRead_read(&version, sizeof(version), h);
-	// assert(version == 1.01f);
 
 	DxLib::FileRead_read(&hData, sizeof(hData), h);
 
 	std::string filePath = "";
 
-	/// ﾌｧｲﾙﾊﾟｽの読み込み
+	/// ファイルパスの読み込み
 	filePath.resize(hData);
 	DxLib::FileRead_read(&filePath[0], hData, h);
 
@@ -94,16 +92,15 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 		int actionNameSize;
 		DxLib::FileRead_read(&actionNameSize, sizeof(actionNameSize), h);
 
-		/// ｱｸｼｮﾝ名を取得
+		/// アクション名を取得
 		std::string actionName;
 		actionName.resize(actionNameSize);
 		DxLib::FileRead_read(&actionName[0], actionName.size(), h);
 
-		/// ｱｸｼｮﾝのﾙｰﾌﾟだけ1ﾊﾞｲﾄ(ここはよくわからん)
 		ObjectInfo actInfo;
 		DxLib::FileRead_read(&actInfo.isLoop, sizeof(actInfo.isLoop), h);
 
-		/// 切り取ったﾃﾞｰﾀの取得
+		/// 切り取ったデータの取得
 		int cutCount = 0;
 		DxLib::FileRead_read(&cutCount, sizeof(cutCount), h);
 		actInfo.cuts.resize(cutCount);
@@ -125,7 +122,7 @@ void CharactorObject::ReadActionFile(const char * actionPath)
 			DxLib::FileRead_read(&actInfo.cuts[a].actRects[0], sizeof(ActRect) * actRcCnt, h);
 		}
 
-		// ｱｸｼｮﾝﾃﾞｰﾀを連想配列(map)に登録している
+		// アクションデータの登録
 		actionData.actionInfo[actionName] = actInfo;
 	}
 
@@ -137,12 +134,11 @@ Vector2f CharactorObject::GetPos() const
 	return pos;
 }
 
-
 void CharactorObject::Draw(int img)
 {
 	auto& actInfo = actionData.actionInfo[nowActionName];
-	auto& cut = actInfo.cuts[nowCutIdx];
-	auto& rc = cut.rect;
+	auto& cut	  = actInfo.cuts[nowCutIdx];
+	auto& rc	  = cut.rect;
 
 	/// 中心点を変えないようにするためのもの
 	int centerX = (turnFlag ? rc.Width() - cut.center.x : cut.center.x);

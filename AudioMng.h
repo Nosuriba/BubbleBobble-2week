@@ -4,8 +4,6 @@
 #include <mutex>
 #include <vector>
 
-using VEC_INT = std::vector<int>;
-
 #define LpAudioMng (AudioMng::GetInstance())
 
 struct SoundName
@@ -39,7 +37,7 @@ public:
 	void ChangeVolume(int vol, std::string f_name);	
 	void StopBGM();
 private:
-	const VEC_INT & GetAudio(std::string f_name);
+	const int & GetAudio(std::string f_name);
 	struct AudioMngDeleter
 	{
 		void operator()(AudioMng * musMng) const
@@ -55,6 +53,6 @@ private:
 
 	static std::unique_ptr<AudioMng, AudioMngDeleter> s_Instance;
 
-	std::map<std::string, VEC_INT> musMap;
+	std::map<std::string, int> audioMap;
 };
 

@@ -14,15 +14,21 @@ Enemy::Enemy()
 Enemy::Enemy(int groundLine)
 {
 	Run();
+
+	/// 画像IDの初期化S
 	nowCutIdx = 0;
 	ReadActionFile("Action/enemy.act");
 	enemyImg = DxLib::LoadGraph(actionData.imgFilePath.c_str());
 
+	/// 床の初期化
 	this->groundLine = groundLine;
-	pos  = vel = Vector2f(0, 0);
-	jumpFlag = dieFlag = turnFlag = riseFlag = false;
-	size = Vector2(0, 0);
 
+	/// 座標と速度の初期化
+	pos  = vel = Vector2f(0, 0);
+
+	jumpFlag = dieFlag = turnFlag = riseFlag = false;
+
+	size = Vector2(0, 0);
 	updater = &Enemy::RunUpdate;
 }
 
@@ -38,7 +44,7 @@ Rect Enemy::GetRect()
 
 	return Rect(center, rectSize);
 }
-bool Enemy::CheckAlive()
+bool Enemy::IsAlive()
 {
 	/// 敵が生存状態かの判定用
 	return (updater != &Enemy::BubbleUpdate && updater != &Enemy::DieUpdate);
@@ -46,8 +52,8 @@ bool Enemy::CheckAlive()
 
 bool Enemy::HitPlayer(const Rect & pRect, const Rect& wRect, const Input& p)
 {
-	SideCheck(pRect, wRect);		// 敵の横側に当たったか調べている
-	return UnderCheck(pRect, p);	// 
+	IsSide(pRect, wRect);		// 敵の横側に当たったか調べている
+	return IsUnder(pRect, p);	// 
 }
 
 bool Enemy::HitBubble(const Rect & bRect, const bool& bblCheck)
@@ -67,10 +73,10 @@ bool Enemy::HitBubble(const Rect & bRect, const bool& bblCheck)
 
 bool Enemy::HitWall(const Rect & wRect)
 {
-	auto hitCheck = CollisionDetector::CollCheck(GetRect(), wRect);
-	if (hitCheck && updater != &Enemy::DieUpdate)
+	auto isHitWall = CollisionDetector::CollCheck(GetRect(), wRect);
+	if (isHitWall && updater != &Enemy::DieUpdate)
 	{
-		/// 壁に当たったら、方向転換するようにしている
+		/// 敵の方向転換
 		turnFlag = !turnFlag;
 		vel.x	 = (vel.x == defSpeed ? -defSpeed : defSpeed);
 		return true;
@@ -81,14 +87,14 @@ bool Enemy::HitWall(const Rect & wRect)
 
 bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 {
-	auto underCheck = CollisionDetector::UnderCollCheck(GetRect(), bRect);
+	auto isUnder = CollisionDetector::UnderCollCheck(GetRect(), bRect);
 	
 	if (updater == &Enemy::RunUpdate)
 	{
 		if (!riseFlag)
 		{
 			/// 落下中にブロックの上に乗った時の処理
-			if (underCheck && GetRect().Bottom() > size.y * 3)
+			if (isUnder && GetRect().Bottom() > size.y * 3)
 			{
 				vel.y = 0;
 				groundLine = bRect.Top() + 1;		
@@ -103,12 +109,12 @@ bool Enemy::HitGround(const Rect& pRect, const Rect & bRect)
 
 bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 {
-	/// ﾌﾟﾚｲﾔｰが敵より上にいて、頭上にブロックがあった時にﾌﾟﾚｲﾔｰを探す挙動にする
 	if (updater == &Enemy::RunUpdate)
 	{
-		if (pos.y > pRect.Bottom() &&
-	   (int)pos.x == (int)bRect.center.x &&
-			bRect.Bottom() > size.y * 3 && 
+		/// 頭上のプレイヤーを探索する処理
+		if (pos.y > pRect.Bottom()				&&
+			(int)pos.x == (int)bRect.center.x	&&
+			bRect.Bottom() > size.y * 3			&& 
 			bRect.Bottom() < pos.y)
 		{
 			turnFlag   = (GetRect().center.x < pRect.center.x ? true : false);
@@ -119,13 +125,13 @@ bool Enemy::UpperCheck(const Rect& pRect, const Rect & bRect)
 		return false;
 	}
 
-	/// ﾌﾟﾚｲﾔｰを一定時間探してから上昇するようにしている
+	/// プレイヤーを見つけた時、敵を上昇させる
 	if (updater == &Enemy::IdleUpdate && waitCnt < 0)
 	{
 		if (riseFlag)
 		{
 			vel.y = -defSpeed;
-			if (RiseCheck(bRect))
+			if (IsRiseUnder(bRect))
 			{
 				/// 上昇中に当たったﾌﾞﾛｯｸの上側を地面にしている
 				turnFlag	= (GetRect().center.x > pRect.center.x ? false : true);
@@ -163,22 +169,22 @@ void Enemy::DieControl(const Rect& objRect)
 			return CollisionDetector::UnderCollCheck(GetRect(), objRect);
 		}
 	};
-	/// ｵﾌﾞｼﾞｪｸﾄのｻｲｽﾞ確認用
-	auto sizeCheck = (size.y == objRect.size.height ? true : false);
+	/// 敵のサイズ確認用
+	auto isEnemySize = (size.y == objRect.size.height ? true : false);
 
 	if (updater == &Enemy::DieUpdate)
 	{
-		if (selHitCheck(objRect) && !sizeCheck && vel.y == defSpeed)
+		if (selHitCheck(objRect) && !isEnemySize && vel.y == defSpeed)
 		{
-			/// 床に当たった時、死亡状態にする(後で、敵が消えるようにする)
+			/// 床に当たった時、死亡状態にする
 			vel		= Vector2f(0, 0);
 			dieFlag = true;
 			return;
 		}
 
-		if (selHitCheck(objRect) && sizeCheck)
+		if (selHitCheck(objRect) && isEnemySize)
 		{
-			/// 壁に当たった時に敵が跳ね返るようにしている
+			/// 壁に当たった時に敵を反射させている
 			pos.x = (vel.x == defSpeed ? objRect.Left() - size.x : objRect.Right());	
 			vel.x = (vel.x == defSpeed ? -defSpeed : defSpeed);
 		}
@@ -223,11 +229,9 @@ void Enemy::IdleUpdate()
 	waitCnt--;
 	if (waitCnt < 0)
 	{
-		//Jump();
 		return;
 	}
-	auto changeTurn = ((waitCnt / 20) % 2 ? true : false);
-	turnFlag = changeTurn;
+	turnFlag = ((waitCnt / 20) % 2 ? true : false);
 	
 	ProceedAnimFile();
 }
@@ -257,7 +261,7 @@ void Enemy::JumpUpdate()
 
 void Enemy::BubbleUpdate()
 {
-	vel.y = -0.5;		/// とりあえず、仮設定
+	vel.y = -0.5;		
 	ProceedAnimFile();
 }
 
@@ -280,29 +284,30 @@ void Enemy::DieUpdate()
 	ProceedAnimFile();
 }
 
-bool Enemy::RiseCheck(const Rect& bRect)
+bool Enemy::IsRiseUnder(const Rect& bRect)
 {
-	auto underBlock = CollisionDetector::UnderCollCheck(bRect, GetRect());
-	if (underBlock)
+	auto isUnder = CollisionDetector::UnderCollCheck(bRect, GetRect());
+	if (isUnder)
 	{
 		return true;
 	}
 	return false;
 }
 
-void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
+void Enemy::IsSide(const Rect & pRect, const Rect & wRect)
 {
-	auto hitCheck   = CollisionDetector::CollCheck(GetRect(), pRect);
-	auto wSideCheck = CollisionDetector::SideCollCheck(GetRect(), wRect);
+	auto isHit   = CollisionDetector::CollCheck(GetRect(), pRect);
+	auto isWallSide = CollisionDetector::SideCollCheck(GetRect(), wRect);
 
 	if (updater == &Enemy::BubbleUpdate &&
 		updater != &Enemy::DieUpdate &&
-		hitCheck)
+		isHit)
 	{
-		if (wSideCheck)
+		if (isWallSide)
 		{
 			if (wRect.Right() > GetRect().Left())
 			{
+				/// 死亡して、右方向に飛ぶ
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = true;
@@ -311,6 +316,7 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 			}
 			else if (wRect.Left() < GetRect().Right())
 			{
+				/// 死亡して、左方向に飛ぶ
 				AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 				Die();
 				turnFlag = false;
@@ -326,22 +332,22 @@ void Enemy::SideCheck(const Rect & pRect, const Rect & wRect)
 	}
 }
 
-bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
+bool Enemy::IsUnder(const Rect & pRect, const Input & p)
 {
-	auto hitDir		 = (pRect.Right() < GetRect().center.x);						// true:右に当たった, false:左に当たった
-	auto hitCheck	 = (CollisionDetector::CollCheck(GetRect(), pRect));
+	auto isDir		 = (pRect.Right() < GetRect().center.x);						// true:右に当たった, false:左に当たった
+	auto isHit		 = (CollisionDetector::CollCheck(GetRect(), pRect));
 	auto underBubble = (CollisionDetector::UnderCollCheck(GetRect(), pRect));		// 泡の下側との当たり判定
 	auto underPlayer = (CollisionDetector::UnderCollCheck(pRect, GetRect()));		// ﾌﾟﾚｲﾔｰの下側との当たり判定
 
-	if (hitCheck && updater == &Enemy::BubbleUpdate)
+	if (isHit && updater == &Enemy::BubbleUpdate)
 	{
-		/// ｼﾞｬﾝﾌﾟﾎﾞﾀﾝを押しっぱなしの時
+		/// ジャンプボタンを押しっぱなしの時
 		if (p.IsPressing(PAD_INPUT_1))
 		{
-			/// ﾌﾟﾚｲﾔｰが地上で泡状態の敵に当たると。泡が割れる
+			/// プレイヤーが地上で泡状態の敵に当たると。泡が割れる
 			if (underBubble || (GetRect().Top() < pRect.center.y + (size.y / 4)))
 			{
-				if (hitDir)
+				if (isDir)
 				{
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
@@ -359,7 +365,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 				}
 				return false;
 			}
-			/// ﾎﾞﾀﾝを押し続けていると、泡の上を飛ぶことができる
+			/// ボタンを押し続けていると、泡の上を飛ぶことができる
 			if (underPlayer)
 			{
 				return true;
@@ -367,11 +373,12 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 		}
 		else
 		{
-			/// ｼﾞｬﾝﾌﾟﾎﾞﾀﾝを押していない状態の時
+			/// ジャンプボタンを押していない状態の時
 			if (underPlayer)
 			{
-				if (hitDir)
+				if (isDir)
 				{
+					/// 死亡して、右方向に飛ぶ
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = true;
@@ -380,6 +387,7 @@ bool Enemy::UnderCheck(const Rect & pRect, const Input & p)
 				}
 				else
 				{
+					/// 死亡して、左方向に飛ぶ
 					AudioMng::GetInstance().PlaySE(AudioMng::GetInstance().GetSound().hit);
 					Die();
 					turnFlag = false;

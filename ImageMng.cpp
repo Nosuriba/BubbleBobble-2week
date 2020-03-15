@@ -11,7 +11,7 @@ ImageMng::~ImageMng()
 {
 }
 
-const VEC_INT ImageMng::ImgGetID(std::string fileName)
+const int ImageMng::ImgGetID(std::string fileName)
 {
 	 // 画像IDのハンドルが見つからなかった時、画像読み込みを行う(分割なし) 
 	if (imgMap.find(fileName) == imgMap.end())
@@ -20,7 +20,7 @@ const VEC_INT ImageMng::ImgGetID(std::string fileName)
 		imgMap[fileName][0] = DxLib::LoadGraph(fileName.c_str(), true);
 	}
 
-	return imgMap[fileName];
+	return imgMap[fileName][0];
 }
 
 const VEC_INT ImageMng::ImgGetID(std::string fileName, Vector2 divCnt, Vector2 divSize)
